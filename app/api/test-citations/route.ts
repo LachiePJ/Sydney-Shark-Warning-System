@@ -3,7 +3,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { dataService } from '@/lib/data-service';
+import { DataService } from '@/lib/data-service';
 import { DETAILED_ZONES } from '@/config/detailed-zones';
 
 export const dynamic = 'force-dynamic';
@@ -15,6 +15,8 @@ export async function GET() {
     if (!manlyZone) {
       return NextResponse.json({ error: 'Manly zone not found' });
     }
+    
+    const dataService = new DataService();
     
     // Get risk input
     const riskInput = await dataService.getRiskInputForZone(manlyZone.properties);
