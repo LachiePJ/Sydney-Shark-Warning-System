@@ -171,20 +171,28 @@ export class DataService {
     const beachKey = ZONE_TO_BEACH_MAP[zoneProperties.id] || 'sydneyHarbour';
     const beachData = this.cache?.beaches[beachKey];
     
+    console.log(`🏖️  Getting data for zone ${zoneProperties.id} (beach: ${beachKey})`);
+    console.log(`📊 Beach data:`, beachData);
+    
     const now = new Date();
     const month = now.getMonth();
     const isSummer = DEFAULT_THRESHOLDS.summerMonths.includes(month);
     
     // Derive water quality from rainfall
-    const waterQuality = RiskEngine.deriveWaterQuality(beachData?.rainfall48h || null);
+    const waterQuality = RiskEngine.deriveWaterQuality(beachData?.rainfall48h ?? null);
     
     return {
-      waterTemp: beachData?.temperature || null,
-      rainfall48h: beachData?.rainfall48h || null,
-      swellHeight: beachData?.waveHeight || null,
+      waterTemp: beachData?.temperature ?? null,
+      rainfall48h: beachData?.rainfall48h ?? null,
+      swellHeight: beachData?.waveHeight ?? null,
       isSummer,
       waterQuality,
       timestamp: beachData?.timestamp || now.toISOString(),
+      sources: {
+        waterTemp: 'Open-Meteo Marine API',
+        rainfall: 'Open-Meteo Weather API (BoM-backed)',
+        swell: 'Open-Meteo Marine API',
+      },
     };
   }
 

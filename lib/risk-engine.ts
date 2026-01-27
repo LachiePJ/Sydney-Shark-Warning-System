@@ -58,6 +58,17 @@ export class RiskEngine {
   private evaluateConditions(input: RiskInput): Condition[] {
     const conditions: Condition[] = [];
 
+    // Helper to format data age
+    const getDataAge = (timestamp?: string): string => {
+      if (!timestamp) return 'Unknown';
+      const age = Date.now() - new Date(timestamp).getTime();
+      const minutes = Math.floor(age / 60000);
+      const hours = Math.floor(minutes / 60);
+      if (hours > 0) return `${hours}h ago`;
+      if (minutes > 0) return `${minutes}min ago`;
+      return 'Just now';
+    };
+
     // Condition 1: Water temperature
     conditions.push({
       name: 'High Water Temperature',
@@ -65,6 +76,9 @@ export class RiskEngine {
       value: input.waterTemp,
       threshold: `> ${this.thresholds.waterTemp}°C`,
       weight: this.weights.waterTemp,
+      source: input.sources?.waterTemp,
+      timestamp: input.timestamp,
+      dataAge: getDataAge(input.timestamp),
     });
 
     // Condition 2: Significant rainfall (48h)
@@ -74,6 +88,9 @@ export class RiskEngine {
       value: input.rainfall48h,
       threshold: `> ${this.thresholds.rainfall48h}mm`,
       weight: this.weights.rainfall,
+      source: input.sources?.rainfall,
+      timestamp: input.timestamp,
+      dataAge: getDataAge(input.timestamp),
     });
 
     // Condition 3: Swell in risk range
@@ -87,6 +104,9 @@ export class RiskEngine {
       value: input.swellHeight,
       threshold: `${this.thresholds.swellMin}m - ${this.thresholds.swellMax}m`,
       weight: this.weights.swell,
+      source: input.sources?.swell,
+      timestamp: input.timestamp,
+      dataAge: getDataAge(input.timestamp),
     });
 
     // Condition 4: Summer season
@@ -96,6 +116,8 @@ export class RiskEngine {
       value: input.isSummer ? 'Yes' : 'No',
       threshold: 'Nov-Feb',
       weight: this.weights.season,
+      source: 'System calculated',
+      dataAge: 'Current',
     });
 
     // Condition 5: Poor water quality
@@ -105,6 +127,9 @@ export class RiskEngine {
       value: input.waterQuality,
       threshold: 'Poor (runoff/turbidity)',
       weight: this.weights.waterQuality,
+      source: 'Derived from rainfall data',
+      timestamp: input.timestamp,
+      dataAge: getDataAge(input.timestamp),
     });
 
     return conditions;

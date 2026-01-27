@@ -11,6 +11,11 @@ export interface RiskInput {
   isSummer: boolean;
   waterQuality: 'good' | 'poor' | 'unknown';  // derived proxy
   timestamp: string;
+  sources?: {                    // Data source metadata
+    waterTemp?: string;
+    rainfall?: string;
+    swell?: string;
+  };
 }
 
 export interface Condition {
@@ -19,6 +24,9 @@ export interface Condition {
   value: any;
   threshold: any;
   weight: number;
+  source?: string;        // Data source (e.g., "Open-Meteo Marine API")
+  timestamp?: string;     // When this data was fetched
+  dataAge?: string;       // Human-readable age (e.g., "5 minutes ago")
 }
 
 export interface RiskExplanation {

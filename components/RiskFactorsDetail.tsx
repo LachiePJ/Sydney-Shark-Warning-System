@@ -48,6 +48,22 @@ export default function RiskFactorsDetail({ risk }: RiskFactorsDetailProps) {
                 <span>Threshold:</span>
                 <span className="font-mono">{condition.threshold}</span>
               </div>
+              {condition.source && (
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                  <div className="text-xs text-gray-500 space-y-1">
+                    <div className="flex items-start gap-1">
+                      <span className="opacity-60">📊</span>
+                      <span className="italic">{condition.source}</span>
+                    </div>
+                    {condition.dataAge && (
+                      <div className="flex items-start gap-1">
+                        <span className="opacity-60">🕐</span>
+                        <span>Updated {condition.dataAge}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         ))}
