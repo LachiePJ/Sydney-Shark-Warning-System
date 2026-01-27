@@ -225,21 +225,38 @@ export class DataService {
     }
     
     // Try to load from filesystem first (for local dev and after /api/refresh)
+    let loadedFromFile = false;
     try {
       const data = await fs.readFile(CACHE_FILE, 'utf-8');
-      this.cache = JSON.parse(data);
-      console.log('✓ Loaded cache from filesystem');
+      const parsed = JSON.parse(data);
+      
+      // Check if the file cache has actual data
+      const hasBeachData = parsed.beaches && Object.keys(parsed.beaches).length > 0;
+      const firstBeach = hasBeachData ? Object.values(parsed.beaches)[0] as any : null;
+      const hasRealData = firstBeach && (
+        firstBeach.temperature !== null ||
+        firstBeach.rainfall48h !== null ||
+        firstBeach.waveHeight !== null
+      );
+      
+      if (hasRealData) {
+        this.cache = parsed;
+        loadedFromFile = true;
+        console.log('✓ Loaded cache from filesystem with real data');
+      } else {
+        console.log('⚠️  Filesystem cache is empty, using bundled cache');
+        this.cache = INITIAL_CACHE as CacheData;
+      }
     } catch (error) {
       // Filesystem read failed (common on Vercel) - use bundled initial cache
-      console.log('ℹ️  Using bundled cache data (filesystem read-only on Vercel)');
-      console.log('ℹ️  INITIAL_CACHE type:', typeof INITIAL_CACHE);
-      console.log('ℹ️  INITIAL_CACHE keys:', INITIAL_CACHE ? Object.keys(INITIAL_CACHE) : 'null');
+      console.log('ℹ️  Filesystem read failed, using bundled cache data');
       this.cache = INITIAL_CACHE as CacheData;
-      console.log('ℹ️  this.cache set:', !!this.cache);
-      console.log('ℹ️  this.cache.beaches:', this.cache?.beaches ? Object.keys(this.cache.beaches) : 'none');
     }
     
     if (this.cache) {
+      const beachCount = this.cache.beaches ? Object.keys(this.cache.beaches).length : 0;
+      console.log(`📊 Cache loaded: ${beachCount} beaches, source: ${loadedFromFile ? 'file' : 'bundled'}`);
+      
       const cacheAge = Date.now() - new Date(this.cache.lastFetch).getTime();
       const minutesOld = Math.round(cacheAge / 1000 / 60);
       

@@ -6,5 +6,13 @@
 import cacheData from '@/data/cache.json';
 
 export function getCachedData() {
-  return cacheData;
+  // Handle both ESM default export and direct import
+  const data = (cacheData as any).default || cacheData;
+  console.log('📦 Cache loader: data type =', typeof data);
+  console.log('📦 Cache loader: has beaches =', !!data?.beaches);
+  if (data?.beaches) {
+    console.log('📦 Cache loader: beach keys =', Object.keys(data.beaches));
+    console.log('📦 Cache loader: manly data =', data.beaches.manly);
+  }
+  return data;
 }
