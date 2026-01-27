@@ -172,12 +172,17 @@ export class DataService {
   async getRiskInputForZone(zoneProperties: ZoneProperties): Promise<RiskInput> {
     await this.ensureCacheLoaded();
     
+    console.log(`🔍 getRiskInputForZone called for: ${zoneProperties.id}`);
+    console.log(`🔍 this.cache exists:`, !!this.cache);
+    console.log(`🔍 this.cache.beaches exists:`, !!this.cache?.beaches);
+    console.log(`🔍 this.cache.beaches keys:`, this.cache?.beaches ? Object.keys(this.cache.beaches) : 'none');
+    
     // Map zone to its beach
     const beachKey = ZONE_TO_BEACH_MAP[zoneProperties.id] || 'sydneyHarbour';
-    const beachData = this.cache?.beaches[beachKey];
+    console.log(`🔍 Mapped to beach key: ${beachKey}`);
     
-    console.log(`🏖️  Getting data for zone ${zoneProperties.id} (beach: ${beachKey})`);
-    console.log(`📊 Beach data:`, beachData);
+    const beachData = this.cache?.beaches[beachKey];
+    console.log(`🔍 Beach data for ${beachKey}:`, JSON.stringify(beachData));
     
     const now = new Date();
     const month = now.getMonth();
