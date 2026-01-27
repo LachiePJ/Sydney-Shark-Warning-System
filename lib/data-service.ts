@@ -174,31 +174,22 @@ export class DataService {
     
     // Map zone to its beach
     const beachKey = ZONE_TO_BEACH_MAP[zoneProperties.id] || 'sydneyHarbour';
-    
-    // ALWAYS use STATIC_CACHE_DATA as source of truth
-    // The cache loading is unreliable on Vercel
-    const staticData = (STATIC_CACHE_DATA as any).beaches[beachKey];
-    
-    console.log(`🔥 FORCED STATIC CACHE for ${beachKey}:`, {
-      rainfall: staticData.rainfall48h,
-      temp: staticData.temperature,
-      waves: staticData.waveHeight,
-    });
+    const beachData = this.cache?.beaches?.[beachKey];
     
     const now = new Date();
     const month = now.getMonth();
     const isSummer = DEFAULT_THRESHOLDS.summerMonths.includes(month);
     
     // Derive water quality from rainfall
-    const waterQuality = RiskEngine.deriveWaterQuality(staticData.rainfall48h);
+    const waterQuality = RiskEngine.deriveWaterQuality(beachData?.rainfall48h ?? null);
     
     return {
-      waterTemp: staticData.temperature,
-      rainfall48h: staticData.rainfall48h,
-      swellHeight: staticData.waveHeight,
+      waterTemp: beachData?.temperature ?? null,
+      rainfall48h: beachData?.rainfall48h ?? null,
+      swellHeight: beachData?.waveHeight ?? null,
       isSummer,
       waterQuality,
-      timestamp: staticData.timestamp,
+      timestamp: beachData?.timestamp || now.toISOString(),
       sources: {
         waterTemp: 'Open-Meteo Marine API',
         rainfall: 'Open-Meteo Weather API (BoM-backed)',
