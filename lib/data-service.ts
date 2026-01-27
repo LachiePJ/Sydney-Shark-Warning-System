@@ -8,6 +8,7 @@ import { RiskEngine } from '@/lib/risk-engine';
 import { ZONES, ZoneProperties } from '@/config/zones';
 import { DEFAULT_THRESHOLDS } from '@/config/risk-config';
 import { fetchAllBeachesMarineData } from '@/lib/bom/marine-temperature-adapter';
+import { fetchSimpleRainfall } from '@/lib/bom/simple-rainfall-adapter';
 import { cacheSingleton } from '@/lib/cache-singleton';
 import { saveToRedis, loadFromRedis, isRedisConfigured } from '@/lib/redis-cache';
 import { promises as fs } from 'fs';
@@ -134,13 +135,15 @@ export class DataService {
         sydneyHarbour: { lat: -33.8688, lon: 151.2093 },
       };
       
-      // Fetch rainfall for each beach in parallel
+      // Fetch rainfall for each beach in parallel using simplified adapter
+      console.log('📊 Fetching rainfall data...');
       const rainfallPromises = Object.entries(beachCoords).map(async ([beachKey, coords]) => {
-        const rainfall = await this.fetchBeachRainfall(coords.lat, coords.lon);
+        const rainfall = await fetchSimpleRainfall(coords.lat, coords.lon);
         return { beachKey, rainfall };
       });
       
       const rainfallResults = await Promise.all(rainfallPromises);
+      console.log(`📊 Rainfall fetch complete: ${rainfallResults.filter(r => r.rainfall !== null).length}/${rainfallResults.length} successful`);
       
       // Combine marine and rainfall data
       Object.keys(beachCoords).forEach((beachKey) => {
