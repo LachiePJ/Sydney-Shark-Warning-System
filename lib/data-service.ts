@@ -223,8 +223,12 @@ export class DataService {
       console.log('✓ Loaded cache from filesystem');
     } catch (error) {
       // Filesystem read failed (common on Vercel) - use bundled initial cache
-      console.log('Using bundled cache data (filesystem read-only on Vercel)');
+      console.log('ℹ️  Using bundled cache data (filesystem read-only on Vercel)');
+      console.log('ℹ️  INITIAL_CACHE type:', typeof INITIAL_CACHE);
+      console.log('ℹ️  INITIAL_CACHE keys:', INITIAL_CACHE ? Object.keys(INITIAL_CACHE) : 'null');
       this.cache = INITIAL_CACHE as CacheData;
+      console.log('ℹ️  this.cache set:', !!this.cache);
+      console.log('ℹ️  this.cache.beaches:', this.cache?.beaches ? Object.keys(this.cache.beaches) : 'none');
     }
     
     if (this.cache) {
