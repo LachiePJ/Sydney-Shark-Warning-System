@@ -177,9 +177,17 @@ export class DataService {
     
     // Get beach data - use STATIC_CACHE_DATA as direct fallback
     let beachData = this.cache?.beaches?.[beachKey];
-    if (!beachData || beachData.rainfall48h === null || beachData.temperature === null) {
-      console.log(`⚠️  Using STATIC_CACHE_DATA fallback for ${beachKey}`);
+    
+    // Check if data is missing or incomplete (null OR undefined)
+    const hasRainfall = beachData?.rainfall48h != null;  // != null checks both null and undefined
+    const hasTemp = beachData?.temperature != null;
+    const hasWaves = beachData?.waveHeight != null;
+    
+    if (!hasRainfall || !hasTemp || !hasWaves) {
+      console.log(`⚠️  Incomplete data for ${beachKey}, using STATIC_CACHE_DATA`);
+      console.log(`   rainfall=${beachData?.rainfall48h}, temp=${beachData?.temperature}, waves=${beachData?.waveHeight}`);
       beachData = (STATIC_CACHE_DATA as any).beaches[beachKey];
+      console.log(`   ✓ Now: rainfall=${beachData.rainfall48h}, temp=${beachData.temperature}, waves=${beachData.waveHeight}`);
     }
     
     const now = new Date();
