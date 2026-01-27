@@ -9,14 +9,19 @@ import { ZONES, ZoneProperties } from '@/config/zones';
 import { DEFAULT_THRESHOLDS } from '@/config/risk-config';
 import { fetchAllBeachesMarineData } from '@/lib/bom/marine-temperature-adapter';
 import { getCachedData } from '@/lib/cache-loader';
+import { STATIC_CACHE_DATA } from '@/lib/static-cache';
 import { promises as fs } from 'fs';
 import path from 'path';
 
 const CACHE_FILE = path.join(process.cwd(), 'data', 'cache.json');
 const CACHE_DURATION_MS = 30 * 60 * 1000; // 30 minutes
 
-// Pre-load cached data from bundled JSON
-const INITIAL_CACHE = getCachedData();
+// Pre-load cached data - use static data as guaranteed fallback
+const INITIAL_CACHE = STATIC_CACHE_DATA;
+console.log('🔧 INITIAL_CACHE loaded at module init:', {
+  beaches: Object.keys(INITIAL_CACHE.beaches),
+  manlyRainfall: INITIAL_CACHE.beaches.manly.rainfall48h,
+});
 
 // Map zones to their nearest beach for data
 const ZONE_TO_BEACH_MAP: Record<string, string> = {

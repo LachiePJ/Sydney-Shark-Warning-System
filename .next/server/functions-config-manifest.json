@@ -1,1 +1,1 @@
-{"version":1,"functions":{"/api/zones":{},"/api/refresh":{"maxDuration":60},"/api/risk":{},"/api/status":{},"/":{}}}
+{"version":1,"functions":{"/api/refresh":{"maxDuration":60},"/api/risk":{},"/api/status":{},"/api/zones":{},"/":{}}}
