@@ -49,7 +49,7 @@ export function BrandingNodeLogo() {
   const [imageError, setImageError] = useState(false);
 
   if (imageError) {
-    return <NodeLogo className="h-8 text-slate-900" />;
+    return <NodeLogo className="h-8 text-[#1e3a8a]" />;
   }
 
   return (
@@ -59,6 +59,9 @@ export function BrandingNodeLogo() {
       width={80}
       height={32}
       className="h-8 w-auto"
+      style={{
+        filter: 'brightness(0) saturate(100%) invert(13%) sepia(73%) saturate(3458%) hue-rotate(214deg) brightness(91%) contrast(101%)'
+      }}
       onError={() => setImageError(true)}
       unoptimized
     />
