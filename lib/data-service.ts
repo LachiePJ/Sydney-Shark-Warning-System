@@ -63,38 +63,50 @@ export class DataService {
    */
   private async fetchBeachRainfall(lat: number, lon: number): Promise<number | null> {
     try {
+      // Use daily precipitation instead of hourly for better reliability
       const url = new URL('https://api.open-meteo.com/v1/forecast');
       url.searchParams.append('latitude', lat.toString());
       url.searchParams.append('longitude', lon.toString());
-      url.searchParams.append('hourly', 'precipitation');
+      url.searchParams.append('daily', 'precipitation_sum');
       url.searchParams.append('timezone', 'Australia/Sydney');
       url.searchParams.append('past_days', '2');
-      url.searchParams.append('forecast_days', '1');
+      url.searchParams.append('forecast_days', '0');
 
-      const response = await fetch(url.toString());
-      if (!response.ok) return null;
+      console.log(`Fetching rainfall for ${lat},${lon}...`);
+      
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+      
+      const response = await fetch(url.toString(), {
+        signal: controller.signal,
+      });
+      clearTimeout(timeout);
+      
+      if (!response.ok) {
+        console.error(`Rainfall API returned ${response.status}`);
+        return null;
+      }
 
       const data = await response.json();
       
-      // Sum rainfall from last 48 hours
-      if (data.hourly?.precipitation) {
-        const now = Date.now();
-        const hours48Ago = now - 48 * 60 * 60 * 1000;
+      // Sum rainfall from last 2 days
+      if (data.daily?.precipitation_sum) {
+        const total = data.daily.precipitation_sum.reduce((sum: number, val: number | null) => {
+          return sum + (val || 0);
+        }, 0);
         
-        let total = 0;
-        data.hourly.time.forEach((time: string, index: number) => {
-          const timestamp = new Date(time).getTime();
-          if (timestamp >= hours48Ago) {
-            total += data.hourly.precipitation[index] || 0;
-          }
-        });
-        
+        console.log(`✓ Rainfall for ${lat},${lon}: ${total.toFixed(1)}mm`);
         return total;
       }
       
+      console.warn('No precipitation data in response');
       return null;
     } catch (error) {
-      console.error('Failed to fetch rainfall:', error);
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.error('Rainfall fetch timed out after 8s');
+      } else {
+        console.error('Failed to fetch rainfall:', error);
+      }
       return null;
     }
   }
