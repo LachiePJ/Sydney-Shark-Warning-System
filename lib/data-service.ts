@@ -9,6 +9,7 @@ import { ZONES, ZoneProperties } from '@/config/zones';
 import { DEFAULT_THRESHOLDS } from '@/config/risk-config';
 import { fetchAllBeachesMarineData } from '@/lib/bom/marine-temperature-adapter';
 import { cacheSingleton } from '@/lib/cache-singleton';
+import { saveToRedis, loadFromRedis, isRedisConfigured } from '@/lib/redis-cache';
 import { promises as fs } from 'fs';
 import path from 'path';
 
@@ -218,7 +219,28 @@ export class DataService {
       return; // Already loaded in this instance
     }
     
-    // First, check in-memory singleton (survives across requests on Vercel)
+    // 1. Try Redis FIRST (primary source for Vercel) ⭐
+    if (isRedisConfigured()) {
+      const redisCache = await loadFromRedis();
+      if (redisCache && redisCache.beaches && Object.keys(redisCache.beaches).length > 0) {
+        this.cache = redisCache;
+        const cacheAge = Date.now() - new Date(this.cache.lastFetch).getTime();
+        const minutesOld = Math.round(cacheAge / 1000 / 60);
+        console.log(`✅ Loaded from Redis (${minutesOld}min old, ${Object.keys(this.cache.beaches).length} beaches)`);
+        
+        // Show what data we have
+        const firstBeach = Object.keys(this.cache.beaches)[0];
+        const sample = this.cache.beaches[firstBeach];
+        console.log(`   Sample data (${firstBeach}):`, {
+          temp: sample.temperature,
+          rainfall: sample.rainfall48h,
+          waves: sample.waveHeight,
+        });
+        return;
+      }
+    }
+    
+    // 2. Check in-memory singleton (temporary fallback)
     const singletonCache = cacheSingleton.getCache();
     if (singletonCache) {
       this.cache = singletonCache;
@@ -228,7 +250,7 @@ export class DataService {
       return;
     }
     
-    // Try filesystem (works locally)
+    // 3. Try filesystem (local development)
     try {
       const data = await fs.readFile(CACHE_FILE, 'utf-8');
       const parsed = JSON.parse(data);
@@ -243,7 +265,7 @@ export class DataService {
       
       if (hasRealData) {
         this.cache = parsed;
-        cacheSingleton.setCache(parsed);  // Also save to singleton
+        cacheSingleton.setCache(parsed);
         console.log('✓ Loaded from filesystem, saved to singleton');
         return;
       }
@@ -265,10 +287,20 @@ export class DataService {
   private async saveCache(): Promise<void> {
     if (!this.cache) return;
     
-    // Save to in-memory singleton (works on Vercel)
+    // 1. Save to Redis (primary persistence for Vercel) ⭐
+    if (isRedisConfigured()) {
+      const saved = await saveToRedis(this.cache);
+      if (saved) {
+        console.log('✅ Data persisted to Redis - will survive across requests!');
+      }
+    } else {
+      console.warn('⚠️  Redis not configured - data will not persist between requests');
+    }
+    
+    // 2. Save to in-memory singleton (temporary backup)
     cacheSingleton.setCache(this.cache);
     
-    // Also try to save to file (works locally, fails silently on Vercel)
+    // 3. Save to file (local development only)
     try {
       await fs.mkdir(path.dirname(CACHE_FILE), { recursive: true });
       await fs.writeFile(CACHE_FILE, JSON.stringify(this.cache, null, 2));
