@@ -133,7 +133,7 @@ export default async function Home() {
             or consult local lifeguard services.
           </p>
           <p className="text-xs text-gray-500">
-            Last updated: {new Date().toLocaleString('en-GB')} | Data freshness: {dataFreshness}
+            Last updated: {new Date().toLocaleString('en-GB')}
           </p>
         </footer>
       </div>
