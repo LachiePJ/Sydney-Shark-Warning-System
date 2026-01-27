@@ -33,7 +33,7 @@ export async function fetchMarineDataForBeach(
     
     url.searchParams.append('latitude', beach.lat.toString());
     url.searchParams.append('longitude', beach.lon.toString());
-    url.searchParams.append('current', 'ocean_surface_temperature,wave_height');
+    url.searchParams.append('current', 'sea_surface_temperature,wave_height');
     url.searchParams.append('timezone', 'Australia/Sydney');
 
     const controller = new AbortController();
@@ -55,9 +55,9 @@ export async function fetchMarineDataForBeach(
     const data = await response.json();
     const now = new Date().toISOString();
 
-    const temperature: BomDataPoint | null = data.current?.ocean_surface_temperature
+    const temperature: BomDataPoint | null = data.current?.sea_surface_temperature
       ? {
-          value: data.current.ocean_surface_temperature,
+          value: data.current.sea_surface_temperature,
           timestamp: now,
           source: `Marine Data (${beach.name})`,
         }
