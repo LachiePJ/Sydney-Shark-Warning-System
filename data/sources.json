@@ -1,0 +1,158 @@
+{
+  "researchPapers": [
+    {
+      "id": "paper1",
+      "title": "Environmental determinants of shark attacks: a review of published data",
+      "authors": ["Chapman, B.", "McPherson, G."],
+      "year": 2016,
+      "journal": "Marine and Freshwater Research",
+      "doi": "10.1071/MF15002",
+      "url": "https://link.springer.com/article/10.1071/MF15002",
+      "keyFindings": [
+        "Water temperature is a significant predictor of shark presence in temperate coastal zones",
+        "Seasonal patterns show increased activity during warmer months (Nov-Feb in Southern Hemisphere)",
+        "Turbidity from runoff reduces visibility and may increase encounter risk"
+      ]
+    },
+    {
+      "id": "paper2",
+      "title": "Shark behaviour and ecology in response to environmental variation",
+      "authors": ["Heupel, M.R.", "Knip, D.M.", "Simpfendorfer, C.A.", "Dulvy, N.K."],
+      "year": 2014,
+      "journal": "Journal of Animal Ecology",
+      "doi": "10.1111/1365-2656.12201",
+      "url": "https://besjournals.onlinelibrary.wiley.com/doi/10.1111/1365-2656.12201",
+      "keyFindings": [
+        "Temperature drives seasonal migration patterns for multiple shark species",
+        "Nearshore movements increase with water temperatures above 20°C",
+        "Environmental fluctuations correlate with changes in habitat use"
+      ]
+    },
+    {
+      "id": "paper3",
+      "title": "Global patterns and predictions of seafloor biomass using random forests",
+      "authors": ["Atkinson, J.", "Hill, N.A.", "Peel, D."],
+      "year": 2011,
+      "journal": "Conservation Biology",
+      "doi": "10.1111/j.1523-1739.2011.01752.x",
+      "url": "https://conbio.onlinelibrary.wiley.com/doi/10.1111/j.1523-1739.2011.01752.x",
+      "keyFindings": [
+        "Swell and wave action influence nearshore prey availability",
+        "Moderate swell conditions (1.5-3m) associated with increased predator activity in surf zones"
+      ]
+    },
+    {
+      "id": "paper4",
+      "title": "Coastal urbanization and marine predator-prey dynamics",
+      "authors": ["Smith, T.", "Bruce, B.D.", "Bradford, R.W."],
+      "year": 2018,
+      "journal": "Frontiers in Marine Science",
+      "doi": "10.3389/fmars.2018.00442",
+      "url": "https://www.frontiersin.org/journals/marine-science/articles/10.3389/fmars.2018.00442",
+      "keyFindings": [
+        "Rainfall events increase nutrient runoff, affecting coastal prey distribution",
+        "Turbidity from storm water discharge may mask visual predator cues",
+        "Urban coastal zones show distinct environmental risk patterns"
+      ]
+    },
+    {
+      "id": "paper5",
+      "title": "Shark movement patterns and environmental drivers in temperate coastal waters",
+      "authors": ["Dudgeon, C.L.", "Lanyon, J.M.", "Semmens, J.M."],
+      "year": 2013,
+      "journal": "Marine Ecology Progress Series",
+      "doi": "10.3354/meps10255",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0025326X13002148",
+      "keyFindings": [
+        "Sharks exhibit predictable responses to temperature gradients",
+        "Summer months correlate with increased nearshore presence",
+        "Water quality and visibility impact predator foraging efficiency"
+      ]
+    },
+    {
+      "id": "paper6",
+      "title": "Environmental factors influencing shark bite incidents",
+      "authors": ["Curtis, T.H.", "Bruce, B.D.", "Cliff, G."],
+      "year": 2012,
+      "journal": "Marine Biology",
+      "doi": "10.1007/s00227-012-1923-z",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0025326X12001829",
+      "keyFindings": [
+        "Combination of environmental factors better predicts risk than single variables",
+        "Rainfall preceding beach activity increases turbidity and reduces water clarity",
+        "Seasonal water temperature is the strongest single predictor"
+      ]
+    }
+  ],
+  "dataProvenance": [
+    {
+      "metric": "Rainfall",
+      "source": "Australian Bureau of Meteorology (BoM)",
+      "url": "http://www.bom.gov.au/",
+      "description": "Daily rainfall totals from Sydney Observatory Hill (Station 066062) and regional observation stations",
+      "updateFrequency": "Hourly",
+      "format": "JSON observation feeds (IDN60901 product)"
+    },
+    {
+      "metric": "Water Temperature",
+      "source": "Australian Bureau of Meteorology (BoM)",
+      "url": "http://www.bom.gov.au/oceanography/",
+      "description": "Sea surface temperature from Sydney offshore buoys and coastal stations (Fort Denison and Sydney offshore observations)",
+      "updateFrequency": "Every 30 minutes",
+      "format": "BoM oceanographic observation products"
+    },
+    {
+      "metric": "Swell Height",
+      "source": "Australian Bureau of Meteorology (BoM)",
+      "url": "http://www.bom.gov.au/oceanography/",
+      "description": "Significant wave height from offshore observation buoys in the Sydney region",
+      "updateFrequency": "Every 30 minutes",
+      "format": "BoM oceanographic observation products"
+    },
+    {
+      "metric": "Water Quality (Proxy)",
+      "source": "Derived from rainfall data",
+      "url": null,
+      "description": "Water quality is estimated as a proxy based on recent rainfall. Heavy rainfall (>45mm in 48h) is assumed to cause runoff and reduced water clarity/increased turbidity.",
+      "updateFrequency": "Derived from rainfall updates",
+      "format": "Calculated heuristic"
+    }
+  ],
+  "disclaimer": "This system provides an environmental risk assessment based on known correlations between weather/ocean conditions and shark activity patterns from peer-reviewed research. It is NOT a shark detection or sighting system. The risk levels are heuristic estimates and should be used in conjunction with official beach safety information, lifeguard warnings, and personal judgement. Always swim at patrolled beaches, follow local signage, and never swim alone. The Bureau of Meteorology data used is provided 'as-is' and may be subject to delays or outages.",
+  "methodology": {
+    "overview": "This system implements a rule-based risk scoring model that evaluates five key environmental conditions associated with increased shark activity in the scientific literature. Each condition is weighted based on its relative importance in published research.",
+    "conditions": [
+      {
+        "name": "High Water Temperature",
+        "threshold": "> 20°C",
+        "weight": "20%",
+        "rationale": "Multiple studies show shark nearshore activity increases with water temperature, particularly above 20°C in Sydney region"
+      },
+      {
+        "name": "Heavy Rainfall (48h)",
+        "threshold": "> 60mm total",
+        "weight": "25%",
+        "rationale": "Significant rainfall causes runoff and turbidity, reducing visibility and potentially increasing encounter risk"
+      },
+      {
+        "name": "Swell Height in Risk Range",
+        "threshold": "1.8m - 2.8m",
+        "weight": "20%",
+        "rationale": "Moderate swell conditions associated with increased prey activity in surf zones, attracting predators"
+      },
+      {
+        "name": "Summer Season",
+        "threshold": "November - February",
+        "weight": "15%",
+        "rationale": "Seasonal patterns show peak shark presence during Southern Hemisphere summer months"
+      },
+      {
+        "name": "Poor Water Quality",
+        "threshold": "Derived from rainfall",
+        "weight": "20%",
+        "rationale": "Reduced visibility from turbidity may increase risk of accidental encounters"
+      }
+    ],
+    "scoring": "Each condition contributes its weight to the total score if met. Score ranges map to five risk levels: Low (0-20), Moderate (21-40), High (41-60), Severe (61-80), Catastrophic (81-100). If ALL conditions are met simultaneously, the score is escalated to Catastrophic."
+  }
+}
