@@ -8,8 +8,14 @@ import { DataService } from '@/lib/data-service';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+export const maxDuration = 60; // Vercel Pro: allow up to 60s
+export const runtime = 'nodejs'; // Need Node.js runtime for file system
 
-export async function POST(request: Request) {
+export async function GET() {
+  return POST();
+}
+
+export async function POST() {
   try {
     const dataService = new DataService();
     await dataService.refreshData();
