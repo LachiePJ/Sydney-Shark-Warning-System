@@ -8,11 +8,15 @@ import { RiskEngine } from '@/lib/risk-engine';
 import { ZONES, ZoneProperties } from '@/config/zones';
 import { DEFAULT_THRESHOLDS } from '@/config/risk-config';
 import { fetchAllBeachesMarineData } from '@/lib/bom/marine-temperature-adapter';
+import { getCachedData } from '@/lib/cache-loader';
 import { promises as fs } from 'fs';
 import path from 'path';
 
 const CACHE_FILE = path.join(process.cwd(), 'data', 'cache.json');
 const CACHE_DURATION_MS = 30 * 60 * 1000; // 30 minutes
+
+// Pre-load cached data from bundled JSON
+const INITIAL_CACHE = getCachedData();
 
 // Map zones to their nearest beach for data
 const ZONE_TO_BEACH_MAP: Record<string, string> = {
@@ -212,11 +216,19 @@ export class DataService {
       return; // Already loaded
     }
     
+    // Try to load from filesystem first (for local dev and after /api/refresh)
     try {
       const data = await fs.readFile(CACHE_FILE, 'utf-8');
       this.cache = JSON.parse(data);
-      
-      const cacheAge = Date.now() - new Date(this.cache!.lastFetch).getTime();
+      console.log('✓ Loaded cache from filesystem');
+    } catch (error) {
+      // Filesystem read failed (common on Vercel) - use bundled initial cache
+      console.log('Using bundled cache data (filesystem read-only on Vercel)');
+      this.cache = INITIAL_CACHE as CacheData;
+    }
+    
+    if (this.cache) {
+      const cacheAge = Date.now() - new Date(this.cache.lastFetch).getTime();
       const minutesOld = Math.round(cacheAge / 1000 / 60);
       
       if (cacheAge >= CACHE_DURATION_MS) {
@@ -224,12 +236,6 @@ export class DataService {
       } else {
         console.log(`✓ Using cached data (${minutesOld} minutes old)`);
       }
-    } catch (error) {
-      console.error('❌ Failed to load cache, using empty data:', error);
-      this.cache = {
-        beaches: {},
-        lastFetch: new Date(0).toISOString()
-      };
     }
   }
 
