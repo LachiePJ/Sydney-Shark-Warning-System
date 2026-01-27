@@ -1,21 +1,55 @@
 /**
- * Data Service
- * Orchestrates data fetching, caching, and normalization
+ * Improved Data Service - Beach-Specific Data
+ * Fetches granular data for each beach location
  */
 
-import { RiskInput, BomDataCache, ZoneRiskResult } from '@/lib/types';
-import { fetchOpenMeteoBOMData, fetchMarineData } from '@/lib/bom/openmeteo-adapter';
+import { RiskInput, ZoneRiskResult } from '@/lib/types';
 import { RiskEngine } from '@/lib/risk-engine';
 import { ZONES, ZoneProperties } from '@/config/zones';
 import { DEFAULT_THRESHOLDS } from '@/config/risk-config';
+import { fetchAllBeachesMarineData } from '@/lib/bom/marine-temperature-adapter';
 import { promises as fs } from 'fs';
 import path from 'path';
 
 const CACHE_FILE = path.join(process.cwd(), 'data', 'cache.json');
 const CACHE_DURATION_MS = 30 * 60 * 1000; // 30 minutes
 
+// Map zones to their nearest beach for data
+const ZONE_TO_BEACH_MAP: Record<string, string> = {
+  // Sydney Harbour zones
+  'sydney-harbour-inner': 'sydneyHarbour',
+  'sydney-harbour-outer': 'sydneyHarbour',
+  
+  // Manly area
+  'manly': 'manly',
+  
+  // Bondi to Bronte
+  'bondi-bronte': 'bondi',
+  
+  // Coogee to Maroubra
+  'coogee-maroubra': 'coogee',
+  
+  // Cronulla
+  'cronulla': 'cronulla',
+  
+  // Palm Beach
+  'palm-beach': 'palmBeach',
+};
+
+interface BeachData {
+  temperature: number | null;
+  waveHeight: number | null;
+  rainfall48h: number | null;
+  timestamp: string;
+}
+
+interface CacheData {
+  beaches: Record<string, BeachData>;
+  lastFetch: string;
+}
+
 export class DataService {
-  private cache: BomDataCache | null = null;
+  private cache: CacheData | null = null;
   private riskEngine: RiskEngine;
 
   constructor() {
@@ -23,47 +57,130 @@ export class DataService {
   }
 
   /**
-   * Get risk input data for a specific zone (uses Sydney-wide data)
+   * Fetch rainfall for a specific beach location
+   */
+  private async fetchBeachRainfall(lat: number, lon: number): Promise<number | null> {
+    try {
+      const url = new URL('https://api.open-meteo.com/v1/forecast');
+      url.searchParams.append('latitude', lat.toString());
+      url.searchParams.append('longitude', lon.toString());
+      url.searchParams.append('hourly', 'precipitation');
+      url.searchParams.append('timezone', 'Australia/Sydney');
+      url.searchParams.append('past_days', '2');
+      url.searchParams.append('forecast_days', '1');
+
+      const response = await fetch(url.toString());
+      if (!response.ok) return null;
+
+      const data = await response.json();
+      
+      // Sum rainfall from last 48 hours
+      if (data.hourly?.precipitation) {
+        const now = Date.now();
+        const hours48Ago = now - 48 * 60 * 60 * 1000;
+        
+        let total = 0;
+        data.hourly.time.forEach((time: string, index: number) => {
+          const timestamp = new Date(time).getTime();
+          if (timestamp >= hours48Ago) {
+            total += data.hourly.precipitation[index] || 0;
+          }
+        });
+        
+        return total;
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Failed to fetch rainfall:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Refresh all beach-specific data
+   */
+  async refreshData(): Promise<void> {
+    console.log('Fetching beach-specific marine and weather data...');
+    
+    try {
+      // Fetch marine data (ocean temp + wave height) for all beaches
+      const marineData = await fetchAllBeachesMarineData();
+      
+      const beaches: Record<string, BeachData> = {};
+      
+      // Beach coordinates for rainfall fetching
+      const beachCoords: Record<string, { lat: number; lon: number }> = {
+        manly: { lat: -33.7969, lon: 151.2887 },
+        bondi: { lat: -33.8915, lon: 151.2767 },
+        coogee: { lat: -33.9233, lon: 151.2585 },
+        maroubra: { lat: -33.9501, lon: 151.2591 },
+        cronulla: { lat: -34.0576, lon: 151.1532 },
+        palmBeach: { lat: -33.6005, lon: 151.3216 },
+        sydneyHarbour: { lat: -33.8688, lon: 151.2093 },
+      };
+      
+      // Fetch rainfall for each beach in parallel
+      const rainfallPromises = Object.entries(beachCoords).map(async ([beachKey, coords]) => {
+        const rainfall = await this.fetchBeachRainfall(coords.lat, coords.lon);
+        return { beachKey, rainfall };
+      });
+      
+      const rainfallResults = await Promise.all(rainfallPromises);
+      
+      // Combine marine and rainfall data
+      Object.keys(beachCoords).forEach((beachKey) => {
+        const marine = marineData[beachKey];
+        const rainfallData = rainfallResults.find(r => r.beachKey === beachKey);
+        
+        beaches[beachKey] = {
+          temperature: marine?.temperature?.value || null,
+          waveHeight: marine?.waveHeight?.value || null,
+          rainfall48h: rainfallData?.rainfall || null,
+          timestamp: new Date().toISOString(),
+        };
+        
+        console.log(`✓ ${beachKey}: Temp=${beaches[beachKey].temperature}°C, Rain=${beaches[beachKey].rainfall48h}mm, Waves=${beaches[beachKey].waveHeight}m`);
+      });
+      
+      this.cache = {
+        beaches,
+        lastFetch: new Date().toISOString(),
+      };
+      
+      await this.saveCache();
+      console.log('✓ Beach-specific data successfully fetched');
+      
+    } catch (error) {
+      console.error('Failed to refresh beach data:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get risk input data for a specific zone (uses beach-specific data)
    */
   async getRiskInputForZone(zoneProperties: ZoneProperties): Promise<RiskInput> {
     await this.ensureCacheLoaded();
-
+    
+    // Map zone to its beach
+    const beachKey = ZONE_TO_BEACH_MAP[zoneProperties.id] || 'sydneyHarbour';
+    const beachData = this.cache?.beaches[beachKey];
+    
     const now = new Date();
     const month = now.getMonth();
     const isSummer = DEFAULT_THRESHOLDS.summerMonths.includes(month);
-
-    // Get rainfall data (Sydney-wide)
-    let rainfall48h: number | null = null;
-    const rainfallReadings = this.cache?.rainfall['sydney'] || [];
-    if (rainfallReadings.length > 0) {
-      // Sum all rainfall in last 48 hours
-      rainfall48h = rainfallReadings.reduce((sum, reading) => sum + reading.value, 0);
-    }
-
-    // Get water temperature (Sydney-wide)
-    let waterTemp: number | null = null;
-    const tempData = this.cache?.waterTemp['sydney'];
-    if (tempData) {
-      waterTemp = tempData.value;
-    }
-
-    // Get swell/wave height (Sydney-wide)
-    let swellHeight: number | null = null;
-    const swellData = this.cache?.swell['sydney'];
-    if (swellData) {
-      swellHeight = swellData.value;
-    }
-
+    
     // Derive water quality from rainfall
-    const waterQuality = RiskEngine.deriveWaterQuality(rainfall48h);
-
+    const waterQuality = RiskEngine.deriveWaterQuality(beachData?.rainfall48h || null);
+    
     return {
-      waterTemp,
-      rainfall48h,
-      swellHeight,
+      waterTemp: beachData?.temperature || null,
+      rainfall48h: beachData?.rainfall48h || null,
+      swellHeight: beachData?.waveHeight || null,
       isSummer,
       waterQuality,
-      timestamp: now.toISOString(),
+      timestamp: beachData?.timestamp || now.toISOString(),
     };
   }
 
@@ -72,92 +189,19 @@ export class DataService {
    */
   async calculateAllZoneRisks(): Promise<ZoneRiskResult[]> {
     const results: ZoneRiskResult[] = [];
-
+    
     for (const zone of ZONES.features) {
       const input = await this.getRiskInputForZone(zone.properties);
       const risk = this.riskEngine.calculateRisk(input);
-
+      
       results.push({
         ...risk,
         zoneId: zone.properties.id,
         zoneName: zone.properties.name,
       });
     }
-
+    
     return results;
-  }
-
-  /**
-   * Refresh data from REAL BoM sources (via Open-Meteo API)
-   * Open-Meteo uses Bureau of Meteorology ACCESS-G model data
-   */
-  async refreshData(): Promise<void> {
-    const newCache: BomDataCache = {
-      rainfall: {},
-      waterTemp: {},
-      swell: {},
-      lastFetch: new Date().toISOString(),
-    };
-
-    try {
-      console.log('Fetching REAL BoM data via Open-Meteo API...');
-      
-      // Fetch weather data (temperature, rainfall) from Open-Meteo BOM API
-      const bomData = await fetchOpenMeteoBOMData();
-      
-      // Store temperature
-      if (bomData.temperature) {
-        newCache.waterTemp['sydney'] = bomData.temperature;
-        console.log(`✓ Temperature: ${bomData.temperature.value}°C`);
-      }
-
-      // Store rainfall
-      if (bomData.rainfall.length > 0) {
-        newCache.rainfall['sydney'] = bomData.rainfall;
-        const total = bomData.rainfall.reduce((sum, r) => sum + r.value, 0);
-        console.log(`✓ Rainfall (48h): ${total.toFixed(1)}mm`);
-      }
-
-      // Fetch marine data (wave height)
-      const marineData = await fetchMarineData();
-      if (marineData) {
-        newCache.swell['sydney'] = marineData;
-        console.log(`✓ Wave Height: ${marineData.value}m`);
-      }
-
-      console.log('✓ REAL BoM data successfully fetched');
-    } catch (error) {
-      console.error('Failed to fetch real BoM data:', error);
-      throw error;
-    }
-
-    this.cache = newCache;
-    await this.saveCache();
-  }
-
-  /**
-   * Get unique BoM stations from all zones
-   */
-  private getUniqueStations(): {
-    rainfall: Set<string>;
-    ocean: Set<string>;
-  } {
-    const rainfall = new Set<string>();
-    const ocean = new Set<string>();
-
-    for (const zone of ZONES.features) {
-      if (zone.properties.bomStations.rainfall) {
-        rainfall.add(zone.properties.bomStations.rainfall);
-      }
-      if (zone.properties.bomStations.waterTemp) {
-        ocean.add(zone.properties.bomStations.waterTemp);
-      }
-      if (zone.properties.bomStations.swell) {
-        ocean.add(zone.properties.bomStations.swell);
-      }
-    }
-
-    return { rainfall, ocean };
   }
 
   /**
@@ -165,25 +209,21 @@ export class DataService {
    */
   private async ensureCacheLoaded(): Promise<void> {
     if (this.cache) {
-      // Check if cache is still fresh
       const cacheAge = Date.now() - new Date(this.cache.lastFetch).getTime();
       if (cacheAge < CACHE_DURATION_MS) {
         return;
       }
     }
-
-    // Try to load from disk
+    
     try {
       const data = await fs.readFile(CACHE_FILE, 'utf-8');
       this.cache = JSON.parse(data);
-
+      
       const cacheAge = Date.now() - new Date(this.cache!.lastFetch).getTime();
       if (cacheAge >= CACHE_DURATION_MS) {
-        // Cache is stale, refresh
         await this.refreshData();
       }
     } catch (error) {
-      // Cache doesn't exist or is invalid, refresh
       await this.refreshData();
     }
   }
@@ -193,7 +233,7 @@ export class DataService {
    */
   private async saveCache(): Promise<void> {
     if (!this.cache) return;
-
+    
     try {
       await fs.mkdir(path.dirname(CACHE_FILE), { recursive: true });
       await fs.writeFile(CACHE_FILE, JSON.stringify(this.cache, null, 2));
@@ -207,50 +247,45 @@ export class DataService {
    */
   getDataFreshness(): 'current' | 'stale' | 'degraded' {
     if (!this.cache) return 'degraded';
-
+    
     const cacheAge = Date.now() - new Date(this.cache.lastFetch).getTime();
-
-    if (cacheAge < CACHE_DURATION_MS) {
-      return 'current';
-    } else if (cacheAge < 2 * CACHE_DURATION_MS) {
-      return 'stale';
-    } else {
-      return 'degraded';
-    }
+    
+    if (cacheAge < CACHE_DURATION_MS) return 'current';
+    if (cacheAge < 2 * CACHE_DURATION_MS) return 'stale';
+    return 'degraded';
   }
 
   /**
    * Get available and missing metrics
    */
-  getMetricsStatus(): {
-    available: string[];
-    missing: string[];
-  } {
+  getMetricsStatus(): { available: string[]; missing: string[] } {
     if (!this.cache) {
       return { available: [], missing: ['All metrics'] };
     }
-
+    
     const available: string[] = [];
     const missing: string[] = [];
-
-    if (Object.keys(this.cache.rainfall).length > 0) {
-      available.push('Rainfall');
+    
+    // Check if we have data for at least one beach
+    const hasAnyData = Object.values(this.cache.beaches).some(
+      beach => beach.temperature !== null || beach.rainfall48h !== null || beach.waveHeight !== null
+    );
+    
+    if (hasAnyData) {
+      available.push('Beach-specific ocean temperature');
+      available.push('Beach-specific rainfall');
+      available.push('Beach-specific wave height');
     } else {
-      missing.push('Rainfall');
+      missing.push('All beach data');
     }
-
-    if (Object.keys(this.cache.waterTemp).length > 0) {
-      available.push('Water Temperature');
-    } else {
-      missing.push('Water Temperature');
-    }
-
-    if (Object.keys(this.cache.swell).length > 0) {
-      available.push('Swell Height');
-    } else {
-      missing.push('Swell Height');
-    }
-
+    
     return { available, missing };
+  }
+
+  /**
+   * Get beach data for display
+   */
+  getBeachData(beachKey: string): BeachData | null {
+    return this.cache?.beaches[beachKey] || null;
   }
 }
