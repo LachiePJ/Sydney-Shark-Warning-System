@@ -8,20 +8,12 @@ import { RiskEngine } from '@/lib/risk-engine';
 import { ZONES, ZoneProperties } from '@/config/zones';
 import { DEFAULT_THRESHOLDS } from '@/config/risk-config';
 import { fetchAllBeachesMarineData } from '@/lib/bom/marine-temperature-adapter';
-import { getCachedData } from '@/lib/cache-loader';
-import { STATIC_CACHE_DATA } from '@/lib/static-cache';
+import { cacheSingleton } from '@/lib/cache-singleton';
 import { promises as fs } from 'fs';
 import path from 'path';
 
 const CACHE_FILE = path.join(process.cwd(), 'data', 'cache.json');
 const CACHE_DURATION_MS = 30 * 60 * 1000; // 30 minutes
-
-// Pre-load cached data - use static data as guaranteed fallback
-const INITIAL_CACHE = STATIC_CACHE_DATA;
-console.log('🔧 INITIAL_CACHE loaded at module init:', {
-  beaches: Object.keys(INITIAL_CACHE.beaches),
-  manlyRainfall: INITIAL_CACHE.beaches.manly.rainfall48h,
-});
 
 // Map zones to their nearest beach for data
 const ZONE_TO_BEACH_MAP: Record<string, string> = {
@@ -223,16 +215,24 @@ export class DataService {
    */
   private async ensureCacheLoaded(): Promise<void> {
     if (this.cache) {
-      return; // Already loaded
+      return; // Already loaded in this instance
     }
     
-    // Try to load from filesystem first (for local dev and after /api/refresh)
-    let loadedFromFile = false;
+    // First, check in-memory singleton (survives across requests on Vercel)
+    const singletonCache = cacheSingleton.getCache();
+    if (singletonCache) {
+      this.cache = singletonCache;
+      const cacheAge = Date.now() - new Date(this.cache.lastFetch).getTime();
+      const minutesOld = Math.round(cacheAge / 1000 / 60);
+      console.log(`✓ Loaded from memory singleton (${minutesOld}min old, ${Object.keys(this.cache.beaches).length} beaches)`);
+      return;
+    }
+    
+    // Try filesystem (works locally)
     try {
       const data = await fs.readFile(CACHE_FILE, 'utf-8');
       const parsed = JSON.parse(data);
       
-      // Check if the file cache has actual data
       const hasBeachData = parsed.beaches && Object.keys(parsed.beaches).length > 0;
       const firstBeach = hasBeachData ? Object.values(parsed.beaches)[0] as any : null;
       const hasRealData = firstBeach && (
@@ -243,31 +243,20 @@ export class DataService {
       
       if (hasRealData) {
         this.cache = parsed;
-        loadedFromFile = true;
-        console.log('✓ Loaded cache from filesystem with real data');
-      } else {
-        console.log('⚠️  Filesystem cache is empty, using bundled cache');
-        this.cache = INITIAL_CACHE as CacheData;
+        cacheSingleton.setCache(parsed);  // Also save to singleton
+        console.log('✓ Loaded from filesystem, saved to singleton');
+        return;
       }
     } catch (error) {
-      // Filesystem read failed (common on Vercel) - use bundled initial cache
-      console.log('ℹ️  Filesystem read failed, using bundled cache data');
-      this.cache = INITIAL_CACHE as CacheData;
+      console.log('ℹ️  No filesystem cache available');
     }
     
-    if (this.cache) {
-      const beachCount = this.cache.beaches ? Object.keys(this.cache.beaches).length : 0;
-      console.log(`📊 Cache loaded: ${beachCount} beaches, source: ${loadedFromFile ? 'file' : 'bundled'}`);
-      
-      const cacheAge = Date.now() - new Date(this.cache.lastFetch).getTime();
-      const minutesOld = Math.round(cacheAge / 1000 / 60);
-      
-      if (cacheAge >= CACHE_DURATION_MS) {
-        console.warn(`⚠️  Cache is ${minutesOld} minutes old (stale) - call /api/refresh to update`);
-      } else {
-        console.log(`✓ Using cached data (${minutesOld} minutes old)`);
-      }
-    }
+    // No cache available - return empty (user must call /api/refresh)
+    console.warn('⚠️  NO CACHE AVAILABLE - Call /api/refresh to fetch live data');
+    this.cache = {
+      beaches: {},
+      lastFetch: new Date(0).toISOString(),
+    };
   }
 
   /**
@@ -276,11 +265,16 @@ export class DataService {
   private async saveCache(): Promise<void> {
     if (!this.cache) return;
     
+    // Save to in-memory singleton (works on Vercel)
+    cacheSingleton.setCache(this.cache);
+    
+    // Also try to save to file (works locally, fails silently on Vercel)
     try {
       await fs.mkdir(path.dirname(CACHE_FILE), { recursive: true });
       await fs.writeFile(CACHE_FILE, JSON.stringify(this.cache, null, 2));
+      console.log('✓ Cache saved to file');
     } catch (error) {
-      console.error('Failed to save cache:', error);
+      console.log('ℹ️  Could not save to file (expected on Vercel)');
     }
   }
 
