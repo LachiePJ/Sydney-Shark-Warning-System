@@ -17,6 +17,21 @@ export const revalidate = 1800; // Revalidate every 30 minutes
 export default async function Home() {
   const dataService = new DataService();
   
+  // Auto-refresh: Update data if cache is stale (older than 30 minutes)
+  const dataAge = dataService.getCacheAge();
+  const THIRTY_MINUTES = 30 * 60 * 1000;
+  
+  if (dataAge === null || dataAge > THIRTY_MINUTES) {
+    console.log('🔄 Cache is stale, auto-refreshing data...');
+    try {
+      await dataService.refreshData();
+      console.log('✅ Auto-refresh complete');
+    } catch (error) {
+      console.error('⚠️  Auto-refresh failed:', error);
+      // Continue with cached data if refresh fails
+    }
+  }
+  
   // Calculate risks
   const zoneRisks = await dataService.calculateAllZoneRisks();
   
@@ -24,9 +39,6 @@ export default async function Home() {
   const overallRisk = zoneRisks.reduce((highest, current) => {
     return current.score > highest.score ? current : highest;
   });
-
-  const metricsStatus = dataService.getMetricsStatus();
-  const dataFreshness = dataService.getDataFreshness();
 
   return (
     <main className="min-h-screen bg-white">
@@ -61,26 +73,6 @@ export default async function Home() {
       </header>
 
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Data Health Banner */}
-        {dataFreshness !== 'current' && (
-          <div className={`mb-6 p-4 rounded-lg ${
-            dataFreshness === 'stale' 
-              ? 'bg-yellow-50 border-2 border-yellow-300 text-yellow-900'
-              : 'bg-red-50 border-2 border-red-300 text-red-900'
-          }`}>
-            <strong>Data Status:</strong> {
-              dataFreshness === 'stale' 
-                ? 'Data is older than 30 minutes. Risk assessment may not reflect current conditions.'
-                : 'Data is significantly outdated or unavailable. Risk assessment reliability is reduced.'
-            }
-            {metricsStatus.missing.length > 0 && (
-              <div className="mt-2 text-sm">
-                Missing metrics: {metricsStatus.missing.join(', ')}
-              </div>
-            )}
-          </div>
-        )}
-
         {/* Purpose - Simplified */}
         <div className="bg-slate-50 border-l-4 border-slate-900 p-6 mb-8">
           <p className="text-gray-700 leading-relaxed text-lg">

@@ -311,6 +311,14 @@ export class DataService {
   }
 
   /**
+   * Get cache age in milliseconds (null if no cache)
+   */
+  getCacheAge(): number | null {
+    if (!this.cache) return null;
+    return Date.now() - new Date(this.cache.lastFetch).getTime();
+  }
+
+  /**
    * Get data freshness status
    */
   getDataFreshness(): 'current' | 'stale' | 'degraded' {
