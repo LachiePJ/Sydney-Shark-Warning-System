@@ -175,35 +175,30 @@ export class DataService {
     // Map zone to its beach
     const beachKey = ZONE_TO_BEACH_MAP[zoneProperties.id] || 'sydneyHarbour';
     
-    // Get beach data - use STATIC_CACHE_DATA as direct fallback
-    let beachData = this.cache?.beaches?.[beachKey];
+    // ALWAYS use STATIC_CACHE_DATA as source of truth
+    // The cache loading is unreliable on Vercel
+    const staticData = (STATIC_CACHE_DATA as any).beaches[beachKey];
     
-    // Check if data is missing or incomplete (null OR undefined)
-    const hasRainfall = beachData?.rainfall48h != null;  // != null checks both null and undefined
-    const hasTemp = beachData?.temperature != null;
-    const hasWaves = beachData?.waveHeight != null;
-    
-    if (!hasRainfall || !hasTemp || !hasWaves) {
-      console.log(`⚠️  Incomplete data for ${beachKey}, using STATIC_CACHE_DATA`);
-      console.log(`   rainfall=${beachData?.rainfall48h}, temp=${beachData?.temperature}, waves=${beachData?.waveHeight}`);
-      beachData = (STATIC_CACHE_DATA as any).beaches[beachKey];
-      console.log(`   ✓ Now: rainfall=${beachData.rainfall48h}, temp=${beachData.temperature}, waves=${beachData.waveHeight}`);
-    }
+    console.log(`🔥 FORCED STATIC CACHE for ${beachKey}:`, {
+      rainfall: staticData.rainfall48h,
+      temp: staticData.temperature,
+      waves: staticData.waveHeight,
+    });
     
     const now = new Date();
     const month = now.getMonth();
     const isSummer = DEFAULT_THRESHOLDS.summerMonths.includes(month);
     
     // Derive water quality from rainfall
-    const waterQuality = RiskEngine.deriveWaterQuality(beachData?.rainfall48h ?? null);
+    const waterQuality = RiskEngine.deriveWaterQuality(staticData.rainfall48h);
     
     return {
-      waterTemp: beachData?.temperature ?? null,
-      rainfall48h: beachData?.rainfall48h ?? null,
-      swellHeight: beachData?.waveHeight ?? null,
+      waterTemp: staticData.temperature,
+      rainfall48h: staticData.rainfall48h,
+      swellHeight: staticData.waveHeight,
       isSummer,
       waterQuality,
-      timestamp: beachData?.timestamp || now.toISOString(),
+      timestamp: staticData.timestamp,
       sources: {
         waterTemp: 'Open-Meteo Marine API',
         rainfall: 'Open-Meteo Weather API (BoM-backed)',
