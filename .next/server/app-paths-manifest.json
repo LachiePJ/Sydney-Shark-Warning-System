@@ -1,9 +1,9 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/api/risk/route": "app/api/risk/route.js",
-  "/api/debug-cache/route": "app/api/debug-cache/route.js",
-  "/api/zones/route": "app/api/zones/route.js",
   "/api/refresh/route": "app/api/refresh/route.js",
-  "/page": "app/page.js",
-  "/api/status/route": "app/api/status/route.js"
+  "/api/risk/route": "app/api/risk/route.js",
+  "/api/status/route": "app/api/status/route.js",
+  "/api/zones/route": "app/api/zones/route.js",
+  "/api/debug-cache/route": "app/api/debug-cache/route.js",
+  "/page": "app/page.js"
 }

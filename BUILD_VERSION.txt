@@ -1,0 +1,7 @@
+Build: v1.0.1
+Date: 2026-01-28T23:30:00Z
+Changes:
+- Citations with source and timestamp
+- Navy blue footer logo
+- Upstash Redis integration
+- Force rebuild

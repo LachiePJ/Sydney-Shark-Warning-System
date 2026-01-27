@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST='{"components/RiskMap.tsx -> react-leaflet":{"id":3382,"files":["static/chunks/77cbbdfc.8a51e5b80e7a8fee.js","static/chunks/382.04fef93d0048a7a5.js"]}}';
+self.__REACT_LOADABLE_MANIFEST='{"components/RiskMap.tsx -> react-leaflet":{"id":9305,"files":["static/chunks/d0deef33.bd75b11a952a2d3d.js","static/chunks/305.238d292205f5e859.js"]}}';

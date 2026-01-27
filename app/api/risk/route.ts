@@ -1,6 +1,7 @@
 /**
  * API Route: /api/risk
  * Returns risk assessment for all zones or a specific zone
+ * Build: v1.0.1 - Citations + Navy Logo + Redis (2026-01-28)
  */
 
 import { NextResponse } from 'next/server';

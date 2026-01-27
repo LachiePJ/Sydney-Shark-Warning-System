@@ -1,3 +1,8 @@
+/**
+ * Sydney Shark Warning System - Main Page
+ * Build: v1.0.1 - Citations + Navy Logo + Redis (2026-01-28)
+ */
+
 import SimpleRiskGauge from '@/components/SimpleRiskGauge';
 import RiskMap from '@/components/RiskMap';
 import RiskFactorsDetail from '@/components/RiskFactorsDetail';
