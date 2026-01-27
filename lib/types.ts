@@ -43,6 +43,9 @@ export interface RiskResult {
   explanation: RiskExplanation;
   confidence: 'high' | 'medium' | 'low';
   timestamp: string;
+  debug?: {  // Temporary debug info
+    rawInput?: RiskInput;
+  };
 }
 
 export interface ZoneRiskResult extends RiskResult {

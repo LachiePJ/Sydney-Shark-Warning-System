@@ -49,6 +49,9 @@ export class RiskEngine {
       explanation,
       confidence,
       timestamp: input.timestamp,
+      debug: {
+        rawInput: input,  // Include raw input for debugging
+      },
     };
   }
 
