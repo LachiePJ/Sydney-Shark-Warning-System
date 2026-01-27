@@ -209,10 +209,7 @@ export class DataService {
    */
   private async ensureCacheLoaded(): Promise<void> {
     if (this.cache) {
-      const cacheAge = Date.now() - new Date(this.cache.lastFetch).getTime();
-      if (cacheAge < CACHE_DURATION_MS) {
-        return;
-      }
+      return; // Already loaded
     }
     
     try {
@@ -220,11 +217,19 @@ export class DataService {
       this.cache = JSON.parse(data);
       
       const cacheAge = Date.now() - new Date(this.cache!.lastFetch).getTime();
+      const minutesOld = Math.round(cacheAge / 1000 / 60);
+      
       if (cacheAge >= CACHE_DURATION_MS) {
-        await this.refreshData();
+        console.warn(`⚠️  Cache is ${minutesOld} minutes old (stale) - call /api/refresh to update`);
+      } else {
+        console.log(`✓ Using cached data (${minutesOld} minutes old)`);
       }
     } catch (error) {
-      await this.refreshData();
+      console.error('❌ Failed to load cache, using empty data:', error);
+      this.cache = {
+        beaches: {},
+        lastFetch: new Date(0).toISOString()
+      };
     }
   }
 
