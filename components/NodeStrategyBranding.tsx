@@ -11,7 +11,9 @@ export default function NodeStrategyBranding() {
         rel="noopener noreferrer"
         className="flex items-center gap-3 bg-white rounded-lg shadow-xl px-5 py-4 hover:shadow-2xl transition-all hover:scale-105 group border border-gray-200"
       >
-        <BrandingNodeLogo />
+        <div style={{ filter: 'brightness(0) saturate(100%) invert(10%) sepia(100%) saturate(4000%) hue-rotate(210deg)' }}>
+          <BrandingNodeLogo />
+        </div>
         <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors font-medium">
           Built by Node Strategy
         </span>
