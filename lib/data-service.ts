@@ -135,25 +135,19 @@ export class DataService {
         sydneyHarbour: { lat: -33.8688, lon: 151.2093 },
       };
       
-      // Fetch rainfall for each beach in parallel using simplified adapter
-      console.log('📊 Fetching rainfall data...');
-      const rainfallPromises = Object.entries(beachCoords).map(async ([beachKey, coords]) => {
-        const rainfall = await fetchSimpleRainfall(coords.lat, coords.lon);
-        return { beachKey, rainfall };
-      });
-      
-      const rainfallResults = await Promise.all(rainfallPromises);
-      console.log(`📊 Rainfall fetch complete: ${rainfallResults.filter(r => r.rainfall !== null).length}/${rainfallResults.length} successful`);
+      // Fetch rainfall ONCE for Sydney (applies to all beaches in the basin)
+      console.log('📊 Fetching rainfall data for Sydney Observatory Hill...');
+      const sydneyRainfall = await fetchSimpleRainfall(-33.8599, 151.2050); // Sydney Observatory Hill
+      console.log(`📊 Sydney rainfall (48h): ${sydneyRainfall !== null ? sydneyRainfall.toFixed(1) + 'mm' : 'unavailable'}`);
       
       // Combine marine and rainfall data
       Object.keys(beachCoords).forEach((beachKey) => {
         const marine = marineData[beachKey];
-        const rainfallData = rainfallResults.find(r => r.beachKey === beachKey);
         
         beaches[beachKey] = {
           temperature: marine?.temperature?.value || null,
           waveHeight: marine?.waveHeight?.value || null,
-          rainfall48h: rainfallData?.rainfall || null,
+          rainfall48h: sydneyRainfall, // Same rainfall for all Sydney beaches
           timestamp: new Date().toISOString(),
         };
         
