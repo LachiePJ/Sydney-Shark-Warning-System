@@ -93,7 +93,7 @@ export default function CircleRiskMap({ zoneRisks }: CircleRiskMapProps) {
       circle.bindPopup(popupContent);
 
       // Add hover effect
-      circle.on('mouseover', function() {
+      circle.on('mouseover', function(this: L.Circle) {
         this.setStyle({
           fillOpacity: 0.45,
           weight: 3,
@@ -101,7 +101,7 @@ export default function CircleRiskMap({ zoneRisks }: CircleRiskMapProps) {
         });
       });
 
-      circle.on('mouseout', function() {
+      circle.on('mouseout', function(this: L.Circle) {
         this.setStyle({
           fillOpacity: 0.25,
           weight: 2,
