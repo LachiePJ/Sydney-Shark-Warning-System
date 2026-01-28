@@ -3,14 +3,24 @@
  * Build: v1.0.1 - Citations + Navy Logo + Redis (2026-01-28)
  */
 
+import dynamic from 'next/dynamic';
 import SimpleRiskGauge from '@/components/SimpleRiskGauge';
-import CircleRiskMap from '@/components/CircleRiskMap';
 import RiskFactorsDetail from '@/components/RiskFactorsDetail';
 import ExplainabilitySection from '@/components/ExplainabilitySection';
 import Disclaimer from '@/components/Disclaimer';
 import NodeStrategyBranding from '@/components/NodeStrategyBranding';
 import { HeaderSharkIcon, HeaderNodeLogo } from '@/components/HeaderIcons';
 import { DataService } from '@/lib/data-service';
+
+// Dynamic import for map (client-side only)
+const CircleRiskMap = dynamic(() => import('@/components/CircleRiskMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[600px] bg-gray-100 rounded-lg flex items-center justify-center">
+      <div className="text-gray-500">Loading map...</div>
+    </div>
+  ),
+});
 
 export const revalidate = 1800; // Revalidate every 30 minutes
 
