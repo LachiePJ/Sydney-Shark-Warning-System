@@ -84,25 +84,25 @@ export default async function Home() {
 
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Purpose - Simplified */}
-        <div className="bg-slate-50 border-l-4 border-slate-900 p-6 mb-8">
-          <p className="text-gray-700 leading-relaxed text-lg">
+        <div className="bg-slate-50 border-l-4 border-slate-900 p-4 md:p-6 mb-6 md:mb-8">
+          <p className="text-gray-700 leading-relaxed text-sm md:text-base lg:text-lg">
             This system analyses environmental conditions that correlate with increased shark activity, using official Bureau of Meteorology data. 
             <strong className="text-slate-900"> This is an environmental risk heuristic</strong>, not a shark detection system.
           </p>
         </div>
 
         {/* Risk Gauge */}
-        <div className="bg-white rounded-lg shadow-xl p-8 mb-8 border border-gray-200">
+        <div className="bg-white rounded-lg shadow-xl p-4 md:p-6 lg:p-8 mb-6 md:mb-8 border border-gray-200">
           <SimpleRiskGauge risk={overallRisk} />
         </div>
 
         {/* Risk Map */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-6 text-slate-900">Interactive Risk Map</h2>
-          <div className="bg-white rounded-lg shadow-xl p-4 border border-gray-200">
+        <div className="mb-6 md:mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-slate-900 px-2">Interactive Risk Map</h2>
+          <div className="bg-white rounded-lg shadow-xl p-2 md:p-4 border border-gray-200">
             <CircleRiskMap zoneRisks={zoneRisks} />
           </div>
-          <p className="text-sm text-gray-500 mt-3 text-center">
+          <p className="text-xs md:text-sm text-gray-500 mt-2 md:mt-3 text-center px-4">
             Click or hover over beach areas to see risk levels and guidance. Each circle represents a beach or harbour swimming area.
           </p>
         </div>
