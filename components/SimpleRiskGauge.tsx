@@ -22,34 +22,34 @@ export default function SimpleRiskGauge({ risk }: SimpleRiskGaugeProps) {
         
         {/* Labels below bar */}
         <div className="flex justify-between mt-2 px-2">
-          <span className="text-xs font-semibold text-gray-600">LOW</span>
-          <span className="text-xs font-semibold text-gray-600">MODERATE</span>
-          <span className="text-xs font-semibold text-gray-600">HIGH</span>
-          <span className="text-xs font-semibold text-gray-600">SEVERE</span>
-          <span className="text-xs font-semibold text-gray-600">CATASTROPHIC</span>
+          <span className="text-[10px] sm:text-xs font-semibold text-gray-600">LOW</span>
+          <span className="text-[10px] sm:text-xs font-semibold text-gray-600 hidden xs:inline">MODERATE</span>
+          <span className="text-[10px] sm:text-xs font-semibold text-gray-600">HIGH</span>
+          <span className="text-[10px] sm:text-xs font-semibold text-gray-600 hidden xs:inline">SEVERE</span>
+          <span className="text-[10px] sm:text-xs font-semibold text-gray-600 hidden sm:inline">CATASTROPHIC</span>
         </div>
       </div>
 
       {/* Current level display */}
       <div 
-        className="w-full px-12 py-8 rounded-xl text-center shadow-xl"
+        className="w-full px-6 py-6 md:px-12 md:py-8 rounded-xl text-center shadow-xl"
         style={{ backgroundColor: risk.color }}
       >
         <div className="text-white">
-          <div className="text-5xl font-bold mb-3">
+          <div className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 break-words">
             {risk.level.toUpperCase()}
           </div>
-          <div className="text-2xl opacity-90">
+          <div className="text-lg sm:text-xl md:text-2xl opacity-90">
             Risk Score: {risk.score}/100
           </div>
         </div>
       </div>
 
-      <p className="text-lg text-gray-700 text-center mt-6 mb-4 leading-relaxed">
+      <p className="text-base md:text-lg text-gray-700 text-center mt-6 mb-4 leading-relaxed px-2">
         {risk.guidance}
       </p>
 
-      <div className="flex items-center justify-center gap-3 text-sm">
+      <div className="flex items-center justify-center gap-3 text-xs md:text-sm">
         <span className={`inline-block w-3 h-3 rounded-full ${
           risk.confidence === 'high' ? 'bg-green-500' :
           risk.confidence === 'medium' ? 'bg-yellow-500' :
@@ -58,7 +58,7 @@ export default function SimpleRiskGauge({ risk }: SimpleRiskGaugeProps) {
         <span className="text-gray-600">Confidence: <strong>{risk.confidence}</strong></span>
       </div>
 
-      <div className="mt-4 text-sm text-gray-400">
+      <div className="mt-4 text-xs md:text-sm text-gray-400">
         Last updated: {new Date(risk.timestamp).toLocaleString('en-GB')}
       </div>
     </div>
