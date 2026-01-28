@@ -1,62 +1,174 @@
 # Sydney Shark Warning System - Current Status
+**Last Updated: 2026-01-28 23:52 UTC**
 
 ## ✅ What's Working
 
-1. **Site is live:** https://sydney-shark-warning-system.vercel.app
-2. **Temperature data:** 22.7°C (real-time from Open-Meteo Marine API)
-3. **Wave/swell data:** 1.0m (real-time from Open-Meteo Marine API)
-4. **Risk assessment:** Calculating correctly (Moderate, score: 35)
-5. **Interactive map:** All 7 zones with granular shading
-6. **Logos:** Both displaying correctly
-   - Header: White shark icon + white Node Strategy logo ✅
-   - Footer: Navy blue Node Strategy logo ✅
-7. **Source citations:** Code is ready and will display once data persists
-8. **Responsive design:** Mobile-friendly
-9. **UK English:** All text
+### 1. Navy Blue Logo
+- ✅ Footer logo is now navy blue (#1e3a8a)
+- ✅ Visible against white background
+- ✅ Links to www.nodestrategy.com
 
-## ⚠️ Known Issue
+### 2. Data Citations
+- ✅ Source field showing: "Open-Meteo Marine API"
+- ✅ Timestamp field showing: "2026-01-27T23:44:09.299Z"
+- ✅ Data age showing: "2min ago"
+- ✅ Displaying in Risk Factors Analysis section
 
-**Rainfall Data Missing on Vercel**
+### 3. Water Temperature
+- ✅ Fetching correctly: 22.7°C
+- ✅ Beach-specific data
+- ✅ Source: Open-Meteo Marine API
 
-- **Symptom:** "Missing data: Rainfall Data, Water Quality (proxy)"
-- **Cause:** Vercel serverless functions don't persist state between requests
-- **Impact:** Water quality can't be calculated without rainfall
-- **Status:** `/api/refresh` DOES fetch the data (1.9-3.1mm), but it's lost between function invocations
+### 4. Wave Height
+- ✅ Fetching correctly: 1.02m
+- ✅ Beach-specific data
+- ✅ Source: Open-Meteo Marine API
 
-## 🔧 Solution Required
+### 5. Auto-Refresh
+- ✅ Data auto-refreshes when >30min old
+- ✅ No manual API calls needed
+- ✅ Happens on page load
 
-**Need to implement persistent storage:**
+### 6. UI Improvements
+- ✅ Removed "Data Status" banner
+- ✅ Clean, professional layout
+- ✅ UK English throughout
 
-**Option 1 - Vercel KV (Recommended):**
-- Free tier available
-- 10-minute setup
-- I can implement immediately once you create the KV database
+---
 
-**Steps:**
-1. Go to https://vercel.com/dashboard
-2. Click "Storage" → "Create Database" → "KV"
-3. Name it "shark-cache"
-4. Link to "sydney-shark-warning-system" project
-5. Tell me when done, I'll update the code
+## ❌ What's NOT Working
 
-## 📊 Data Sources (All Real)
+### Rainfall Data
+**Status**: Still returning `null`
 
-- **Water Temperature:** Open-Meteo Marine API (ocean surface temp)
-- **Wave Height:** Open-Meteo Marine API
-- **Rainfall:** Open-Meteo Weather API (BoM-backed) - fetched but not persisting
-- **Season:** System calculated
-- **Water Quality:** Derived from rainfall (proxy)
+**Impact**:
+- Shows "Missing data: Rainfall Data, Water Quality (proxy)"
+- Water quality cannot be calculated (depends on rainfall)
+- Risk assessment is less accurate
 
-## 🎯 Next Steps
+**Root Cause**:
+- Open-Meteo Weather API is timing out or being blocked
+- Marine API works fine, but Weather API fails
+- May be rate limiting or network issue from Vercel
 
-1. **Create Vercel KV database** (you)
-2. **Update code to use KV** (me - 15 minutes)
-3. **Test and verify** (both)
-4. **System will be 100% functional with live data**
+**Current Fix Attempt**:
+- Simplified rainfall adapter with better error handling
+- Shorter timeout (5 seconds)
+- Better logging to diagnose in Vercel
+- Using daily precipitation instead of hourly
 
-## 📝 Notes
+---
 
-- Temperature showing means the API integration IS working
-- The issue is purely about data persistence, not data fetching
-- Once KV is set up, rainfall will appear immediately
-- Citations are already coded and will show automatically
+## 🔧 Technical Details
+
+### APIs Used
+1. **Open-Meteo Marine API** ✅
+   - Endpoint: `https://marine-api.open-meteo.com/v1/marine`
+   - Data: Ocean temperature, wave height
+   - Status: **WORKING**
+
+2. **Open-Meteo Weather API** ❌
+   - Endpoint: `https://api.open-meteo.com/v1/forecast`
+   - Data: Rainfall (48h)
+   - Status: **FAILING** (timeout/blocked)
+
+### Data Flow
+```
+Page Load
+  ↓
+Check cache age
+  ↓
+If >30min old → refreshData()
+  ↓
+Fetch Marine Data (✅ works)
+  ↓
+Fetch Rainfall Data (❌ fails)
+  ↓
+Save to Redis
+  ↓
+Calculate Risk
+  ↓
+Display to User
+```
+
+### Caching
+- **Primary**: Upstash Redis (persistent across requests)
+- **Backup**: In-memory singleton
+- **Local**: Filesystem (development only)
+- **Duration**: 30 minutes
+
+---
+
+## 🎯 Next Steps to Fix Rainfall
+
+### Option 1: Wait and Monitor
+- Latest deployment has better logging
+- Check Vercel function logs to see exact error
+- May be temporary API issue
+
+### Option 2: Alternative API
+- Try different Open-Meteo parameters
+- Use archive API instead of forecast
+- Switch to different weather provider
+
+### Option 3: BoM Direct Integration
+- Use official BoM FTP data
+- More reliable but complex parsing
+- Requires FTP client in serverless
+
+### Option 4: Fallback Values
+- Use historical Sydney rainfall averages
+- Better than showing "missing"
+- Less accurate but functional
+
+---
+
+## 📊 Current Deployment
+
+**Commit**: `b7d11b48`
+**Version**: 1.0.1
+**URL**: https://sydney-shark-warning-system.vercel.app
+
+**Latest Changes**:
+- Simplified rainfall adapter
+- Better error logging
+- 5-second timeout
+- User-Agent header added
+
+---
+
+## 🐛 How to Check Vercel Logs
+
+1. Go to: https://vercel.com/dashboard
+2. Click on "Sydney Shark Warning System"
+3. Click "Functions" tab
+4. Click on `/api/refresh`
+5. Look for logs containing `[Rainfall]`
+
+**What to look for**:
+- `[Rainfall] Fetching for -33.7969,151.2840`
+- `[Rainfall] API returned 403` (rate limit)
+- `[Rainfall] Timeout` (too slow)
+- `[Rainfall] ✓ Success: X.Xmm` (working!)
+
+---
+
+## ✅ Verified Working Features
+
+- [x] Navy blue footer logo
+- [x] Data citations with source
+- [x] Data citations with timestamp
+- [x] Data citations with age
+- [x] Water temperature (beach-specific)
+- [x] Wave height (beach-specific)
+- [x] Auto-refresh on page load
+- [x] Redis persistence
+- [x] Removed data status banner
+- [x] Clean UI
+- [x] UK English
+
+## ❌ Still To Fix
+
+- [ ] Rainfall data fetching
+- [ ] Water quality calculation (depends on rainfall)
+

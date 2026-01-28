@@ -4,7 +4,7 @@
  */
 
 import SimpleRiskGauge from '@/components/SimpleRiskGauge';
-import RiskMap from '@/components/RiskMap';
+import CircleRiskMap from '@/components/CircleRiskMap';
 import RiskFactorsDetail from '@/components/RiskFactorsDetail';
 import ExplainabilitySection from '@/components/ExplainabilitySection';
 import Disclaimer from '@/components/Disclaimer';
@@ -90,10 +90,10 @@ export default async function Home() {
         <div className="mb-8">
           <h2 className="text-3xl font-bold mb-6 text-slate-900">Interactive Risk Map</h2>
           <div className="bg-white rounded-lg shadow-xl p-4 border border-gray-200">
-            <RiskMap zoneRisks={zoneRisks} />
+            <CircleRiskMap zoneRisks={zoneRisks} />
           </div>
           <p className="text-sm text-gray-500 mt-3 text-center">
-            Click or hover over zones for detailed risk information and contributing factors
+            Click or hover over beach areas to see risk levels and guidance. Each circle represents a beach or harbour swimming area.
           </p>
         </div>
 
