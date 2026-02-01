@@ -6,9 +6,9 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Sydney Shark Warning System",
-  description: "Data-driven shark risk assessment for Sydney beaches and harbour, powered by Bureau of Meteorology data.",
-  keywords: "shark, warning, Sydney, beaches, safety, BoM, Bureau of Meteorology",
+  title: "Real-Time Shark Risk",
+  description: "Real-time environmental risk assessment for Sydney beaches using Bureau of Meteorology data and peer-reviewed research.",
+  keywords: "shark, risk, Sydney, beaches, safety, BoM, Bureau of Meteorology, real-time",
 };
 
 export default function RootLayout({

@@ -61,10 +61,10 @@ export default async function Home() {
               <HeaderSharkIcon />
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold">
-                  Sydney Shark Warning System
+                  Real-Time Shark Risk
                 </h1>
                 <p className="text-sm text-slate-300 mt-1">
-                  Environmental risk assessment for Sydney beaches
+                  Real-time environmental risk assessment for Sydney beaches
                 </p>
               </div>
             </div>
@@ -83,11 +83,10 @@ export default async function Home() {
       </header>
 
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Purpose - Simplified */}
+        {/* Purpose */}
         <div className="bg-slate-50 border-l-4 border-slate-900 p-4 md:p-6 mb-6 md:mb-8">
           <p className="text-gray-700 leading-relaxed text-sm md:text-base lg:text-lg">
-            This system analyses environmental conditions that correlate with increased shark activity, using official Bureau of Meteorology data. 
-            <strong className="text-slate-900"> This is an environmental risk heuristic</strong>, not a shark detection system.
+            This tool draws on peer-reviewed scientific data on the leading indicators of increased shark-attack risk, using publicly available real-time data from the Bureau of Meteorology and marine APIs to create a scored risk assessment that helps inform people of the risk of swimming.
           </p>
         </div>
 
@@ -119,7 +118,7 @@ export default async function Home() {
         {/* Footer */}
         <footer className="mt-12 pt-8 border-t border-gray-200 text-center text-sm text-gray-600">
           <p className="mb-2">
-            Sydney Shark Warning System &copy; 2026. Built with data from the{' '}
+            Real-Time Shark Risk &copy; 2026. Built with data from the{' '}
             <a
               href="http://www.bom.gov.au/"
               target="_blank"
