@@ -20,19 +20,21 @@ export interface RiskWeights {
 }
 
 export const DEFAULT_THRESHOLDS: RiskThresholds = {
-  waterTemp: 20,          // > 20°C
-  rainfall48h: 60,        // > 60mm total in 48h
+  waterTemp: 18,          // > 18°C (Bull Sharks active at lower temps)
+  rainfall48h: 30,        // > 30mm (Bull Sharks respond to moderate rainfall)
   swellMin: 1.8,          // 1.8m - 2.8m range
   swellMax: 2.8,
-  summerMonths: [10, 11, 0, 1], // Nov, Dec, Jan, Feb (0-indexed)
+  summerMonths: [10, 11, 0, 1, 2, 3], // Nov, Dec, Jan, Feb, Mar, Apr (0-indexed) - Extended for Bull Sharks
 };
 
+// Bull Shark-optimized weights (based on Peddemors et al. 2023)
+// Bull Sharks are primary species responsible for Sydney incidents
 export const DEFAULT_WEIGHTS: RiskWeights = {
-  waterTemp: 20,
-  rainfall: 25,
-  swell: 20,
-  season: 15,
-  waterQuality: 20,
+  waterTemp: 15,      // Reduced - less critical for Bull Sharks
+  rainfall: 35,       // INCREASED - primary driver for Bull Shark movement into coastal areas
+  swell: 10,          // Reduced - less relevant for estuarine Bull Sharks
+  season: 5,          // Reduced - Bull Sharks present year-round
+  waterQuality: 25,   // Increased - turbidity attracts Bull Sharks (hunt via electroreception)
 };
 
 export type RiskLevel = 'Low' | 'Moderate' | 'High' | 'Severe' | 'Catastrophic';

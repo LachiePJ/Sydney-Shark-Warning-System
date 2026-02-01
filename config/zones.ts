@@ -7,6 +7,8 @@ export interface ZoneProperties {
   id: string;
   name: string;
   description: string;
+  bullSharkRisk?: 'high' | 'moderate' | 'low'; // Bull Shark habitat preference
+  locationType?: 'beach' | 'harbour' | 'bay';
   bomStations: {
     rainfall?: string;  // BoM station ID
     waterTemp?: string; // BoM station ID or buoy
@@ -41,6 +43,8 @@ export const ZONES: ZonesCollection = {
         id: 'sydney-harbour-inner',
         name: 'Sydney Harbour (Inner)',
         description: 'Inner harbour including Circular Quay to Middle Head',
+        bullSharkRisk: 'high', // Estuarine environment - Bull Shark hotspot
+        locationType: 'harbour',
         bomStations: {
           rainfall: '066062', // Sydney Observatory Hill
           waterTemp: 'IDO71000/IDO71000_55.json', // Fort Denison
@@ -69,6 +73,8 @@ export const ZONES: ZonesCollection = {
         id: 'sydney-harbour-outer',
         name: 'Sydney Harbour (Outer)',
         description: 'Outer harbour from Middle Head to North/South Heads',
+        bullSharkRisk: 'high', // Harbour entrance - Bull Shark hotspot
+        locationType: 'harbour',
         bomStations: {
           rainfall: '066062',
           waterTemp: 'IDO71000/IDO71000_55.json',
@@ -94,6 +100,8 @@ export const ZONES: ZonesCollection = {
         id: 'manly',
         name: 'Manly',
         description: 'Manly Beach and surrounding areas',
+        bullSharkRisk: 'moderate', // Near harbour entrance
+        locationType: 'beach',
         bomStations: {
           rainfall: '066062',
           waterTemp: 'IDO71000/IDO71000_60.json', // Sydney offshore
@@ -117,6 +125,8 @@ export const ZONES: ZonesCollection = {
         id: 'bondi-bronte',
         name: 'Bondi - Brontë',
         description: 'Bondi, Tamarama, and Brontë beaches',
+        bullSharkRisk: 'low', // Open ocean beaches
+        locationType: 'beach',
         bomStations: {
           rainfall: '066062',
           waterTemp: 'IDO71000/IDO71000_60.json',
@@ -140,6 +150,8 @@ export const ZONES: ZonesCollection = {
         id: 'coogee-maroubra',
         name: 'Coogee - Maroubra',
         description: 'Coogee, Clovelly, and Maroubra beaches',
+        bullSharkRisk: 'low', // Open ocean beaches
+        locationType: 'beach',
         bomStations: {
           rainfall: '066062',
           waterTemp: 'IDO71000/IDO71000_60.json',
@@ -163,6 +175,8 @@ export const ZONES: ZonesCollection = {
         id: 'cronulla',
         name: 'Cronulla',
         description: 'Cronulla Beach and surrounding areas',
+        bullSharkRisk: 'moderate', // Near Port Hacking entrance
+        locationType: 'beach',
         bomStations: {
           rainfall: '066062',
           waterTemp: 'IDO71000/IDO71000_60.json',
@@ -186,6 +200,8 @@ export const ZONES: ZonesCollection = {
         id: 'palm-beach',
         name: 'Palm Beach',
         description: 'Palm Beach and northern beaches',
+        bullSharkRisk: 'low', // Open ocean beaches
+        locationType: 'beach',
         bomStations: {
           rainfall: '066062',
           waterTemp: 'IDO71000/IDO71000_60.json',

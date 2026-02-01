@@ -191,6 +191,8 @@ export class DataService {
       swellHeight: beachData?.waveHeight ?? null,
       isSummer,
       waterQuality,
+      locationType: zoneProperties.locationType, // Bull Shark location factor
+      bullSharkRisk: zoneProperties.bullSharkRisk, // Bull Shark habitat preference
       timestamp: beachData?.timestamp || now.toISOString(),
       sources: {
         waterTemp: 'Open-Meteo Marine API',

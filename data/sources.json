@@ -1,6 +1,23 @@
 {
   "researchPapers": [
     {
+      "id": "paper0",
+      "title": "Bull Shark (Carcharhinus leucas) Occurrence along Beaches of South-Eastern Australia: Understanding Where, When, and Why",
+      "authors": ["Peddemors, V.M.", "et al."],
+      "year": 2023,
+      "journal": "Marine Ecology Progress Series",
+      "doi": "10.3354/meps14268",
+      "url": "https://www.researchgate.net/publication/373550897",
+      "keyFindings": [
+        "Bull Sharks are the primary species responsible for most shark incidents in Sydney region",
+        "Rainfall events are a critical driver - Bull Sharks actively move into estuarine and coastal areas after significant rainfall (>30-40mm)",
+        "Water temperature above 18-20°C correlates with increased Bull Shark presence in nearshore zones",
+        "Bull Sharks are attracted to areas with reduced salinity (river mouths, harbours) especially post-rainfall",
+        "Summer-autumn period (Nov-Apr) shows peak activity, but incidents occur year-round in SE Australia",
+        "Turbid/murky water conditions from runoff may actually attract Bull Sharks as they hunt effectively using electroreception"
+      ]
+    },
+    {
       "id": "paper1",
       "title": "Environmental determinants of shark attacks: a review of published data",
       "authors": ["Chapman, B.", "McPherson, G."],
@@ -120,39 +137,39 @@
   ],
   "disclaimer": "This system provides an environmental risk assessment based on known correlations between weather/ocean conditions and shark activity patterns from peer-reviewed research. It is NOT a shark detection or sighting system. The risk levels are heuristic estimates and should be used in conjunction with official beach safety information, lifeguard warnings, and personal judgement. Always swim at patrolled beaches, follow local signage, and never swim alone. The Bureau of Meteorology data used is provided 'as-is' and may be subject to delays or outages.",
   "methodology": {
-    "overview": "This system implements a rule-based risk scoring model that evaluates five key environmental conditions associated with increased shark activity in the scientific literature. Each condition is weighted based on its relative importance in published research.",
+    "overview": "This system implements a Bull Shark-optimized risk scoring model based on peer-reviewed research. Bull Sharks (Carcharhinus leucas) are responsible for most shark incidents in the Sydney region. The model evaluates five key environmental conditions, weighted according to Bull Shark behavioral patterns and habitat preferences documented in recent scientific literature.",
     "conditions": [
       {
         "name": "High Water Temperature",
-        "threshold": "> 20°C",
-        "weight": "20%",
-        "rationale": "Multiple studies show shark nearshore activity increases with water temperature, particularly above 20°C in Sydney region"
+        "threshold": "> 18°C",
+        "weight": "15%",
+        "rationale": "Bull Sharks (primary species in Sydney incidents) are active at water temperatures above 18°C, with increased nearshore presence in warmer conditions"
       },
       {
         "name": "Heavy Rainfall (48h)",
-        "threshold": "> 60mm total",
-        "weight": "25%",
-        "rationale": "Significant rainfall causes runoff and turbidity, reducing visibility and potentially increasing encounter risk"
+        "threshold": "> 30mm total",
+        "weight": "35%",
+        "rationale": "PRIMARY RISK FACTOR: Bull Sharks actively move into estuarine and coastal areas after rainfall events. Rainfall creates reduced salinity conditions that Bull Sharks seek out for hunting"
       },
       {
         "name": "Swell Height in Risk Range",
         "threshold": "1.8m - 2.8m",
-        "weight": "20%",
-        "rationale": "Moderate swell conditions associated with increased prey activity in surf zones, attracting predators"
+        "weight": "10%",
+        "rationale": "Moderate swell conditions associated with increased prey activity in surf zones. Less relevant for Bull Sharks which prefer calmer estuarine waters"
       },
       {
-        "name": "Summer Season",
-        "threshold": "November - February",
-        "weight": "15%",
-        "rationale": "Seasonal patterns show peak shark presence during Southern Hemisphere summer months"
+        "name": "Summer/Warm Season",
+        "threshold": "November - April",
+        "weight": "5%",
+        "rationale": "Peak Bull Shark activity occurs during warmer months (Nov-Apr), though they are present year-round in Sydney waters"
       },
       {
-        "name": "Poor Water Quality",
-        "threshold": "Derived from rainfall",
-        "weight": "20%",
-        "rationale": "Reduced visibility from turbidity may increase risk of accidental encounters"
+        "name": "High Turbidity / Post-Rainfall",
+        "threshold": "Derived from rainfall (>20mm)",
+        "weight": "25%",
+        "rationale": "Bull Sharks are ATTRACTED to turbid, low-salinity water. Unlike other species, they hunt effectively in murky conditions using electroreception rather than vision"
       }
     ],
-    "scoring": "Each condition contributes its weight to the total score if met. Score ranges map to five risk levels: Low (0-20), Moderate (21-40), High (41-60), Severe (61-80), Catastrophic (81-100). If ALL conditions are met simultaneously, the score is escalated to Catastrophic."
+    "scoring": "Each condition contributes its weight to the total score if met. Location-based adjustments apply: harbour/estuary locations receive +10 points (Bull Shark hotspots), bays/near-estuary locations +5 points, open ocean beaches no adjustment. Score ranges map to five risk levels: Low (0-20), Moderate (21-40), High (41-60), Severe (61-80), Catastrophic (81-100). If ALL conditions are met simultaneously, the score is escalated to Catastrophic."
   }
 }

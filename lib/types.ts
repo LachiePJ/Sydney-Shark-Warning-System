@@ -10,6 +10,8 @@ export interface RiskInput {
   swellHeight: number | null;    // m
   isSummer: boolean;
   waterQuality: 'good' | 'poor' | 'unknown';  // derived proxy
+  locationType?: 'beach' | 'harbour' | 'bay';  // Location type for Bull Shark risk
+  bullSharkRisk?: 'high' | 'moderate' | 'low'; // Bull Shark habitat preference
   timestamp: string;
   sources?: {                    // Data source metadata
     waterTemp?: string;

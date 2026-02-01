@@ -31,14 +31,14 @@ export class RiskEngine {
    */
   calculateRisk(input: RiskInput): RiskResult {
     const conditions = this.evaluateConditions(input);
-    const score = this.calculateScore(conditions);
+    const score = this.calculateScore(conditions, input);
     const confidence = this.calculateConfidence(input);
     const levelConfig = getRiskLevelFromScore(score);
 
     const explanation: RiskExplanation = {
       conditionsMet: conditions,
       missingData: this.getMissingData(input),
-      reasoning: this.generateReasoning(conditions, score),
+      reasoning: this.generateReasoning(conditions, score, input),
     };
 
     return {
@@ -72,7 +72,7 @@ export class RiskEngine {
       return 'Just now';
     };
 
-    // Condition 1: Water temperature
+    // Condition 1: Water temperature (Bull Shark threshold: 18°C)
     conditions.push({
       name: 'High Water Temperature',
       met: input.waterTemp !== null && input.waterTemp > this.thresholds.waterTemp,
@@ -84,7 +84,8 @@ export class RiskEngine {
       dataAge: getDataAge(input.timestamp),
     });
 
-    // Condition 2: Significant rainfall (48h)
+    // Condition 2: Significant rainfall (Bull Sharks respond to 30mm+)
+    // This is the PRIMARY driver for Bull Shark movement into coastal areas
     conditions.push({
       name: 'Heavy Rainfall (48h)',
       met: input.rainfall48h !== null && input.rainfall48h > this.thresholds.rainfall48h,
@@ -96,7 +97,7 @@ export class RiskEngine {
       dataAge: getDataAge(input.timestamp),
     });
 
-    // Condition 3: Swell in risk range
+    // Condition 3: Swell in risk range (less relevant for Bull Sharks)
     const swellInRange = input.swellHeight !== null &&
       input.swellHeight >= this.thresholds.swellMin &&
       input.swellHeight <= this.thresholds.swellMax;
@@ -112,23 +113,23 @@ export class RiskEngine {
       dataAge: getDataAge(input.timestamp),
     });
 
-    // Condition 4: Summer season
+    // Condition 4: Summer/warm season (extended to Nov-Apr for Bull Sharks)
     conditions.push({
       name: 'Summer Season',
       met: input.isSummer,
       value: input.isSummer ? 'Yes' : 'No',
-      threshold: 'Nov-Feb',
+      threshold: 'Nov-Apr',
       weight: this.weights.season,
       source: 'System calculated',
       dataAge: 'Current',
     });
 
-    // Condition 5: Poor water quality
+    // Condition 5: Turbidity/runoff (Bull Sharks ATTRACTED to this)
     conditions.push({
-      name: 'Poor Water Quality',
+      name: 'High Turbidity / Post-Rainfall',
       met: input.waterQuality === 'poor',
       value: input.waterQuality,
-      threshold: 'Poor (runoff/turbidity)',
+      threshold: 'Turbid/reduced salinity',
       weight: this.weights.waterQuality,
       source: 'Derived from rainfall data',
       timestamp: input.timestamp,
@@ -139,9 +140,9 @@ export class RiskEngine {
   }
 
   /**
-   * Calculate overall risk score (0-100)
+   * Calculate overall risk score (0-100) with location-based Bull Shark adjustment
    */
-  private calculateScore(conditions: Condition[]): number {
+  private calculateScore(conditions: Condition[], input?: RiskInput): number {
     let score = 0;
     let totalWeight = 0;
 
@@ -153,7 +154,20 @@ export class RiskEngine {
     }
 
     // Normalize to 0-100 scale
-    const normalizedScore = (score / totalWeight) * 100;
+    let normalizedScore = (score / totalWeight) * 100;
+
+    // LOCATION-BASED ADJUSTMENT for Bull Shark habitat preference
+    // Bull Sharks prefer estuaries, harbours, and areas with freshwater influence
+    if (input?.bullSharkRisk) {
+      if (input.bullSharkRisk === 'high') {
+        // Harbour/estuary locations: +10 points (Bull Sharks actively seek these areas)
+        normalizedScore = Math.min(100, normalizedScore + 10);
+      } else if (input.bullSharkRisk === 'moderate') {
+        // Bay/near-estuary locations: +5 points
+        normalizedScore = Math.min(100, normalizedScore + 5);
+      }
+      // 'low' = open ocean beaches: no adjustment (Bull Sharks less common)
+    }
 
     // If ALL conditions are met, escalate to catastrophic (>80)
     const allConditionsMet = conditions.every(c => c.met);
@@ -198,23 +212,34 @@ export class RiskEngine {
   }
 
   /**
-   * Generate human-readable reasoning
+   * Generate human-readable reasoning with Bull Shark context
    */
-  private generateReasoning(conditions: Condition[], score: number): string {
+  private generateReasoning(conditions: Condition[], score: number, input?: RiskInput): string {
     const metConditions = conditions.filter(c => c.met);
     const count = metConditions.length;
 
+    let baseReasoning = '';
+    
     if (count === 0) {
-      return 'No elevated risk conditions are currently present.';
+      baseReasoning = 'No elevated risk conditions are currently present.';
     } else if (count === 1) {
-      return `One risk factor detected: ${metConditions[0].name}. Risk remains relatively low.`;
+      baseReasoning = `One risk factor detected: ${metConditions[0].name}. Risk remains relatively low.`;
     } else if (count === 2) {
-      return `Two risk factors present: ${metConditions.map(c => c.name).join(' and ')}. Moderate caution advised.`;
+      baseReasoning = `Two risk factors present: ${metConditions.map(c => c.name).join(' and ')}. Moderate caution advised.`;
     } else if (count === conditions.length) {
-      return `ALL risk factors are present. Conditions are highly favourable for increased shark activity. Do not swim.`;
+      baseReasoning = `ALL risk factors are present. Conditions are highly favourable for increased shark activity. Do not swim.`;
     } else {
-      return `Multiple risk factors detected (${count}/${conditions.length}). Exercise significant caution.`;
+      baseReasoning = `Multiple risk factors detected (${count}/${conditions.length}). Exercise significant caution.`;
     }
+
+    // Add location-specific Bull Shark context
+    if (input?.bullSharkRisk === 'high') {
+      baseReasoning += ' This harbour/estuary location has elevated Bull Shark risk.';
+    } else if (input?.bullSharkRisk === 'moderate') {
+      baseReasoning += ' This location has moderate Bull Shark presence.';
+    }
+
+    return baseReasoning;
   }
 
   /**
