@@ -140,10 +140,11 @@ export default function SpeciesRiskBreakdown({ speciesRisks, primaryThreat }: Sp
       {/* Info Note */}
       <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm text-blue-900">
         <p className="font-semibold mb-1">📊 Understanding Species Risk</p>
-        <p className="text-xs">
-          Different shark species have different habitat preferences and behaviors. This breakdown shows
-          the estimated risk from each species based on current environmental conditions and historical
-          incident data for this location.
+        <p className="text-xs mb-2">
+          Each species is scored independently based on current environmental conditions, then weighted by likelihood at this location and historical incident data.
+        </p>
+        <p className="text-xs font-semibold">
+          In Sydney: Bull Sharks are responsible for the overwhelming majority of recent attacks (86% occur in estuaries/harbours). White Sharks are extremely rare in Sydney waters (only 1 fatal in 60 years).
         </p>
       </div>
     </div>

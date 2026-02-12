@@ -58,25 +58,25 @@ export const ZONES: ZonesCollection = {
             type: 'bull-shark',
             likelihood: 'common',
             incidentHistory: 'high',
-            weightMultiplier: 1.5, // Bull Sharks are dominant threat here
+            weightMultiplier: 2.0, // Bull Sharks are THE dominant threat in Sydney harbours
           },
           {
             type: 'white-shark',
             likelihood: 'rare',
             incidentHistory: 'low',
-            weightMultiplier: 0.2, // White Sharks rarely enter inner harbour
+            weightMultiplier: 0.1, // Virtually absent from Sydney harbours
           },
           {
             type: 'bronze-whaler',
             likelihood: 'rare',
             incidentHistory: 'low',
-            weightMultiplier: 0.3,
+            weightMultiplier: 0.2,
           },
           {
             type: 'tiger-shark',
             likelihood: 'rare',
             incidentHistory: 'low',
-            weightMultiplier: 0.2,
+            weightMultiplier: 0.15, // Very rare in temperate Sydney
           },
         ],
         bomStations: {
@@ -114,25 +114,25 @@ export const ZONES: ZonesCollection = {
             type: 'bull-shark',
             likelihood: 'common',
             incidentHistory: 'high',
-            weightMultiplier: 1.4,
+            weightMultiplier: 1.8, // Still dominant at harbour entrance
           },
           {
             type: 'white-shark',
-            likelihood: 'occasional',
-            incidentHistory: 'moderate',
-            weightMultiplier: 0.7, // More likely at harbour entrance than inner
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.2, // Only 1 fatal in 60 years in Sydney
           },
           {
             type: 'bronze-whaler',
             likelihood: 'occasional',
             incidentHistory: 'low',
-            weightMultiplier: 0.6,
+            weightMultiplier: 0.5,
           },
           {
             type: 'tiger-shark',
             likelihood: 'rare',
             incidentHistory: 'low',
-            weightMultiplier: 0.3,
+            weightMultiplier: 0.2,
           },
         ],
         bomStations: {
@@ -167,25 +167,25 @@ export const ZONES: ZonesCollection = {
             type: 'bull-shark',
             likelihood: 'occasional',
             incidentHistory: 'moderate',
-            weightMultiplier: 0.9, // Near harbour entrance - some Bull Shark presence
+            weightMultiplier: 1.0, // Near harbour - moderate Bull Shark presence
           },
           {
             type: 'white-shark',
-            likelihood: 'occasional',
-            incidentHistory: 'moderate',
-            weightMultiplier: 1.0, // Open beach - White Sharks more common
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.3, // Rare in Sydney (1 fatal in 60 years)
           },
           {
             type: 'bronze-whaler',
             likelihood: 'common',
             incidentHistory: 'low',
-            weightMultiplier: 1.1, // Surf zone species
+            weightMultiplier: 0.9, // Common but low danger
           },
           {
             type: 'tiger-shark',
             likelihood: 'rare',
             incidentHistory: 'low',
-            weightMultiplier: 0.4,
+            weightMultiplier: 0.25,
           },
         ],
         bomStations: {
@@ -222,21 +222,21 @@ export const ZONES: ZonesCollection = {
           },
           {
             type: 'white-shark',
-            likelihood: 'occasional',
-            incidentHistory: 'moderate',
-            weightMultiplier: 1.2, // Primary threat at open beaches
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.3, // Rare in Sydney waters (prefers southern coasts)
           },
           {
             type: 'bronze-whaler',
             likelihood: 'common',
             incidentHistory: 'low',
-            weightMultiplier: 1.2, // Common in surf zones
+            weightMultiplier: 1.0, // Common but rarely dangerous
           },
           {
             type: 'tiger-shark',
             likelihood: 'rare',
             incidentHistory: 'low',
-            weightMultiplier: 0.5,
+            weightMultiplier: 0.3,
           },
         ],
         bomStations: {
@@ -273,21 +273,21 @@ export const ZONES: ZonesCollection = {
           },
           {
             type: 'white-shark',
-            likelihood: 'occasional',
-            incidentHistory: 'moderate',
-            weightMultiplier: 1.2,
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.3, // Rare in Sydney
           },
           {
             type: 'bronze-whaler',
             likelihood: 'common',
             incidentHistory: 'low',
-            weightMultiplier: 1.2,
+            weightMultiplier: 1.0,
           },
           {
             type: 'tiger-shark',
             likelihood: 'rare',
             incidentHistory: 'low',
-            weightMultiplier: 0.5,
+            weightMultiplier: 0.3,
           },
         ],
         bomStations: {
@@ -320,25 +320,25 @@ export const ZONES: ZonesCollection = {
             type: 'bull-shark',
             likelihood: 'occasional',
             incidentHistory: 'moderate',
-            weightMultiplier: 0.8, // Near Port Hacking - some estuarine influence
+            weightMultiplier: 0.9, // Near Port Hacking - some estuarine influence
           },
           {
             type: 'white-shark',
-            likelihood: 'occasional',
-            incidentHistory: 'moderate',
-            weightMultiplier: 1.1,
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.4, // Rare in Sydney, slightly more common further south
           },
           {
             type: 'bronze-whaler',
             likelihood: 'common',
             incidentHistory: 'low',
-            weightMultiplier: 1.1,
+            weightMultiplier: 1.0,
           },
           {
             type: 'tiger-shark',
             likelihood: 'rare',
             incidentHistory: 'low',
-            weightMultiplier: 0.5,
+            weightMultiplier: 0.3,
           },
         ],
         bomStations: {
@@ -375,21 +375,21 @@ export const ZONES: ZonesCollection = {
           },
           {
             type: 'white-shark',
-            likelihood: 'occasional',
-            incidentHistory: 'moderate',
-            weightMultiplier: 1.1,
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.3, // Rare in Sydney region
           },
           {
             type: 'bronze-whaler',
             likelihood: 'common',
             incidentHistory: 'low',
-            weightMultiplier: 1.1,
+            weightMultiplier: 1.0,
           },
           {
             type: 'tiger-shark',
             likelihood: 'rare',
             incidentHistory: 'low',
-            weightMultiplier: 0.4,
+            weightMultiplier: 0.25,
           },
         ],
         bomStations: {

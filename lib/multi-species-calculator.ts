@@ -124,17 +124,32 @@ export class MultiSpeciesCalculator {
     input: RiskInput
   ): RiskExplanation {
     const primarySpecies = speciesRisks[0];
-    const secondarySpecies = speciesRisks.filter(s => s.score > 20 && s !== primarySpecies);
+    const significantSpecies = speciesRisks.filter(s => s.likelihood !== 'rare' || s.score > 30);
+    const secondarySpecies = significantSpecies.filter(s => s.score > 20 && s !== primarySpecies);
 
-    let reasoning = `Primary threat: ${primarySpecies.species} (${primarySpecies.likelihood}, ${primarySpecies.incidentHistory} incident history). `;
+    let reasoning = '';
 
-    if (primarySpecies.activeTriggers.length > 0) {
-      reasoning += `Active conditions: ${primarySpecies.activeTriggers.slice(0, 3).join(', ')}. `;
+    // Only show primary threat if it's actually significant
+    if (primarySpecies.score > 20 || primarySpecies.likelihood === 'common') {
+      reasoning += `Primary threat: ${primarySpecies.species} (${primarySpecies.likelihood} at this location, ${primarySpecies.incidentHistory} incident history). `;
+
+      if (primarySpecies.activeTriggers.length > 0) {
+        reasoning += `Active conditions: ${primarySpecies.activeTriggers.slice(0, 3).join(', ')}. `;
+      }
+    } else {
+      reasoning += `Low overall risk - no significant shark activity detected for current conditions. `;
     }
 
     if (secondarySpecies.length > 0) {
       const names = secondarySpecies.map(s => s.species).join(', ');
-      reasoning += `Secondary concerns: ${names}. `;
+      reasoning += `Also present: ${names}. `;
+    }
+
+    // Add species absence note for rare species
+    const rareSpecies = speciesRisks.filter(s => s.likelihood === 'rare' && s.score < 20);
+    if (rareSpecies.length > 0) {
+      const rareNames = rareSpecies.map(s => s.species).join(', ');
+      reasoning += `${rareNames} rarely occur at this location. `;
     }
 
     // Build combined conditions for explanation

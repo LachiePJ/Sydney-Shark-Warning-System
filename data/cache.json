@@ -4,44 +4,44 @@
       "temperature": 22.7,
       "waveHeight": 0.98,
       "rainfall48h": 4.2,
-      "timestamp": "2026-02-12T04:07:37.799Z"
+      "timestamp": "2026-02-12T04:25:52.838Z"
     },
     "bondi": {
       "temperature": 22,
       "waveHeight": 1.14,
       "rainfall48h": 4.2,
-      "timestamp": "2026-02-12T04:07:37.799Z"
+      "timestamp": "2026-02-12T04:25:52.838Z"
     },
     "coogee": {
       "temperature": 22,
       "waveHeight": 1.36,
       "rainfall48h": 4.2,
-      "timestamp": "2026-02-12T04:07:37.799Z"
+      "timestamp": "2026-02-12T04:25:52.838Z"
     },
     "maroubra": {
       "temperature": 22,
       "waveHeight": 1.36,
       "rainfall48h": 4.2,
-      "timestamp": "2026-02-12T04:07:37.799Z"
+      "timestamp": "2026-02-12T04:25:52.838Z"
     },
     "cronulla": {
       "temperature": 21.9,
       "waveHeight": 1.64,
       "rainfall48h": 4.2,
-      "timestamp": "2026-02-12T04:07:37.800Z"
+      "timestamp": "2026-02-12T04:25:52.838Z"
     },
     "palmBeach": {
       "temperature": 23,
       "waveHeight": 1,
       "rainfall48h": 4.2,
-      "timestamp": "2026-02-12T04:07:37.800Z"
+      "timestamp": "2026-02-12T04:25:52.838Z"
     },
     "sydneyHarbour": {
       "temperature": 22,
       "waveHeight": 1.14,
       "rainfall48h": 4.2,
-      "timestamp": "2026-02-12T04:07:37.800Z"
+      "timestamp": "2026-02-12T04:25:52.838Z"
     }
   },
-  "lastFetch": "2026-02-12T04:07:37.800Z"
+  "lastFetch": "2026-02-12T04:25:52.839Z"
 }
