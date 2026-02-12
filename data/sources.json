@@ -28,11 +28,12 @@
       "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9391475/",
       "keyFindings": [
         "86% of Bull Shark bites occurred in estuarine and freshwater systems in Australia",
-        "White Sharks are extremely rare in Sydney - only 1 fatal White Shark attack in Sydney in the past 60 years",
+        "Bull Sharks dominate Sydney attacks - particularly in harbour and river systems (1900-1963 Sydney estuaries)",
+        "White Sharks are primarily found in cooler southern Australian waters (Victoria, South Australia, Tasmania)",
         "Bull Shark survivability is 62%, Tiger Shark 75%, White Shark 53%",
-        "Most White Shark activity is in cooler southern waters (Victoria, South Australia, Tasmania)",
-        "Tiger Sharks prefer warmer northern waters - uncommon in temperate Sydney",
-        "On-water activities (surfing, kayaking) show higher survivability than in-water activities (swimming, diving)"
+        "Tiger Sharks prefer warmer northern waters - uncommon in temperate regions like Sydney",
+        "On-water activities (surfing, kayaking) show 88-92% survivability vs 30-45% for in-water activities (swimming, diving)",
+        "Time between injury and treatment is crucial for survival - rapid first aid significantly improves outcomes"
       ]
     },
     {
@@ -155,39 +156,62 @@
   ],
   "disclaimer": "This system provides an environmental risk assessment based on known correlations between weather/ocean conditions and shark activity patterns from peer-reviewed research. It is NOT a shark detection or sighting system. The risk levels are heuristic estimates and should be used in conjunction with official beach safety information, lifeguard warnings, and personal judgement. Always swim at patrolled beaches, follow local signage, and never swim alone. The Bureau of Meteorology data used is provided 'as-is' and may be subject to delays or outages.",
   "methodology": {
-    "overview": "This system implements a multi-species shark risk assessment model based on peer-reviewed research. The model calculates risk for multiple shark species (Bull Sharks, White Sharks, Bronze Whalers, and Tiger Sharks), each with unique behavioral patterns and environmental triggers. Species are weighted by their likelihood and incident history at each location to provide accurate, location-specific risk assessment.",
-    "conditions": [
+    "overview": "This system implements a multi-species shark risk assessment model based on peer-reviewed research. Each shark species is scored INDEPENDENTLY using its own environmental model, thresholds, and weights. The overall risk represents the weighted combination of all species present, taking into account their likelihood and incident history at each specific location.",
+    "speciesModels": [
       {
-        "name": "Water Temperature",
-        "threshold": "Species-specific (12-32°C range)",
-        "weight": "15-35% depending on species",
-        "rationale": "Different shark species have different temperature preferences. Bull Sharks favor 18-28°C, White Sharks prefer cooler 12-22°C, Tiger Sharks need warmer 20-30°C+ water. Temperature is a key driver of species presence."
+        "species": "Bull Shark (Carcharhinus leucas)",
+        "habitat": "Estuaries, harbours, rivers, coastal zones",
+        "riskFactors": {
+          "rainfall": {"weight": "35%", "threshold": ">30mm (48h)", "rationale": "PRIMARY DRIVER - Bull Sharks actively move into estuarine areas after rainfall, seeking reduced salinity"},
+          "turbidity": {"weight": "25%", "threshold": "High/turbid", "rationale": "Attracted to turbid water - hunt using electroreception, not vision"},
+          "temperature": {"weight": "15%", "threshold": "18-28°C", "rationale": "Active at lower temperatures than most species"},
+          "swell": {"weight": "10%", "threshold": "1.8-2.8m", "rationale": "Less relevant - prefer calmer estuarine waters"},
+          "season": {"weight": "5%", "threshold": "Nov-Apr", "rationale": "Peak in summer but present year-round"},
+          "location": {"bonus": "+15pts", "condition": "Harbour/estuary", "rationale": "Strong habitat preference for low-salinity environments"}
+        },
+        "sydneyRelevance": "PRIMARY THREAT - Responsible for overwhelming majority of Sydney attacks, especially in harbour and river systems"
       },
       {
-        "name": "Rainfall (48h)",
-        "threshold": "> 30-60mm depending on species",
-        "weight": "5-35% depending on species",
-        "rationale": "Rainfall has species-specific effects. Bull Sharks are strongly attracted to post-rainfall conditions (estuarine species), while White Sharks are largely unaffected by rainfall patterns."
+        "species": "White Shark (Carcharodon carcharias)",
+        "habitat": "Cooler open ocean, southern Australian waters",
+        "riskFactors": {
+          "temperature": {"weight": "25%", "threshold": "12-22°C (cooler)", "rationale": "Prefer cooler water than other species"},
+          "season": {"weight": "20%", "threshold": "May-Oct", "rationale": "Winter/spring peak in southern waters"},
+          "swell": {"weight": "15%", "threshold": "1.5-3.5m", "rationale": "Tolerates higher swell in open ocean"},
+          "turbidity": {"weight": "10%", "threshold": "Clear water", "rationale": "Visual hunter - prefer clear water (opposite of Bull Sharks)"},
+          "rainfall": {"weight": "5%", "threshold": "N/A", "rationale": "Minimal impact on White Sharks"},
+          "location": {"penalty": "-20pts", "condition": "Harbour/estuary", "rationale": "Avoid estuaries and harbours"}
+        },
+        "sydneyRelevance": "RARE - White Sharks prefer cooler southern Australian waters (Victoria, SA, Tasmania). Extremely uncommon in Sydney region"
       },
       {
-        "name": "Swell Height",
-        "threshold": "1.2m - 3.5m depending on species",
-        "weight": "10-25% depending on species",
-        "rationale": "Swell conditions favor different species. Bronze Whalers are most active in surf zones (1.2-2.5m), while White Sharks tolerate higher swell. Bull Sharks prefer calmer estuarine waters."
+        "species": "Bronze Whaler (Carcharhinus brachyurus)",
+        "habitat": "Surf zones, open beaches",
+        "riskFactors": {
+          "swell": {"weight": "25%", "threshold": "1.2-2.5m", "rationale": "Most active in surf zones with moderate swell"},
+          "temperature": {"weight": "20%", "threshold": "16-26°C", "rationale": "Moderate temperature range"},
+          "season": {"weight": "20%", "threshold": "Nov-Feb", "rationale": "Summer peak activity"},
+          "rainfall": {"weight": "15%", "threshold": ">50mm", "rationale": "Moderate sensitivity"},
+          "turbidity": {"weight": "10%", "threshold": "Moderate", "rationale": "Some tolerance"},
+          "location": {"bonus": "+8pts", "condition": "Open beach", "rationale": "Prefer surf zones at open beaches"}
+        },
+        "sydneyRelevance": "COMMON but LOW DANGER - Frequently present in Sydney surf zones but rarely involved in serious incidents"
       },
       {
-        "name": "Season",
-        "threshold": "Species-specific seasonal patterns",
-        "weight": "5-25% depending on species",
-        "rationale": "Shark activity varies seasonally by species. Bull Sharks peak in summer (Nov-Apr), White Sharks in winter/spring (May-Oct), Tiger Sharks in peak summer (Dec-Feb). Bronze Whalers are most active Nov-Feb."
-      },
-      {
-        "name": "Turbidity / Water Clarity",
-        "threshold": "Derived from rainfall and conditions",
-        "weight": "5-25% depending on species",
-        "rationale": "Species have different responses to water clarity. Bull Sharks hunt effectively in turbid water (electroreception), while White Sharks prefer clear water for visual hunting. Bronze Whalers have moderate tolerance."
+        "species": "Tiger Shark (Galeocerdo cuvier)",
+        "habitat": "Warm tropical/subtropical waters, northern Australia",
+        "riskFactors": {
+          "temperature": {"weight": "40%", "threshold": ">20°C (warm)", "rationale": "Warm water species - requires higher temperatures"},
+          "season": {"weight": "25%", "threshold": "Dec-Feb", "rationale": "Peak summer only"},
+          "swell": {"weight": "12%", "threshold": "1.5-3.0m", "rationale": "Moderate relevance"},
+          "rainfall": {"weight": "10%", "threshold": ">40mm", "rationale": "Some effect"},
+          "turbidity": {"weight": "8%", "threshold": "Tolerant", "rationale": "Opportunistic hunter"},
+          "location": {"penalty": "-30%", "condition": "Temperate", "rationale": "Sydney is at southern edge of range - 30% reduction applied"}
+        },
+        "sydneyRelevance": "RARE - Tiger Sharks prefer warmer northern Australian waters. Uncommon in temperate Sydney"
       }
     ],
-    "scoring": "Risk is calculated independently for each shark species present at a location using species-specific environmental models. Each species score is then weighted by its likelihood (common/occasional/rare) and incident history (high/moderate/low) at that location. The weighted combination determines overall risk. Location type also affects species scores: harbour/estuary locations favor Bull Sharks, open beaches favor White Sharks and Bronze Whalers. Final scores map to five risk levels: Low (0-20), Moderate (21-40), High (41-60), Severe (61-80), Catastrophic (81-100)."
+    "overallScoring": "Each species is scored independently (0-100) based on current environmental conditions. Species scores are then weighted by: (1) Species likelihood at location (common=1.0x, occasional=0.6x, rare=0.3x), and (2) Incident history (high=1.0x, moderate=0.7x, low=0.4x). The weighted average determines overall risk. Final scores map to: Low (0-20), Moderate (21-40), High (41-60), Severe (61-80), Catastrophic (81-100).",
+    "locationGuidance": "For lowest risk in Sydney: Swim at patrolled open ocean beaches (Bondi, Coogee, Maroubra) rather than harbour/estuary locations. Avoid swimming in Sydney Harbour, river mouths, and estuaries especially after rainfall. Bull Sharks dominate Sydney attacks and are most active in harbour/estuarine environments after rainfall events."
   }
 }

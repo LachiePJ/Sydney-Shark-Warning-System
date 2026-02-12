@@ -45,20 +45,56 @@ export default function SimpleRiskGauge({ risk }: SimpleRiskGaugeProps) {
         </div>
       </div>
 
-      <p className="text-base md:text-lg text-gray-700 text-center mt-6 mb-4 leading-relaxed px-2">
-        {risk.guidance}
-      </p>
+      {/* Overall Risk Explanation */}
+      <div className="mt-6 w-full max-w-xl">
+        <div className="bg-white border-2 border-gray-300 rounded-lg p-5">
+          <h3 className="font-bold text-lg mb-3 text-gray-900">Overall Shark Risk Assessment</h3>
+          <p className="text-sm text-gray-700 mb-3 leading-relaxed">
+            {risk.guidance}
+          </p>
+          
+          {risk.primaryThreat && (
+            <p className="text-sm mb-3">
+              <strong>Primary Threat Species:</strong> {risk.primaryThreat}
+            </p>
+          )}
 
-      <div className="flex items-center justify-center gap-3 text-xs md:text-sm">
+          {/* Safety Advice Based on Risk Level */}
+          {risk.score >= 40 && risk.primaryThreat === 'Bull Shark' && (
+            <div className="mt-3 p-3 bg-red-50 border-l-4 border-red-600 rounded">
+              <p className="font-semibold text-red-900 text-sm mb-2">⚠️ Bull Shark Activity Elevated</p>
+              <p className="text-xs text-red-800 mb-2">
+                Bull Sharks dominate Sydney attacks (86% occur in harbours/estuaries).
+              </p>
+              <p className="text-xs text-red-900 font-semibold">
+                🏊 For lowest risk: Swim at patrolled open ocean beaches (Bondi, Coogee, Maroubra) 
+                rather than Sydney Harbour or river mouths.
+              </p>
+            </div>
+          )}
+
+          {risk.score < 30 && (
+            <div className="mt-3 p-3 bg-green-50 border-l-4 border-green-600 rounded">
+              <p className="font-semibold text-green-900 text-sm mb-1">✓ Low Overall Shark Risk</p>
+              <p className="text-xs text-green-800">
+                Current conditions show low shark activity across all species. Always swim at patrolled 
+                beaches between the flags.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="flex items-center justify-center gap-3 text-xs md:text-sm mt-4">
         <span className={`inline-block w-3 h-3 rounded-full ${
           risk.confidence === 'high' ? 'bg-green-500' :
           risk.confidence === 'medium' ? 'bg-yellow-500' :
           'bg-red-500'
         }`}></span>
-        <span className="text-gray-600">Confidence: <strong>{risk.confidence}</strong></span>
+        <span className="text-gray-600">Data Confidence: <strong>{risk.confidence}</strong></span>
       </div>
 
-      <div className="mt-4 text-xs md:text-sm text-gray-400">
+      <div className="mt-2 text-xs md:text-sm text-gray-400">
         Last updated: {new Date(risk.timestamp).toLocaleString('en-GB')}
       </div>
     </div>

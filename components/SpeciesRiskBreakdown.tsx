@@ -144,8 +144,20 @@ export default function SpeciesRiskBreakdown({ speciesRisks, primaryThreat }: Sp
           Each species is scored independently based on current environmental conditions, then weighted by likelihood at this location and historical incident data.
         </p>
         <p className="text-xs font-semibold">
-          In Sydney: Bull Sharks are responsible for the overwhelming majority of recent attacks (86% occur in estuaries/harbours). White Sharks are extremely rare in Sydney waters (only 1 fatal in 60 years).
+          In Sydney: Bull Sharks are responsible for the overwhelming majority of attacks (86% occur in estuaries/harbours). White Sharks are extremely rare in Sydney waters.
         </p>
+      </div>
+      
+      {/* Safety Advice */}
+      <div className="mt-3 p-4 bg-green-50 border-2 border-green-300 rounded">
+        <p className="font-semibold text-green-900 mb-2">🏊 Swimming Safety for Sydney</p>
+        <ul className="text-xs text-green-900 space-y-1">
+          <li>✓ <strong>Lowest risk:</strong> Patrolled open ocean beaches (Bondi, Coogee, Maroubra, Northern Beaches)</li>
+          <li>⚠️ <strong>Higher risk:</strong> Sydney Harbour, river mouths, estuaries - especially after rainfall</li>
+          <li>✓ Always swim between the flags at patrolled beaches</li>
+          <li>✓ Avoid swimming at dawn, dusk, or after heavy rainfall (&gt;30mm)</li>
+          <li>✓ Never swim alone, especially in harbours or murky water</li>
+        </ul>
       </div>
     </div>
   );

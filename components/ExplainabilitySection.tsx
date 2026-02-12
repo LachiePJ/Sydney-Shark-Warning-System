@@ -47,36 +47,69 @@ export default function ExplainabilitySection() {
       {/* How It Works */}
       {activeTab === 'how' && (
         <div className="space-y-6">
-          <div>
-            <h3 className="text-2xl font-semibold mb-4">Methodology</h3>
-            <p className="text-gray-700 mb-4">
-              {sourcesData.methodology.overview}
-            </p>
-          </div>
+          <p className="text-gray-700 mb-4">
+            {sourcesData.methodology.overview}
+          </p>
 
+          {/* Species-Specific Models */}
           <div>
-            <h4 className="text-xl font-semibold mb-3">Risk Factors</h4>
-            <div className="space-y-4">
-              {sourcesData.methodology.conditions.map((condition, index) => (
-                <div key={index} className="bg-gray-50 p-4 rounded-lg">
-                  <div className="flex justify-between items-start mb-2">
-                    <h5 className="font-semibold">{condition.name}</h5>
-                    <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded text-sm font-medium">
-                      Weight: {condition.weight}
-                    </span>
+            <h4 className="font-semibold text-xl mb-4">Species-Specific Risk Models:</h4>
+            <p className="text-sm text-gray-600 mb-4">
+              Each shark species is scored independently with its own environmental triggers and weights.
+            </p>
+
+            <div className="space-y-6">
+              {sourcesData.methodology.speciesModels?.map((model: any, idx: number) => (
+                <div key={idx} className="border-2 border-gray-300 rounded-lg p-5 bg-white shadow-sm">
+                  {/* Species Header */}
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-2xl">🦈</span>
+                      <h5 className="font-bold text-lg">{model.species}</h5>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2">
+                      <strong>Habitat:</strong> {model.habitat}
+                    </p>
+                    <p className={`text-sm font-semibold ${
+                      model.sydneyRelevance.includes('PRIMARY') ? 'text-red-700' :
+                      model.sydneyRelevance.includes('RARE') ? 'text-gray-600' :
+                      model.sydneyRelevance.includes('COMMON') ? 'text-orange-600' : 'text-gray-700'
+                    }`}>
+                      Sydney: {model.sydneyRelevance}
+                    </p>
                   </div>
-                  <div className="text-sm text-gray-600 mb-2">
-                    <strong>Threshold:</strong> {condition.threshold}
+
+                  {/* Risk Factors */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {Object.entries(model.riskFactors).map(([key, factor]: [string, any]) => (
+                      <div key={key} className="bg-gray-50 rounded p-3 text-sm">
+                        <div className="flex justify-between items-start mb-1">
+                          <span className="font-semibold capitalize">{key}:</span>
+                          <span className="text-blue-600 font-bold text-xs">
+                            {factor.weight || factor.bonus || factor.penalty}
+                          </span>
+                        </div>
+                        <div className="text-xs text-gray-600 mb-1">
+                          <strong>Threshold:</strong> {factor.threshold || factor.condition}
+                        </div>
+                        <p className="text-xs text-gray-700">{factor.rationale}</p>
+                      </div>
+                    ))}
                   </div>
-                  <p className="text-sm text-gray-700">{condition.rationale}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="bg-blue-50 border-l-4 border-blue-500 p-4">
-            <h4 className="font-semibold mb-2">Scoring System</h4>
-            <p className="text-sm text-gray-700">{sourcesData.methodology.scoring}</p>
+          {/* Overall Scoring */}
+          <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-5 mt-6">
+            <h4 className="font-semibold text-lg mb-3">Overall Risk Calculation</h4>
+            <p className="text-sm text-gray-700 mb-4">{sourcesData.methodology.overallScoring}</p>
+            
+            <div className="bg-white rounded p-4 border border-blue-200">
+              <h5 className="font-semibold text-sm mb-2">🏊 Where to Swim for Lowest Risk in Sydney</h5>
+              <p className="text-sm text-gray-700">{sourcesData.methodology.locationGuidance}</p>
+            </div>
           </div>
         </div>
       )}
@@ -87,6 +120,9 @@ export default function ExplainabilitySection() {
           <p className="text-gray-700 mb-6">
             This system is based on peer-reviewed scientific research examining environmental
             factors associated with shark behavior and activity patterns in coastal waters.
+            <strong className="block mt-2 text-slate-900">
+              For Sydney: Bull Sharks are responsible for the overwhelming majority of attacks (86% occur in estuaries/harbours).
+            </strong>
           </p>
 
           <div className="space-y-6">
