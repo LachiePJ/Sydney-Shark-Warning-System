@@ -18,12 +18,11 @@ export class MultiSpeciesCalculator {
   private engines: Map<string, BaseSpeciesEngine>;
 
   constructor() {
-    this.engines = new Map([
-      ['bull-shark', new BullSharkEngine()],
-      ['white-shark', new WhiteSharkEngine()],
-      ['bronze-whaler', new BronzeWhalerEngine()],
-      ['tiger-shark', new TigerSharkEngine()],
-    ]);
+    this.engines = new Map<string, BaseSpeciesEngine>();
+    this.engines.set('bull-shark', new BullSharkEngine());
+    this.engines.set('white-shark', new WhiteSharkEngine());
+    this.engines.set('bronze-whaler', new BronzeWhalerEngine());
+    this.engines.set('tiger-shark', new TigerSharkEngine());
   }
 
   /**
