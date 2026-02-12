@@ -6,6 +6,7 @@
 import dynamic from 'next/dynamic';
 import SimpleRiskGauge from '@/components/SimpleRiskGauge';
 import RiskFactorsDetail from '@/components/RiskFactorsDetail';
+import SpeciesRiskBreakdown from '@/components/SpeciesRiskBreakdown';
 import ExplainabilitySection from '@/components/ExplainabilitySection';
 import Disclaimer from '@/components/Disclaimer';
 import NodeStrategyBranding from '@/components/NodeStrategyBranding';
@@ -105,6 +106,14 @@ export default async function Home() {
             Click or hover over beach areas to see risk levels and guidance. Each circle represents a beach or harbour swimming area.
           </p>
         </div>
+
+        {/* Species Risk Breakdown - NEW */}
+        {overallRisk.bySpecies && overallRisk.bySpecies.length > 0 && (
+          <SpeciesRiskBreakdown 
+            speciesRisks={overallRisk.bySpecies} 
+            primaryThreat={overallRisk.primaryThreat || ''} 
+          />
+        )}
 
         {/* Risk Factors Detail */}
         <RiskFactorsDetail risk={overallRisk} />

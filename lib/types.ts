@@ -37,6 +37,15 @@ export interface RiskExplanation {
   reasoning: string;
 }
 
+export interface SpeciesRisk {
+  species: string;
+  scientificName: string;
+  score: number;  // 0-100
+  likelihood: 'common' | 'occasional' | 'rare';
+  activeTriggers: string[];
+  incidentHistory: 'high' | 'moderate' | 'low';
+}
+
 export interface RiskResult {
   level: RiskLevel;
   score: number;  // 0-100
@@ -45,6 +54,9 @@ export interface RiskResult {
   explanation: RiskExplanation;
   confidence: 'high' | 'medium' | 'low';
   timestamp: string;
+  // Multi-species information
+  bySpecies?: SpeciesRisk[];
+  primaryThreat?: string;
   debug?: {  // Temporary debug info
     rawInput?: RiskInput;
   };

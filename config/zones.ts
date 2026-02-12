@@ -3,12 +3,20 @@
  * Sydney Harbour and surrounding beaches
  */
 
+export interface SpeciesProfile {
+  type: 'bull-shark' | 'white-shark' | 'tiger-shark' | 'bronze-whaler';
+  likelihood: 'common' | 'occasional' | 'rare';
+  incidentHistory: 'high' | 'moderate' | 'low';
+  weightMultiplier: number; // Adjust risk score based on species prevalence
+}
+
 export interface ZoneProperties {
   id: string;
   name: string;
   description: string;
-  bullSharkRisk?: 'high' | 'moderate' | 'low'; // Bull Shark habitat preference
+  bullSharkRisk?: 'high' | 'moderate' | 'low'; // Bull Shark habitat preference (legacy)
   locationType?: 'beach' | 'harbour' | 'bay';
+  speciesProfiles: SpeciesProfile[]; // Multi-species risk profiles
   bomStations: {
     rainfall?: string;  // BoM station ID
     waterTemp?: string; // BoM station ID or buoy
@@ -45,6 +53,32 @@ export const ZONES: ZonesCollection = {
         description: 'Inner harbour including Circular Quay to Middle Head',
         bullSharkRisk: 'high', // Estuarine environment - Bull Shark hotspot
         locationType: 'harbour',
+        speciesProfiles: [
+          {
+            type: 'bull-shark',
+            likelihood: 'common',
+            incidentHistory: 'high',
+            weightMultiplier: 1.5, // Bull Sharks are dominant threat here
+          },
+          {
+            type: 'white-shark',
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.2, // White Sharks rarely enter inner harbour
+          },
+          {
+            type: 'bronze-whaler',
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.3,
+          },
+          {
+            type: 'tiger-shark',
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.2,
+          },
+        ],
         bomStations: {
           rainfall: '066062', // Sydney Observatory Hill
           waterTemp: 'IDO71000/IDO71000_55.json', // Fort Denison
@@ -75,6 +109,32 @@ export const ZONES: ZonesCollection = {
         description: 'Outer harbour from Middle Head to North/South Heads',
         bullSharkRisk: 'high', // Harbour entrance - Bull Shark hotspot
         locationType: 'harbour',
+        speciesProfiles: [
+          {
+            type: 'bull-shark',
+            likelihood: 'common',
+            incidentHistory: 'high',
+            weightMultiplier: 1.4,
+          },
+          {
+            type: 'white-shark',
+            likelihood: 'occasional',
+            incidentHistory: 'moderate',
+            weightMultiplier: 0.7, // More likely at harbour entrance than inner
+          },
+          {
+            type: 'bronze-whaler',
+            likelihood: 'occasional',
+            incidentHistory: 'low',
+            weightMultiplier: 0.6,
+          },
+          {
+            type: 'tiger-shark',
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.3,
+          },
+        ],
         bomStations: {
           rainfall: '066062',
           waterTemp: 'IDO71000/IDO71000_55.json',
@@ -102,6 +162,32 @@ export const ZONES: ZonesCollection = {
         description: 'Manly Beach and surrounding areas',
         bullSharkRisk: 'moderate', // Near harbour entrance
         locationType: 'beach',
+        speciesProfiles: [
+          {
+            type: 'bull-shark',
+            likelihood: 'occasional',
+            incidentHistory: 'moderate',
+            weightMultiplier: 0.9, // Near harbour entrance - some Bull Shark presence
+          },
+          {
+            type: 'white-shark',
+            likelihood: 'occasional',
+            incidentHistory: 'moderate',
+            weightMultiplier: 1.0, // Open beach - White Sharks more common
+          },
+          {
+            type: 'bronze-whaler',
+            likelihood: 'common',
+            incidentHistory: 'low',
+            weightMultiplier: 1.1, // Surf zone species
+          },
+          {
+            type: 'tiger-shark',
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.4,
+          },
+        ],
         bomStations: {
           rainfall: '066062',
           waterTemp: 'IDO71000/IDO71000_60.json', // Sydney offshore
@@ -127,6 +213,32 @@ export const ZONES: ZonesCollection = {
         description: 'Bondi, Tamarama, and Brontë beaches',
         bullSharkRisk: 'low', // Open ocean beaches
         locationType: 'beach',
+        speciesProfiles: [
+          {
+            type: 'bull-shark',
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.4, // Open ocean - Bull Sharks uncommon
+          },
+          {
+            type: 'white-shark',
+            likelihood: 'occasional',
+            incidentHistory: 'moderate',
+            weightMultiplier: 1.2, // Primary threat at open beaches
+          },
+          {
+            type: 'bronze-whaler',
+            likelihood: 'common',
+            incidentHistory: 'low',
+            weightMultiplier: 1.2, // Common in surf zones
+          },
+          {
+            type: 'tiger-shark',
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.5,
+          },
+        ],
         bomStations: {
           rainfall: '066062',
           waterTemp: 'IDO71000/IDO71000_60.json',
@@ -152,6 +264,32 @@ export const ZONES: ZonesCollection = {
         description: 'Coogee, Clovelly, and Maroubra beaches',
         bullSharkRisk: 'low', // Open ocean beaches
         locationType: 'beach',
+        speciesProfiles: [
+          {
+            type: 'bull-shark',
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.4,
+          },
+          {
+            type: 'white-shark',
+            likelihood: 'occasional',
+            incidentHistory: 'moderate',
+            weightMultiplier: 1.2,
+          },
+          {
+            type: 'bronze-whaler',
+            likelihood: 'common',
+            incidentHistory: 'low',
+            weightMultiplier: 1.2,
+          },
+          {
+            type: 'tiger-shark',
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.5,
+          },
+        ],
         bomStations: {
           rainfall: '066062',
           waterTemp: 'IDO71000/IDO71000_60.json',
@@ -177,6 +315,32 @@ export const ZONES: ZonesCollection = {
         description: 'Cronulla Beach and surrounding areas',
         bullSharkRisk: 'moderate', // Near Port Hacking entrance
         locationType: 'beach',
+        speciesProfiles: [
+          {
+            type: 'bull-shark',
+            likelihood: 'occasional',
+            incidentHistory: 'moderate',
+            weightMultiplier: 0.8, // Near Port Hacking - some estuarine influence
+          },
+          {
+            type: 'white-shark',
+            likelihood: 'occasional',
+            incidentHistory: 'moderate',
+            weightMultiplier: 1.1,
+          },
+          {
+            type: 'bronze-whaler',
+            likelihood: 'common',
+            incidentHistory: 'low',
+            weightMultiplier: 1.1,
+          },
+          {
+            type: 'tiger-shark',
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.5,
+          },
+        ],
         bomStations: {
           rainfall: '066062',
           waterTemp: 'IDO71000/IDO71000_60.json',
@@ -202,6 +366,32 @@ export const ZONES: ZonesCollection = {
         description: 'Palm Beach and northern beaches',
         bullSharkRisk: 'low', // Open ocean beaches
         locationType: 'beach',
+        speciesProfiles: [
+          {
+            type: 'bull-shark',
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.3, // Far from estuaries
+          },
+          {
+            type: 'white-shark',
+            likelihood: 'occasional',
+            incidentHistory: 'moderate',
+            weightMultiplier: 1.1,
+          },
+          {
+            type: 'bronze-whaler',
+            likelihood: 'common',
+            incidentHistory: 'low',
+            weightMultiplier: 1.1,
+          },
+          {
+            type: 'tiger-shark',
+            likelihood: 'rare',
+            incidentHistory: 'low',
+            weightMultiplier: 0.4,
+          },
+        ],
         bomStations: {
           rainfall: '066062',
           waterTemp: 'IDO71000/IDO71000_60.json',

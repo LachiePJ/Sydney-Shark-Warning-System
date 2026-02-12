@@ -5,6 +5,7 @@
 
 import { RiskInput, ZoneRiskResult } from '@/lib/types';
 import { RiskEngine } from '@/lib/risk-engine';
+import { MultiSpeciesCalculator } from '@/lib/multi-species-calculator';
 import { ZONES, ZoneProperties } from '@/config/zones';
 import { DEFAULT_THRESHOLDS } from '@/config/risk-config';
 import { fetchAllBeachesMarineData } from '@/lib/bom/marine-temperature-adapter';
@@ -54,9 +55,11 @@ interface CacheData {
 export class DataService {
   private cache: CacheData | null = null;
   private riskEngine: RiskEngine;
+  private multiSpeciesCalculator: MultiSpeciesCalculator;
 
   constructor() {
     this.riskEngine = new RiskEngine();
+    this.multiSpeciesCalculator = new MultiSpeciesCalculator();
   }
 
   /**
@@ -203,14 +206,18 @@ export class DataService {
   }
 
   /**
-   * Calculate risk for all zones
+   * Calculate risk for all zones using multi-species model
    */
   async calculateAllZoneRisks(): Promise<ZoneRiskResult[]> {
     const results: ZoneRiskResult[] = [];
     
     for (const zone of ZONES.features) {
       const input = await this.getRiskInputForZone(zone.properties);
-      const risk = this.riskEngine.calculateRisk(input);
+      
+      // Use multi-species calculator if species profiles are defined
+      const risk = zone.properties.speciesProfiles && zone.properties.speciesProfiles.length > 0
+        ? this.multiSpeciesCalculator.calculateMultiSpeciesRisk(input, zone.properties.speciesProfiles)
+        : this.riskEngine.calculateRisk(input); // Fallback to legacy single-species
       
       results.push({
         ...risk,
