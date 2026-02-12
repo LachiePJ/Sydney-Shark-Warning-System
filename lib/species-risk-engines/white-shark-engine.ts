@@ -16,6 +16,12 @@ import { RiskInput } from '@/lib/types';
 export class WhiteSharkEngine extends BaseSpeciesEngine {
   readonly speciesName = 'White Shark';
   readonly scientificName = 'Carcharodon carcharias';
+  
+  /**
+   * White Sharks are large and powerful but attacks are relatively rare
+   * Most bites are investigative, not predatory
+   */
+  readonly aggressionFactor = 0.75;
 
   readonly thresholds: SpeciesThresholds = {
     waterTempMin: 12,        // Can tolerate cold water

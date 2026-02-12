@@ -17,6 +17,12 @@ import { RiskInput } from '@/lib/types';
 export class TigerSharkEngine extends BaseSpeciesEngine {
   readonly speciesName = 'Tiger Shark';
   readonly scientificName = 'Galeocerdo cuvier';
+  
+  /**
+   * Tiger Sharks are aggressive and considered one of the most dangerous species
+   * Will eat almost anything, less discerning than most sharks
+   */
+  readonly aggressionFactor = 0.9;
 
   readonly thresholds: SpeciesThresholds = {
     waterTempMin: 20,        // Warm water species

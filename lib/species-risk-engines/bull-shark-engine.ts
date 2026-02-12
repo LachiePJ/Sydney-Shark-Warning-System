@@ -16,6 +16,12 @@ import { RiskInput } from '@/lib/types';
 export class BullSharkEngine extends BaseSpeciesEngine {
   readonly speciesName = 'Bull Shark';
   readonly scientificName = 'Carcharhinus leucas';
+  
+  /**
+   * Bull Sharks are one of the most aggressive species toward humans
+   * Responsible for majority of nearshore attacks
+   */
+  readonly aggressionFactor = 1.0;
 
   readonly thresholds: SpeciesThresholds = {
     waterTempMin: 18,        // Active at lower temps than most species

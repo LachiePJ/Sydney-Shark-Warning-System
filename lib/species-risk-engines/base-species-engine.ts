@@ -29,14 +29,26 @@ export abstract class BaseSpeciesEngine {
   abstract readonly scientificName: string;
   abstract readonly thresholds: SpeciesThresholds;
   abstract readonly weights: SpeciesWeights;
+  
+  /**
+   * Aggression factor: inherent likelihood of this species to attack humans
+   * 1.0 = highly aggressive (Bull Shark)
+   * 0.3-0.5 = low aggression (Bronze Whaler)
+   * 0.7-0.8 = moderate aggression (White Shark - less likely to attack in close proximity)
+   */
+  abstract readonly aggressionFactor: number;
 
   /**
    * Calculate raw risk score for this species (0-100)
+   * Environmental risk is scaled by aggression factor to reflect actual attack likelihood
    */
   calculateRisk(input: RiskInput): number {
     const conditions = this.evaluateConditions(input);
-    const score = this.calculateScore(conditions);
-    return Math.round(score);
+    const environmentalScore = this.calculateScore(conditions);
+    
+    // Scale by aggression factor to reflect realistic attack likelihood
+    const adjustedScore = environmentalScore * this.aggressionFactor;
+    return Math.round(adjustedScore);
   }
 
   /**

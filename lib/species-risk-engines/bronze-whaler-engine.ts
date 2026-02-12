@@ -16,6 +16,12 @@ import { RiskInput } from '@/lib/types';
 export class BronzeWhalerEngine extends BaseSpeciesEngine {
   readonly speciesName = 'Bronze Whaler';
   readonly scientificName = 'Carcharhinus brachyurus';
+  
+  /**
+   * Bronze Whalers are common but rarely attack humans
+   * Generally shy and avoid close human contact
+   */
+  readonly aggressionFactor = 0.3;
 
   readonly thresholds: SpeciesThresholds = {
     waterTempMin: 16,

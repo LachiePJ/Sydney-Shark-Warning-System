@@ -45,7 +45,7 @@ export default function HeaderWithRegionSelector({ initialRegion }: HeaderWithRe
           </div>
 
           {/* Right: Region Selector + Logo */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-8">
             <RegionSelector 
               currentRegion={currentRegion} 
               onRegionChange={handleRegionChange} 
