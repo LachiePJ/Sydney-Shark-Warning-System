@@ -51,7 +51,7 @@ export default function SpeciesRiskBreakdown({ speciesRisks, primaryThreat }: Sp
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-      <h3 className="text-xl font-bold text-gray-900 mb-4">Risk by Species</h3>
+      <h3 className="text-xl font-bold text-gray-900 mb-4">🦈 Live Species Risk Analysis</h3>
 
       {/* Primary Threat */}
       <div className={`border-2 rounded-lg p-4 mb-4 ${getScoreColor(primary.score)}`}>

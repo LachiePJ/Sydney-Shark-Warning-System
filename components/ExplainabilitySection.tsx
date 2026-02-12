@@ -8,7 +8,7 @@ export default function ExplainabilitySection() {
 
   return (
     <div className="bg-white rounded-lg shadow-xl p-8 mb-8 border border-gray-200">
-      <h2 className="text-3xl font-bold mb-6 text-slate-900">Understanding the System</h2>
+      <h2 className="text-3xl font-bold mb-6 text-slate-900">📡 Understanding the Live Monitoring System</h2>
 
       {/* Tabs */}
       <div className="flex border-b border-gray-200 mb-6">
@@ -163,8 +163,7 @@ export default function ExplainabilitySection() {
       {activeTab === 'data' && (
         <div className="space-y-6">
           <p className="text-gray-700 mb-6">
-            All environmental data is sourced from the Australian Bureau of Meteorology (BoM),
-            ensuring reliability and official provenance.
+            <strong>🔴 Live data feed:</strong> All environmental data is continuously sourced from the Australian Bureau of Meteorology (BoM) and marine APIs in real-time, ensuring up-to-date reliability and official provenance.
           </p>
 
           <div className="space-y-4">

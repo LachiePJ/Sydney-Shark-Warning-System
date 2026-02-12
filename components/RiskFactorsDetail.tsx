@@ -9,7 +9,7 @@ interface RiskFactorsDetailProps {
 export default function RiskFactorsDetail({ risk }: RiskFactorsDetailProps) {
   return (
     <div className="bg-white rounded-lg shadow-xl p-8 mb-8 border border-gray-200">
-      <h2 className="text-3xl font-bold mb-6 text-slate-900">Risk Factors Analysis</h2>
+      <h2 className="text-3xl font-bold mb-6 text-slate-900">📊 Live Environmental Conditions</h2>
       
       <p className="text-gray-700 mb-6 text-lg">{risk.explanation.reasoning}</p>
 

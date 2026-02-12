@@ -48,7 +48,7 @@ export default function SimpleRiskGauge({ risk }: SimpleRiskGaugeProps) {
       {/* Overall Risk Explanation */}
       <div className="mt-6 w-full max-w-xl">
         <div className="bg-white border-2 border-gray-300 rounded-lg p-5">
-          <h3 className="font-bold text-lg mb-3 text-gray-900">Overall Shark Risk Assessment</h3>
+          <h3 className="font-bold text-lg mb-3 text-gray-900">🔴 Live Shark Risk Assessment</h3>
           <p className="text-sm text-gray-700 mb-3 leading-relaxed">
             {risk.guidance}
           </p>
@@ -94,8 +94,8 @@ export default function SimpleRiskGauge({ risk }: SimpleRiskGaugeProps) {
         <span className="text-gray-600">Data Confidence: <strong>{risk.confidence}</strong></span>
       </div>
 
-      <div className="mt-2 text-xs md:text-sm text-gray-400">
-        Last updated: {new Date(risk.timestamp).toLocaleString('en-GB')}
+      <div className="mt-2 text-xs md:text-sm text-gray-500 font-medium">
+        🔄 Real-time data • Updated: {new Date(risk.timestamp).toLocaleString('en-GB')}
       </div>
     </div>
   );
