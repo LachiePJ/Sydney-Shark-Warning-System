@@ -137,39 +137,39 @@
   ],
   "disclaimer": "This system provides an environmental risk assessment based on known correlations between weather/ocean conditions and shark activity patterns from peer-reviewed research. It is NOT a shark detection or sighting system. The risk levels are heuristic estimates and should be used in conjunction with official beach safety information, lifeguard warnings, and personal judgement. Always swim at patrolled beaches, follow local signage, and never swim alone. The Bureau of Meteorology data used is provided 'as-is' and may be subject to delays or outages.",
   "methodology": {
-    "overview": "This system implements a Bull Shark-optimized risk scoring model based on peer-reviewed research. Bull Sharks (Carcharhinus leucas) are responsible for most shark incidents in the Sydney region. The model evaluates five key environmental conditions, weighted according to Bull Shark behavioral patterns and habitat preferences documented in recent scientific literature.",
+    "overview": "This system implements a multi-species shark risk assessment model based on peer-reviewed research. The model calculates risk for multiple shark species (Bull Sharks, White Sharks, Bronze Whalers, and Tiger Sharks), each with unique behavioral patterns and environmental triggers. Species are weighted by their likelihood and incident history at each location to provide accurate, location-specific risk assessment.",
     "conditions": [
       {
-        "name": "High Water Temperature",
-        "threshold": "> 18°C",
-        "weight": "15%",
-        "rationale": "Bull Sharks (primary species in Sydney incidents) are active at water temperatures above 18°C, with increased nearshore presence in warmer conditions"
+        "name": "Water Temperature",
+        "threshold": "Species-specific (12-32°C range)",
+        "weight": "15-35% depending on species",
+        "rationale": "Different shark species have different temperature preferences. Bull Sharks favor 18-28°C, White Sharks prefer cooler 12-22°C, Tiger Sharks need warmer 20-30°C+ water. Temperature is a key driver of species presence."
       },
       {
-        "name": "Heavy Rainfall (48h)",
-        "threshold": "> 30mm total",
-        "weight": "35%",
-        "rationale": "PRIMARY RISK FACTOR: Bull Sharks actively move into estuarine and coastal areas after rainfall events. Rainfall creates reduced salinity conditions that Bull Sharks seek out for hunting"
+        "name": "Rainfall (48h)",
+        "threshold": "> 30-60mm depending on species",
+        "weight": "5-35% depending on species",
+        "rationale": "Rainfall has species-specific effects. Bull Sharks are strongly attracted to post-rainfall conditions (estuarine species), while White Sharks are largely unaffected by rainfall patterns."
       },
       {
-        "name": "Swell Height in Risk Range",
-        "threshold": "1.8m - 2.8m",
-        "weight": "10%",
-        "rationale": "Moderate swell conditions associated with increased prey activity in surf zones. Less relevant for Bull Sharks which prefer calmer estuarine waters"
+        "name": "Swell Height",
+        "threshold": "1.2m - 3.5m depending on species",
+        "weight": "10-25% depending on species",
+        "rationale": "Swell conditions favor different species. Bronze Whalers are most active in surf zones (1.2-2.5m), while White Sharks tolerate higher swell. Bull Sharks prefer calmer estuarine waters."
       },
       {
-        "name": "Summer/Warm Season",
-        "threshold": "November - April",
-        "weight": "5%",
-        "rationale": "Peak Bull Shark activity occurs during warmer months (Nov-Apr), though they are present year-round in Sydney waters"
+        "name": "Season",
+        "threshold": "Species-specific seasonal patterns",
+        "weight": "5-25% depending on species",
+        "rationale": "Shark activity varies seasonally by species. Bull Sharks peak in summer (Nov-Apr), White Sharks in winter/spring (May-Oct), Tiger Sharks in peak summer (Dec-Feb). Bronze Whalers are most active Nov-Feb."
       },
       {
-        "name": "High Turbidity / Post-Rainfall",
-        "threshold": "Derived from rainfall (>20mm)",
-        "weight": "25%",
-        "rationale": "Bull Sharks are ATTRACTED to turbid, low-salinity water. Unlike other species, they hunt effectively in murky conditions using electroreception rather than vision"
+        "name": "Turbidity / Water Clarity",
+        "threshold": "Derived from rainfall and conditions",
+        "weight": "5-25% depending on species",
+        "rationale": "Species have different responses to water clarity. Bull Sharks hunt effectively in turbid water (electroreception), while White Sharks prefer clear water for visual hunting. Bronze Whalers have moderate tolerance."
       }
     ],
-    "scoring": "Each condition contributes its weight to the total score if met. Location-based adjustments apply: harbour/estuary locations receive +10 points (Bull Shark hotspots), bays/near-estuary locations +5 points, open ocean beaches no adjustment. Score ranges map to five risk levels: Low (0-20), Moderate (21-40), High (41-60), Severe (61-80), Catastrophic (81-100). If ALL conditions are met simultaneously, the score is escalated to Catastrophic."
+    "scoring": "Risk is calculated independently for each shark species present at a location using species-specific environmental models. Each species score is then weighted by its likelihood (common/occasional/rare) and incident history (high/moderate/low) at that location. The weighted combination determines overall risk. Location type also affects species scores: harbour/estuary locations favor Bull Sharks, open beaches favor White Sharks and Bronze Whalers. Final scores map to five risk levels: Low (0-20), Moderate (21-40), High (41-60), Severe (61-80), Catastrophic (81-100)."
   }
 }

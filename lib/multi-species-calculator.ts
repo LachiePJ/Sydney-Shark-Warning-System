@@ -62,9 +62,9 @@ export class MultiSpeciesCalculator {
     // Sort by score (highest first)
     speciesRisks.sort((a, b) => b.score - a.score);
 
-    // Overall risk = highest species risk
+    // Calculate overall risk weighted by likelihood and incident history
+    const overallScore = this.calculateWeightedOverallRisk(speciesRisks);
     const primarySpecies = speciesRisks[0];
-    const overallScore = primarySpecies.score;
     const levelConfig = getRiskLevelFromScore(overallScore);
 
     // Generate explanation
@@ -81,6 +81,39 @@ export class MultiSpeciesCalculator {
       bySpecies: speciesRisks,
       primaryThreat: primarySpecies.species,
     };
+  }
+
+  /**
+   * Calculate overall risk weighted by species likelihood and incident history
+   * Rare species with low incident history contribute less to overall score
+   */
+  private calculateWeightedOverallRisk(speciesRisks: SpeciesRisk[]): number {
+    if (speciesRisks.length === 0) return 0;
+
+    let weightedSum = 0;
+    let totalWeight = 0;
+
+    for (const species of speciesRisks) {
+      // Likelihood weight
+      const likelihoodWeight = 
+        species.likelihood === 'common' ? 1.0 :
+        species.likelihood === 'occasional' ? 0.6 :
+        0.3; // rare
+
+      // Incident history weight
+      const incidentWeight = 
+        species.incidentHistory === 'high' ? 1.0 :
+        species.incidentHistory === 'moderate' ? 0.7 :
+        0.4; // low
+
+      // Combined weight
+      const weight = likelihoodWeight * incidentWeight;
+
+      weightedSum += species.score * weight;
+      totalWeight += weight;
+    }
+
+    return Math.round(weightedSum / totalWeight);
   }
 
   /**

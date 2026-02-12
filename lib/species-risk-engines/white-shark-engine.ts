@@ -28,11 +28,11 @@ export class WhiteSharkEngine extends BaseSpeciesEngine {
   };
 
   readonly weights: SpeciesWeights = {
-    waterTemp: 35,      // PRIMARY FACTOR - temperature drives presence
+    waterTemp: 25,      // Important but not catastrophic on its own
     rainfall: 5,        // Mostly irrelevant for White Sharks
-    swell: 10,          // Some relevance in open ocean
-    season: 25,         // Strong seasonal pattern (winter/spring)
-    turbidity: 5,       // Slightly negative (prefer clear water)
+    swell: 15,          // More relevant - White Sharks in surf zones
+    season: 20,         // Seasonal pattern but present year-round
+    turbidity: 10,      // Prefer clear water but not a huge factor
   };
 
   protected getTemperatureConditionName(): string {
@@ -94,8 +94,8 @@ export class WhiteSharkEngine extends BaseSpeciesEngine {
       // Occasionally in bays: -10 points
       return Math.max(0, baseScore - 10);
     } else if (input.locationType === 'beach') {
-      // Open beaches: +5 points (preferred habitat)
-      return Math.min(100, baseScore + 5);
+      // Open beaches: +3 points (preferred but not extreme)
+      return Math.min(100, baseScore + 3);
     }
 
     return baseScore;

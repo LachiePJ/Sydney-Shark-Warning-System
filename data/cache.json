@@ -1,47 +1,47 @@
 {
   "beaches": {
     "manly": {
-      "temperature": 22.6,
-      "waveHeight": 1.08,
-      "rainfall48h": 2.1,
-      "timestamp": "2026-01-27T21:00:00.000Z"
-    },
-    "bondi": {
-      "temperature": 22.4,
-      "waveHeight": 1.15,
-      "rainfall48h": 2.3,
-      "timestamp": "2026-01-27T21:00:00.000Z"
-    },
-    "coogee": {
-      "temperature": 22.3,
-      "waveHeight": 1.22,
-      "rainfall48h": 2.5,
-      "timestamp": "2026-01-27T21:00:00.000Z"
-    },
-    "maroubra": {
-      "temperature": 22.2,
-      "waveHeight": 1.35,
-      "rainfall48h": 2.8,
-      "timestamp": "2026-01-27T21:00:00.000Z"
-    },
-    "cronulla": {
-      "temperature": 22.1,
-      "waveHeight": 1.42,
-      "rainfall48h": 3.1,
-      "timestamp": "2026-01-27T21:00:00.000Z"
-    },
-    "palmBeach": {
       "temperature": 22.7,
       "waveHeight": 0.98,
-      "rainfall48h": 1.9,
-      "timestamp": "2026-01-27T21:00:00.000Z"
+      "rainfall48h": 4.2,
+      "timestamp": "2026-02-12T04:07:37.799Z"
+    },
+    "bondi": {
+      "temperature": 22,
+      "waveHeight": 1.14,
+      "rainfall48h": 4.2,
+      "timestamp": "2026-02-12T04:07:37.799Z"
+    },
+    "coogee": {
+      "temperature": 22,
+      "waveHeight": 1.36,
+      "rainfall48h": 4.2,
+      "timestamp": "2026-02-12T04:07:37.799Z"
+    },
+    "maroubra": {
+      "temperature": 22,
+      "waveHeight": 1.36,
+      "rainfall48h": 4.2,
+      "timestamp": "2026-02-12T04:07:37.799Z"
+    },
+    "cronulla": {
+      "temperature": 21.9,
+      "waveHeight": 1.64,
+      "rainfall48h": 4.2,
+      "timestamp": "2026-02-12T04:07:37.800Z"
+    },
+    "palmBeach": {
+      "temperature": 23,
+      "waveHeight": 1,
+      "rainfall48h": 4.2,
+      "timestamp": "2026-02-12T04:07:37.800Z"
     },
     "sydneyHarbour": {
-      "temperature": 22.8,
-      "waveHeight": 0.42,
-      "rainfall48h": 2.0,
-      "timestamp": "2026-01-27T21:00:00.000Z"
+      "temperature": 22,
+      "waveHeight": 1.14,
+      "rainfall48h": 4.2,
+      "timestamp": "2026-02-12T04:07:37.800Z"
     }
   },
-  "lastFetch": "2026-01-27T21:00:00.000Z"
+  "lastFetch": "2026-02-12T04:07:37.800Z"
 }
