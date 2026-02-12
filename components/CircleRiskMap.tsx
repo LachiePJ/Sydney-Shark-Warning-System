@@ -42,11 +42,11 @@ export default function CircleRiskMap({ zoneRisks, regionConfig }: CircleRiskMap
     // Helper to get color based on risk level
     const getColor = (level: string): string => {
       switch (level) {
-        case 'Low': return '#22c55e';
-        case 'Moderate': return '#fbbf24';
-        case 'High': return '#f97316';
-        case 'Severe': return '#ef4444';
-        case 'Catastrophic': return '#7f1d1d';
+        case 'Low Risk': return '#22c55e';
+        case 'Moderate Risk': return '#fbbf24';
+        case 'High Risk': return '#f97316';
+        case 'Severe Risk': return '#ef4444';
+        case 'Extreme Risk': return '#7f1d1d';
         default: return '#94a3b8';
       }
     };

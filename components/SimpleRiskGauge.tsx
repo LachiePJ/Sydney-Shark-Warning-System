@@ -15,11 +15,11 @@ export default function SimpleRiskGauge({ risk, regionContent }: SimpleRiskGauge
       <div className="relative w-full mb-4 md:mb-6">
         {/* Colored bar segments */}
         <div className="flex h-12 md:h-16 rounded-full overflow-hidden shadow-lg">
-          <div className="flex-1 bg-emerald-500" title="LOW"></div>
-          <div className="flex-1 bg-yellow-400" title="MODERATE"></div>
-          <div className="flex-1 bg-orange-500" title="HIGH"></div>
-          <div className="flex-1 bg-red-600" title="SEVERE"></div>
-          <div className="flex-1 bg-red-900" title="CATASTROPHIC"></div>
+          <div className="flex-1 bg-emerald-500" title="LOW RISK"></div>
+          <div className="flex-1 bg-yellow-400" title="MODERATE RISK"></div>
+          <div className="flex-1 bg-orange-500" title="HIGH RISK"></div>
+          <div className="flex-1 bg-red-600" title="SEVERE RISK"></div>
+          <div className="flex-1 bg-red-900" title="EXTREME RISK"></div>
         </div>
         
         {/* Labels below bar */}
@@ -28,7 +28,7 @@ export default function SimpleRiskGauge({ risk, regionContent }: SimpleRiskGauge
           <span className="text-[10px] sm:text-xs font-semibold text-gray-600 hidden xs:inline">MODERATE</span>
           <span className="text-[10px] sm:text-xs font-semibold text-gray-600">HIGH</span>
           <span className="text-[10px] sm:text-xs font-semibold text-gray-600 hidden xs:inline">SEVERE</span>
-          <span className="text-[10px] sm:text-xs font-semibold text-gray-600 hidden sm:inline">CATASTROPHIC</span>
+          <span className="text-[10px] sm:text-xs font-semibold text-gray-600 hidden sm:inline">EXTREME</span>
         </div>
       </div>
 

@@ -37,7 +37,7 @@ export const DEFAULT_WEIGHTS: RiskWeights = {
   waterQuality: 25,   // Increased - turbidity attracts Bull Sharks (hunt via electroreception)
 };
 
-export type RiskLevel = 'Low' | 'Moderate' | 'High' | 'Severe' | 'Catastrophic';
+export type RiskLevel = 'Low Risk' | 'Moderate Risk' | 'High Risk' | 'Severe Risk' | 'Extreme Risk';
 
 export interface RiskLevelConfig {
   level: RiskLevel;
@@ -49,39 +49,39 @@ export interface RiskLevelConfig {
 
 export const RISK_LEVELS: RiskLevelConfig[] = [
   {
-    level: 'Low',
+    level: 'Low Risk',
     minScore: 0,
     maxScore: 20,
     color: '#10b981',  // Bright Green
     guidance: 'Conditions are favourable. Normal swimming precautions apply.',
   },
   {
-    level: 'Moderate',
+    level: 'Moderate Risk',
     minScore: 21,
     maxScore: 40,
     color: '#fbbf24',  // Bright Yellow
     guidance: 'Swim with caution. Avoid murky water and dawn/dusk periods.',
   },
   {
-    level: 'High',
+    level: 'High Risk',
     minScore: 41,
     maxScore: 60,
     color: '#f59e0b',  // Amber/Orange
     guidance: 'Elevated risk. Stay in patrolled areas and avoid murky conditions.',
   },
   {
-    level: 'Severe',
+    level: 'Severe Risk',
     minScore: 61,
     maxScore: 80,
     color: '#dc2626',  // Bright Red
     guidance: 'Serious risk. Swimming not recommended. Stay out of the water if possible.',
   },
   {
-    level: 'Catastrophic',
+    level: 'Extreme Risk',
     minScore: 81,
     maxScore: 100,
     color: '#7f1d1d',  // Dark Red/Maroon
-    guidance: 'DO NOT SWIM. All high-risk conditions are present.',
+    guidance: 'DO NOT SWIM. Perfect storm conditions - multiple shark attacks possible.',
   },
 ];
 
