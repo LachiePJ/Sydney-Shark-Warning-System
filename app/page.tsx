@@ -15,6 +15,7 @@ import { DataService } from '@/lib/data-service';
 import { getRegion } from '@/config/regions';
 import { getRegionContent } from '@/config/region-content';
 import RegionAwareApp from '@/components/RegionAwareApp';
+import HeaderWithRegionSelector from '@/components/HeaderWithRegionSelector';
 
 // Dynamic import for map (client-side only)
 const CircleRiskMap = dynamic(() => import('@/components/CircleRiskMap'), {
@@ -66,35 +67,8 @@ export default async function Home({ searchParams }: HomeProps) {
   return (
     <RegionAwareApp initialRegion={regionId}>
       <main className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white shadow-2xl">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            {/* Left: Shark Icon */}
-            <div className="flex items-center gap-4">
-              <HeaderSharkIcon />
-              <div>
-                <h1 className="text-3xl md:text-4xl font-bold">
-                  Real-Time Shark Risk
-                </h1>
-                <p className="text-sm text-slate-300 mt-1">
-                  Real-time shark risk based on trusted data and scientific research into shark behaviour
-                </p>
-              </div>
-            </div>
-
-            {/* Right: Node Strategy Logo */}
-            <a
-              href="https://www.nodestrategy.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:block hover:opacity-80 transition-opacity"
-            >
-              <HeaderNodeLogo />
-            </a>
-          </div>
-        </div>
-      </header>
+      {/* Header with Region Selector */}
+      <HeaderWithRegionSelector initialRegion={regionId} />
 
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Purpose */}

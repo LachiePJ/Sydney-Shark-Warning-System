@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { ZoneRiskResult } from '@/lib/types';
-import { BEACH_LOCATIONS, BEACH_TO_ZONE_MAP } from '@/config/beach-locations';
 import { Region } from '@/config/regions';
 
 interface CircleRiskMapProps {
@@ -40,9 +39,6 @@ export default function CircleRiskMap({ zoneRisks, regionConfig }: CircleRiskMap
       maxZoom: 19,
     }).addTo(map);
 
-    // Create a map of zone risks
-    const riskMap = new Map(zoneRisks.map(z => [z.zoneId, z]));
-
     // Helper to get color based on risk level
     const getColor = (level: string): string => {
       switch (level) {
@@ -55,39 +51,53 @@ export default function CircleRiskMap({ zoneRisks, regionConfig }: CircleRiskMap
       }
     };
 
-    // Add circles for each beach
-    BEACH_LOCATIONS.forEach(beach => {
-      const zoneId = BEACH_TO_ZONE_MAP[beach.id];
-      const risk = riskMap.get(zoneId);
-      
+    // Helper to calculate center of polygon
+    const getPolygonCenter = (coordinates: number[][][]): [number, number] => {
+      const coords = coordinates[0];
+      let latSum = 0;
+      let lonSum = 0;
+      coords.forEach(([lon, lat]) => {
+        latSum += lat;
+        lonSum += lon;
+      });
+      return [latSum / coords.length, lonSum / coords.length];
+    };
+
+    // Add markers for each zone
+    regionConfig.zones.features.forEach(zone => {
+      const risk = zoneRisks.find(r => r.zoneId === zone.properties.id);
       if (!risk) return;
 
       const color = getColor(risk.level);
+      const center = getPolygonCenter(zone.geometry.coordinates);
+      
+      // Determine radius based on location type
+      const radius = zone.properties.locationType === 'harbour' ? 800 : 1500;
       
       // Create circle marker
-      const circle = L.circle([beach.lat, beach.lon], {
-        radius: beach.radius,
+      const circle = L.circle(center, {
+        radius: radius,
         fillColor: color,
-        fillOpacity: 0.25,
+        fillOpacity: 0.3,
         color: color,
         weight: 2,
-        opacity: 0.6,
+        opacity: 0.7,
       }).addTo(map);
 
       // Create popup content
       const popupContent = `
-        <div style="min-width: 200px;">
+        <div style="min-width: 220px;">
           <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 700; color: #1e293b;">
-            ${beach.name}
+            ${zone.properties.name}
           </h3>
-          <div style="background: ${color}; color: white; padding: 4px 8px; border-radius: 4px; font-weight: 600; text-align: center; margin-bottom: 8px;">
+          <div style="background: ${color}; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 600; text-align: center; margin-bottom: 10px;">
             ${risk.level.toUpperCase()} RISK
           </div>
-          <div style="font-size: 13px; color: #475569; line-height: 1.4;">
+          <div style="font-size: 13px; color: #475569; line-height: 1.6;">
             <strong>Risk Score:</strong> ${risk.score}/100<br/>
             <strong>Guidance:</strong> ${risk.guidance}<br/>
-            <strong>Type:</strong> ${beach.type.charAt(0).toUpperCase() + beach.type.slice(1)}<br/>
-            <strong>Data Zone:</strong> ${risk.zoneName}
+            <strong>Type:</strong> ${zone.properties.locationType ? zone.properties.locationType.charAt(0).toUpperCase() + zone.properties.locationType.slice(1) : 'Beach'}<br/>
+            ${zone.properties.description ? `<strong>Area:</strong> ${zone.properties.description}<br/>` : ''}
           </div>
         </div>
       `;
@@ -97,17 +107,17 @@ export default function CircleRiskMap({ zoneRisks, regionConfig }: CircleRiskMap
       // Add hover effect
       circle.on('mouseover', function(this: L.Circle) {
         this.setStyle({
-          fillOpacity: 0.45,
+          fillOpacity: 0.5,
           weight: 3,
-          opacity: 0.9,
+          opacity: 0.95,
         });
       });
 
       circle.on('mouseout', function(this: L.Circle) {
         this.setStyle({
-          fillOpacity: 0.25,
+          fillOpacity: 0.3,
           weight: 2,
-          opacity: 0.6,
+          opacity: 0.7,
         });
       });
     });

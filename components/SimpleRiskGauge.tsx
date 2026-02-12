@@ -10,11 +10,11 @@ interface SimpleRiskGaugeProps {
 
 export default function SimpleRiskGauge({ risk, regionContent }: SimpleRiskGaugeProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-8 px-4 max-w-2xl mx-auto">
+    <div className="flex flex-col items-center justify-center py-6 md:py-8 px-2 md:px-4 max-w-2xl mx-auto">
       {/* Simple gauge indicator */}
-      <div className="relative w-full mb-6">
+      <div className="relative w-full mb-4 md:mb-6">
         {/* Colored bar segments */}
-        <div className="flex h-16 rounded-full overflow-hidden shadow-lg">
+        <div className="flex h-12 md:h-16 rounded-full overflow-hidden shadow-lg">
           <div className="flex-1 bg-emerald-500" title="LOW"></div>
           <div className="flex-1 bg-yellow-400" title="MODERATE"></div>
           <div className="flex-1 bg-orange-500" title="HIGH"></div>
@@ -34,14 +34,14 @@ export default function SimpleRiskGauge({ risk, regionContent }: SimpleRiskGauge
 
       {/* Current level display */}
       <div 
-        className="w-full px-6 py-6 md:px-12 md:py-8 rounded-xl text-center shadow-xl"
+        className="w-full px-4 py-5 md:px-12 md:py-8 rounded-xl text-center shadow-xl"
         style={{ backgroundColor: risk.color }}
       >
         <div className="text-white">
-          <div className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 break-words">
+          <div className="text-2xl sm:text-3xl md:text-5xl font-bold mb-2 md:mb-3 break-words">
             {risk.level.toUpperCase()}
           </div>
-          <div className="text-lg sm:text-xl md:text-2xl opacity-90">
+          <div className="text-base sm:text-lg md:text-2xl opacity-90">
             Risk Score: {risk.score}/100
           </div>
         </div>

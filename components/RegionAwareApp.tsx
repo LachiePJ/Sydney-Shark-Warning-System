@@ -30,14 +30,8 @@ export default function RegionAwareApp({ children, initialRegion }: RegionAwareA
   };
 
   return (
-    <div>
-      <div className="container mx-auto px-4 pt-4">
-        <RegionSelector 
-          currentRegion={currentRegion} 
-          onRegionChange={handleRegionChange} 
-        />
-      </div>
+    <>
       {children}
-    </div>
+    </>
   );
 }

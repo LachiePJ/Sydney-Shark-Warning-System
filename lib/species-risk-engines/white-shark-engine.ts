@@ -28,11 +28,11 @@ export class WhiteSharkEngine extends BaseSpeciesEngine {
   };
 
   readonly weights: SpeciesWeights = {
-    waterTemp: 25,      // Important but not catastrophic on its own
-    rainfall: 5,        // Mostly irrelevant for White Sharks
-    swell: 15,          // More relevant - White Sharks in surf zones
-    season: 20,         // Seasonal pattern but present year-round
-    turbidity: 10,      // Prefer clear water but not a huge factor
+    waterTemp: 12,      // Significantly reduced
+    rainfall: 3,        // Mostly irrelevant for White Sharks
+    swell: 10,          // Reduced
+    season: 12,         // Reduced - present year-round
+    turbidity: 8,       // Reduced
   };
 
   protected getTemperatureConditionName(): string {
@@ -88,14 +88,14 @@ export class WhiteSharkEngine extends BaseSpeciesEngine {
 
     // White Sharks prefer open ocean, avoid harbours
     if (input.locationType === 'harbour') {
-      // Rarely enter harbours: -20 points
-      return Math.max(0, baseScore - 20);
+      // Rarely enter harbours: -25 points
+      return Math.max(0, baseScore - 25);
     } else if (input.locationType === 'bay') {
-      // Occasionally in bays: -10 points
-      return Math.max(0, baseScore - 10);
+      // Occasionally in bays: -15 points
+      return Math.max(0, baseScore - 15);
     } else if (input.locationType === 'beach') {
-      // Open beaches: +3 points (preferred but not extreme)
-      return Math.min(100, baseScore + 3);
+      // Open beaches: +2 points (minimal bonus)
+      return Math.min(100, baseScore + 2);
     }
 
     return baseScore;
