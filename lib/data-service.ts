@@ -6,12 +6,13 @@
 import { RiskInput, ZoneRiskResult } from '@/lib/types';
 import { RiskEngine } from '@/lib/risk-engine';
 import { MultiSpeciesCalculator } from '@/lib/multi-species-calculator';
-import { ZONES, ZoneProperties } from '@/config/zones';
+import { ZoneProperties, Zone, ZonesCollection } from '@/config/zones';
 import { DEFAULT_THRESHOLDS } from '@/config/risk-config';
 import { fetchAllBeachesMarineData } from '@/lib/bom/marine-temperature-adapter';
 import { fetchSimpleRainfall } from '@/lib/bom/simple-rainfall-adapter';
 import { cacheSingleton } from '@/lib/cache-singleton';
 import { saveToRedis, loadFromRedis, isRedisConfigured } from '@/lib/redis-cache';
+import { getRegion, DEFAULT_REGION } from '@/config/regions';
 import { promises as fs } from 'fs';
 import path from 'path';
 
@@ -56,10 +57,32 @@ export class DataService {
   private cache: CacheData | null = null;
   private riskEngine: RiskEngine;
   private multiSpeciesCalculator: MultiSpeciesCalculator;
+  private regionId: string;
+  private zones: Zone[];
 
-  constructor() {
+  constructor(regionId: string = DEFAULT_REGION) {
     this.riskEngine = new RiskEngine();
     this.multiSpeciesCalculator = new MultiSpeciesCalculator();
+    this.regionId = regionId;
+    
+    // Load zones for this region
+    const region = getRegion(regionId);
+    if (!region) {
+      console.warn(`Region '${regionId}' not found, falling back to ${DEFAULT_REGION}`);
+      const fallbackRegion = getRegion(DEFAULT_REGION)!;
+      this.zones = fallbackRegion.zones.features;
+      this.regionId = DEFAULT_REGION;
+    } else {
+      this.zones = region.zones.features;
+    }
+  }
+
+  getRegionId(): string {
+    return this.regionId;
+  }
+
+  getZones(): Zone[] {
+    return this.zones;
   }
 
   /**
@@ -211,7 +234,7 @@ export class DataService {
   async calculateAllZoneRisks(): Promise<ZoneRiskResult[]> {
     const results: ZoneRiskResult[] = [];
     
-    for (const zone of ZONES.features) {
+    for (const zone of this.zones) {
       const input = await this.getRiskInputForZone(zone.properties);
       
       // Use multi-species calculator if species profiles are defined

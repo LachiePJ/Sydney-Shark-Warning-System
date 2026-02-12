@@ -12,6 +12,8 @@ import Disclaimer from '@/components/Disclaimer';
 import NodeStrategyBranding from '@/components/NodeStrategyBranding';
 import { HeaderSharkIcon, HeaderNodeLogo } from '@/components/HeaderIcons';
 import { DataService } from '@/lib/data-service';
+import { getRegion } from '@/config/regions';
+import RegionAwareApp from '@/components/RegionAwareApp';
 
 // Dynamic import for map (client-side only)
 const CircleRiskMap = dynamic(() => import('@/components/CircleRiskMap'), {
@@ -25,8 +27,16 @@ const CircleRiskMap = dynamic(() => import('@/components/CircleRiskMap'), {
 
 export const revalidate = 1800; // Revalidate every 30 minutes
 
-export default async function Home() {
-  const dataService = new DataService();
+interface HomeProps {
+  searchParams: { region?: string };
+}
+
+export default async function Home({ searchParams }: HomeProps) {
+  const regionId = searchParams.region || 'sydney';
+  const regionConfig = getRegion(regionId);
+  const regionName = regionConfig?.displayName || 'Sydney';
+  
+  const dataService = new DataService(regionId);
   
   // Auto-refresh: Update data if cache is stale (older than 30 minutes)
   const dataAge = dataService.getCacheAge();
@@ -52,7 +62,8 @@ export default async function Home() {
   });
 
   return (
-    <main className="min-h-screen bg-white">
+    <RegionAwareApp initialRegion={regionId}>
+      <main className="min-h-screen bg-white">
       {/* Header */}
       <header className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white shadow-2xl">
         <div className="container mx-auto px-4 py-6">
@@ -87,7 +98,7 @@ export default async function Home() {
         {/* Purpose */}
         <div className="bg-slate-50 border-l-4 border-slate-900 p-4 md:p-6 mb-6 md:mb-8">
           <p className="text-gray-700 leading-relaxed text-sm md:text-base lg:text-lg">
-            Welcome to real-time shark risk. This tool analyzes real-time environmental data from the Bureau of Meteorology and marine APIs, combining it with peer-reviewed scientific research on shark behavior to provide up-to-the-minute risk assessments for Sydney beaches.
+            Welcome to real-time shark risk. This tool analyzes real-time environmental data from the Bureau of Meteorology and marine APIs, combining it with peer-reviewed scientific research on shark behavior to provide up-to-the-minute risk assessments for {regionName} beaches.
           </p>
         </div>
 
@@ -159,5 +170,6 @@ export default async function Home() {
       {/* Node Strategy Branding */}
       <NodeStrategyBranding />
     </main>
+    </RegionAwareApp>
   );
 }
