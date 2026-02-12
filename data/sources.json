@@ -125,7 +125,7 @@
       "metric": "Rainfall",
       "source": "Australian Bureau of Meteorology (BoM)",
       "url": "http://www.bom.gov.au/",
-      "description": "Daily rainfall totals from Sydney Observatory Hill (Station 066062) and regional observation stations",
+      "description": "Daily rainfall totals from regional observation stations closest to each location",
       "updateFrequency": "Hourly",
       "format": "JSON observation feeds (IDN60901 product)"
     },
@@ -133,7 +133,7 @@
       "metric": "Water Temperature",
       "source": "Australian Bureau of Meteorology (BoM)",
       "url": "http://www.bom.gov.au/oceanography/",
-      "description": "Sea surface temperature from Sydney offshore buoys and coastal stations (Fort Denison and Sydney offshore observations)",
+      "description": "Sea surface temperature from offshore buoys and coastal stations in the selected region",
       "updateFrequency": "Every 30 minutes",
       "format": "BoM oceanographic observation products"
     },
@@ -141,7 +141,7 @@
       "metric": "Swell Height",
       "source": "Australian Bureau of Meteorology (BoM)",
       "url": "http://www.bom.gov.au/oceanography/",
-      "description": "Significant wave height from offshore observation buoys in the Sydney region",
+      "description": "Significant wave height from offshore observation buoys in the selected region",
       "updateFrequency": "Every 30 minutes",
       "format": "BoM oceanographic observation products"
     },

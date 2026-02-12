@@ -20,8 +20,9 @@ export class WhiteSharkEngine extends BaseSpeciesEngine {
   /**
    * White Sharks are large and powerful but attacks are relatively rare
    * Most bites are investigative, not predatory
+   * Attack rate is significantly lower than Bull/Tiger sharks
    */
-  readonly aggressionFactor = 0.75;
+  readonly aggressionFactor = 0.5;
 
   readonly thresholds: SpeciesThresholds = {
     waterTempMin: 12,        // Can tolerate cold water
@@ -34,11 +35,11 @@ export class WhiteSharkEngine extends BaseSpeciesEngine {
   };
 
   readonly weights: SpeciesWeights = {
-    waterTemp: 12,      // Significantly reduced
-    rainfall: 3,        // Mostly irrelevant for White Sharks
-    swell: 10,          // Reduced
-    season: 12,         // Reduced - present year-round
-    turbidity: 8,       // Reduced
+    waterTemp: 8,       // Further reduced for realistic risk
+    rainfall: 2,        // Further reduced for realistic risk
+    swell: 8,           // Further reduced for realistic risk
+    season: 10,         // Further reduced for realistic risk
+    turbidity: 5,       // Further reduced for realistic risk
   };
 
   protected getTemperatureConditionName(): string {

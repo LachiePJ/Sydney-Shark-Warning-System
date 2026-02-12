@@ -176,7 +176,7 @@ export default function ExplainabilitySection({ regionContent }: ExplainabilityS
       {activeTab === 'data' && (
         <div className="space-y-6">
           <p className="text-gray-700 mb-6">
-            <strong>🔴 Live data feed:</strong> All environmental data is continuously sourced from the Australian Bureau of Meteorology (BoM) and marine APIs in real-time, ensuring up-to-date reliability and official provenance.
+            <strong>Live data feed:</strong> All environmental data is continuously sourced from the Australian Bureau of Meteorology (BoM) and marine APIs in real-time, ensuring up-to-date reliability and official provenance.
           </p>
 
           <div className="space-y-4">
