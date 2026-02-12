@@ -13,6 +13,7 @@ import NodeStrategyBranding from '@/components/NodeStrategyBranding';
 import { HeaderSharkIcon, HeaderNodeLogo } from '@/components/HeaderIcons';
 import { DataService } from '@/lib/data-service';
 import { getRegion } from '@/config/regions';
+import { getRegionContent } from '@/config/region-content';
 import RegionAwareApp from '@/components/RegionAwareApp';
 
 // Dynamic import for map (client-side only)
@@ -35,6 +36,7 @@ export default async function Home({ searchParams }: HomeProps) {
   const regionId = searchParams.region || 'sydney';
   const regionConfig = getRegion(regionId);
   const regionName = regionConfig?.displayName || 'Sydney';
+  const regionContent = getRegionContent(regionId);
   
   const dataService = new DataService(regionId);
   
@@ -104,14 +106,14 @@ export default async function Home({ searchParams }: HomeProps) {
 
         {/* Risk Gauge */}
         <div className="bg-white rounded-lg shadow-xl p-4 md:p-6 lg:p-8 mb-6 md:mb-8 border border-gray-200">
-          <SimpleRiskGauge risk={overallRisk} />
+          <SimpleRiskGauge risk={overallRisk} regionContent={regionContent} />
         </div>
 
         {/* Risk Map */}
         <div className="mb-6 md:mb-8">
           <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-slate-900 px-2">Interactive Risk Map</h2>
           <div className="bg-white rounded-lg shadow-xl p-2 md:p-4 border border-gray-200">
-            <CircleRiskMap zoneRisks={zoneRisks} />
+            <CircleRiskMap zoneRisks={zoneRisks} regionConfig={regionConfig!} />
           </div>
           <p className="text-xs md:text-sm text-gray-500 mt-2 md:mt-3 text-center px-4">
             Click or hover over beach areas to see risk levels and guidance. Each circle represents a beach or harbour swimming area.
@@ -123,6 +125,7 @@ export default async function Home({ searchParams }: HomeProps) {
           <SpeciesRiskBreakdown 
             speciesRisks={overallRisk.bySpecies} 
             primaryThreat={overallRisk.primaryThreat || ''} 
+            regionContent={regionContent}
           />
         )}
 
@@ -130,7 +133,7 @@ export default async function Home({ searchParams }: HomeProps) {
         <RiskFactorsDetail risk={overallRisk} />
 
         {/* Explainability */}
-        <ExplainabilitySection />
+        <ExplainabilitySection regionContent={regionContent} />
 
         {/* Disclaimer - Moved to bottom */}
         <Disclaimer />

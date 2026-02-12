@@ -2,8 +2,13 @@
 
 import { useState } from 'react';
 import sourcesData from '@/data/sources.json';
+import { RegionContent } from '@/config/region-content';
 
-export default function ExplainabilitySection() {
+interface ExplainabilitySectionProps {
+  regionContent: RegionContent;
+}
+
+export default function ExplainabilitySection({ regionContent }: ExplainabilitySectionProps) {
   const [activeTab, setActiveTab] = useState<'how' | 'research' | 'data'>('how');
 
   return (
@@ -70,13 +75,21 @@ export default function ExplainabilitySection() {
                     <p className="text-sm text-gray-600 mb-2">
                       <strong>Habitat:</strong> {model.habitat}
                     </p>
-                    <p className={`text-sm font-semibold ${
-                      model.sydneyRelevance.includes('PRIMARY') ? 'text-red-700' :
-                      model.sydneyRelevance.includes('RARE') ? 'text-gray-600' :
-                      model.sydneyRelevance.includes('COMMON') ? 'text-orange-600' : 'text-gray-700'
-                    }`}>
-                      Sydney: {model.sydneyRelevance}
-                    </p>
+                    {(() => {
+                      const speciesKey = model.species.includes('Bull') ? 'bull-shark' : 
+                                       model.species.includes('White') ? 'white-shark' :
+                                       model.species.includes('Tiger') ? 'tiger-shark' : 'bronze-whaler';
+                      const relevance = regionContent.speciesRelevance[speciesKey] || model.sydneyRelevance;
+                      return (
+                        <p className={`text-sm font-semibold ${
+                          relevance.includes('PRIMARY') || relevance.includes('VERY COMMON') ? 'text-red-700' :
+                          relevance.includes('RARE') || relevance.includes('VERY RARE') ? 'text-gray-600' :
+                          relevance.includes('COMMON') ? 'text-orange-600' : 'text-gray-700'
+                        }`}>
+                          {regionContent.displayName}: {relevance}
+                        </p>
+                      );
+                    })()}
                   </div>
 
                   {/* Risk Factors */}
@@ -107,8 +120,8 @@ export default function ExplainabilitySection() {
             <p className="text-sm text-gray-700 mb-4">{sourcesData.methodology.overallScoring}</p>
             
             <div className="bg-white rounded p-4 border border-blue-200">
-              <h5 className="font-semibold text-sm mb-2">Where to Swim for Lowest Risk in Sydney</h5>
-              <p className="text-sm text-gray-700">{sourcesData.methodology.locationGuidance}</p>
+              <h5 className="font-semibold text-sm mb-2">Where to Swim for Lowest Risk in {regionContent.displayName}</h5>
+              <p className="text-sm text-gray-700">{regionContent.safestSwimmingAdvice} {regionContent.highRiskAdvice}</p>
             </div>
           </div>
         </div>
@@ -121,7 +134,7 @@ export default function ExplainabilitySection() {
             This system is based on peer-reviewed scientific research examining environmental
             factors associated with shark behavior and activity patterns in coastal waters.
             <strong className="block mt-2 text-slate-900">
-              For Sydney: Bull Sharks are responsible for the overwhelming majority of attacks (86% occur in estuaries/harbours).
+              For {regionContent.displayName}: {regionContent.dominantSpecies}s are the primary threat. {regionContent.dominantSpeciesStats || ''}
             </strong>
           </p>
 

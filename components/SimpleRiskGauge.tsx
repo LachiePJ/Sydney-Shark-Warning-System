@@ -1,12 +1,14 @@
 'use client';
 
 import { RiskResult } from '@/lib/types';
+import { RegionContent } from '@/config/region-content';
 
 interface SimpleRiskGaugeProps {
   risk: RiskResult;
+  regionContent: RegionContent;
 }
 
-export default function SimpleRiskGauge({ risk }: SimpleRiskGaugeProps) {
+export default function SimpleRiskGauge({ risk, regionContent }: SimpleRiskGaugeProps) {
   return (
     <div className="flex flex-col items-center justify-center py-8 px-4 max-w-2xl mx-auto">
       {/* Simple gauge indicator */}
@@ -60,15 +62,19 @@ export default function SimpleRiskGauge({ risk }: SimpleRiskGaugeProps) {
           )}
 
           {/* Safety Advice Based on Risk Level */}
-          {risk.score >= 40 && risk.primaryThreat === 'Bull Shark' && (
+          {risk.score >= 40 && risk.primaryThreat && (
             <div className="mt-3 p-3 bg-red-50 border-l-4 border-red-600 rounded">
-              <p className="font-semibold text-red-900 text-sm mb-2">⚠️ Bull Shark Activity Elevated</p>
-              <p className="text-xs text-red-800 mb-2">
-                Bull Sharks dominate Sydney attacks (86% occur in harbours/estuaries).
-              </p>
+              <p className="font-semibold text-red-900 text-sm mb-2">⚠️ {risk.primaryThreat} Activity Elevated</p>
+              {regionContent.dominantSpeciesStats && (
+                <p className="text-xs text-red-800 mb-2">
+                  {regionContent.dominantSpecies}s: {regionContent.dominantSpeciesStats}
+                </p>
+              )}
               <p className="text-xs text-red-900 font-semibold">
-                Based on current conditions: Swim at patrolled open ocean beaches (Bondi, Coogee, Maroubra) 
-                rather than Sydney Harbour or river mouths.
+                Based on current conditions: {regionContent.safestSwimmingAdvice}
+              </p>
+              <p className="text-xs text-red-900 mt-2">
+                {regionContent.highRiskAdvice}
               </p>
             </div>
           )}

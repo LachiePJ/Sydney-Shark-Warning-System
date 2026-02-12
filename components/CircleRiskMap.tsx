@@ -5,12 +5,14 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { ZoneRiskResult } from '@/lib/types';
 import { BEACH_LOCATIONS, BEACH_TO_ZONE_MAP } from '@/config/beach-locations';
+import { Region } from '@/config/regions';
 
 interface CircleRiskMapProps {
   zoneRisks: ZoneRiskResult[];
+  regionConfig: Region;
 }
 
-export default function CircleRiskMap({ zoneRisks }: CircleRiskMapProps) {
+export default function CircleRiskMap({ zoneRisks, regionConfig }: CircleRiskMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -22,10 +24,10 @@ export default function CircleRiskMap({ zoneRisks }: CircleRiskMapProps) {
   useEffect(() => {
     if (!mounted || !mapRef.current || mapInstanceRef.current) return;
 
-    // Initialize map centered on Sydney
+    // Initialize map centered on region
     const map = L.map(mapRef.current, {
-      center: [-33.8688, 151.2093],
-      zoom: 11,
+      center: [regionConfig.center.lat, regionConfig.center.lon],
+      zoom: regionConfig.zoom,
       zoomControl: true,
       scrollWheelZoom: true,
     });

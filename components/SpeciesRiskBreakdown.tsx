@@ -1,13 +1,15 @@
 'use client';
 
 import { SpeciesRisk } from '@/lib/types';
+import { RegionContent } from '@/config/region-content';
 
 interface SpeciesRiskBreakdownProps {
   speciesRisks: SpeciesRisk[];
   primaryThreat: string;
+  regionContent: RegionContent;
 }
 
-export default function SpeciesRiskBreakdown({ speciesRisks, primaryThreat }: SpeciesRiskBreakdownProps) {
+export default function SpeciesRiskBreakdown({ speciesRisks, primaryThreat, regionContent }: SpeciesRiskBreakdownProps) {
   if (!speciesRisks || speciesRisks.length === 0) {
     return null;
   }
@@ -144,16 +146,16 @@ export default function SpeciesRiskBreakdown({ speciesRisks, primaryThreat }: Sp
           Each species is scored independently based on current environmental conditions, then weighted by likelihood at this location and historical incident data.
         </p>
         <p className="text-xs font-semibold">
-          In Sydney: Bull Sharks are responsible for the overwhelming majority of attacks (86% occur in estuaries/harbours). White Sharks are extremely rare in Sydney waters.
+          In {regionContent.displayName}: {regionContent.dominantSpecies}s are the primary threat. {regionContent.dominantSpeciesStats || ''}
         </p>
       </div>
       
       {/* Safety Advice */}
       <div className="mt-3 p-4 bg-green-50 border-2 border-green-300 rounded">
-        <p className="font-semibold text-green-900 mb-2">Swimming Safety for Sydney</p>
+        <p className="font-semibold text-green-900 mb-2">Swimming Safety for {regionContent.displayName}</p>
         <ul className="text-xs text-green-900 space-y-1">
-          <li>✓ <strong>Based on current conditions, lowest risk:</strong> Patrolled open ocean beaches (Bondi, Coogee, Maroubra, Northern Beaches)</li>
-          <li>⚠️ <strong>Higher risk right now:</strong> Sydney Harbour, river mouths, estuaries - especially after rainfall</li>
+          <li>✓ <strong>Based on current conditions, lowest risk:</strong> {regionContent.safeBeaches.join(', ')}</li>
+          <li>⚠️ <strong>Higher risk right now:</strong> {regionContent.dangerousLocations.join(', ')} - especially after rainfall</li>
           <li>✓ Always swim between the flags at patrolled beaches</li>
           <li>✓ Avoid swimming at dawn, dusk, or after heavy rainfall (&gt;30mm)</li>
           <li>✓ Never swim alone, especially in harbours or murky water</li>
