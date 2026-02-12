@@ -150,10 +150,10 @@ export default function SpeciesRiskBreakdown({ speciesRisks, primaryThreat }: Sp
       
       {/* Safety Advice */}
       <div className="mt-3 p-4 bg-green-50 border-2 border-green-300 rounded">
-        <p className="font-semibold text-green-900 mb-2">🏊 Swimming Safety for Sydney</p>
+        <p className="font-semibold text-green-900 mb-2">Swimming Safety for Sydney</p>
         <ul className="text-xs text-green-900 space-y-1">
-          <li>✓ <strong>Lowest risk:</strong> Patrolled open ocean beaches (Bondi, Coogee, Maroubra, Northern Beaches)</li>
-          <li>⚠️ <strong>Higher risk:</strong> Sydney Harbour, river mouths, estuaries - especially after rainfall</li>
+          <li>✓ <strong>Based on current conditions, lowest risk:</strong> Patrolled open ocean beaches (Bondi, Coogee, Maroubra, Northern Beaches)</li>
+          <li>⚠️ <strong>Higher risk right now:</strong> Sydney Harbour, river mouths, estuaries - especially after rainfall</li>
           <li>✓ Always swim between the flags at patrolled beaches</li>
           <li>✓ Avoid swimming at dawn, dusk, or after heavy rainfall (&gt;30mm)</li>
           <li>✓ Never swim alone, especially in harbours or murky water</li>

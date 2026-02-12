@@ -65,7 +65,7 @@ export default async function Home() {
                   Real-Time Shark Risk
                 </h1>
                 <p className="text-sm text-slate-300 mt-1">
-                  🔴 Live monitoring • Real-time environmental data • Sydney beaches
+                  Real-time shark risk based on trusted data and scientific research into shark behaviour
                 </p>
               </div>
             </div>
@@ -87,7 +87,7 @@ export default async function Home() {
         {/* Purpose */}
         <div className="bg-slate-50 border-l-4 border-slate-900 p-4 md:p-6 mb-6 md:mb-8">
           <p className="text-gray-700 leading-relaxed text-sm md:text-base lg:text-lg">
-            <strong>🔴 Live monitoring system:</strong> This tool continuously analyzes real-time environmental data from the Bureau of Meteorology and marine APIs, combining it with peer-reviewed scientific research on shark behavior to provide up-to-the-minute risk assessments for Sydney beaches.
+            Welcome to real-time shark risk. This tool analyzes real-time environmental data from the Bureau of Meteorology and marine APIs, combining it with peer-reviewed scientific research on shark behavior to provide up-to-the-minute risk assessments for Sydney beaches.
           </p>
         </div>
 

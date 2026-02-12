@@ -156,7 +156,7 @@
   ],
   "disclaimer": "This system provides an environmental risk assessment based on known correlations between weather/ocean conditions and shark activity patterns from peer-reviewed research. It is NOT a shark detection or sighting system. The risk levels are heuristic estimates and should be used in conjunction with official beach safety information, lifeguard warnings, and personal judgement. Always swim at patrolled beaches, follow local signage, and never swim alone. The Bureau of Meteorology data used is provided 'as-is' and may be subject to delays or outages.",
   "methodology": {
-    "overview": "This system implements a multi-species shark risk assessment model based on peer-reviewed research. Each shark species is scored INDEPENDENTLY using its own environmental model, thresholds, and weights. The overall risk represents the weighted combination of all species present, taking into account their likelihood and incident history at each specific location.",
+    "overview": "This system implements a multi-species shark risk assessment model based on peer-reviewed research. Each shark species is scored independently using its own environmental model, thresholds, and weights. The overall risk represents the weighted combination of all species present, taking into account their likelihood and incident history at each specific location.",
     "speciesModels": [
       {
         "species": "Bull Shark (Carcharhinus leucas)",
@@ -212,6 +212,6 @@
       }
     ],
     "overallScoring": "Each species is scored independently (0-100) based on current environmental conditions. Species scores are then weighted by: (1) Species likelihood at location (common=1.0x, occasional=0.6x, rare=0.3x), and (2) Incident history (high=1.0x, moderate=0.7x, low=0.4x). The weighted average determines overall risk. Final scores map to: Low (0-20), Moderate (21-40), High (41-60), Severe (61-80), Catastrophic (81-100).",
-    "locationGuidance": "For lowest risk in Sydney: Swim at patrolled open ocean beaches (Bondi, Coogee, Maroubra) rather than harbour/estuary locations. Avoid swimming in Sydney Harbour, river mouths, and estuaries especially after rainfall. Bull Sharks dominate Sydney attacks and are most active in harbour/estuarine environments after rainfall events."
+    "locationGuidance": "Based on current risk conditions, we recommend swimming at patrolled open ocean beaches (Bondi, Coogee, Maroubra) rather than harbour/estuary locations. Avoid swimming in Sydney Harbour, river mouths, and estuaries especially after rainfall. Bull Sharks dominate Sydney attacks and are most active in harbour/estuarine environments after rainfall events."
   }
 }

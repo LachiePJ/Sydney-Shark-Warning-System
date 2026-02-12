@@ -8,7 +8,7 @@ export default function ExplainabilitySection() {
 
   return (
     <div className="bg-white rounded-lg shadow-xl p-8 mb-8 border border-gray-200">
-      <h2 className="text-3xl font-bold mb-6 text-slate-900">📡 Understanding the Live Monitoring System</h2>
+      <h2 className="text-3xl font-bold mb-6 text-slate-900">How This Works</h2>
 
       {/* Tabs */}
       <div className="flex border-b border-gray-200 mb-6">
@@ -107,7 +107,7 @@ export default function ExplainabilitySection() {
             <p className="text-sm text-gray-700 mb-4">{sourcesData.methodology.overallScoring}</p>
             
             <div className="bg-white rounded p-4 border border-blue-200">
-              <h5 className="font-semibold text-sm mb-2">🏊 Where to Swim for Lowest Risk in Sydney</h5>
+              <h5 className="font-semibold text-sm mb-2">Where to Swim for Lowest Risk in Sydney</h5>
               <p className="text-sm text-gray-700">{sourcesData.methodology.locationGuidance}</p>
             </div>
           </div>

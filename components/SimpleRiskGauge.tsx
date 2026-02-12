@@ -47,8 +47,8 @@ export default function SimpleRiskGauge({ risk }: SimpleRiskGaugeProps) {
 
       {/* Overall Risk Explanation */}
       <div className="mt-6 w-full max-w-xl">
-        <div className="bg-white border-2 border-gray-300 rounded-lg p-5">
-          <h3 className="font-bold text-lg mb-3 text-gray-900">🔴 Live Shark Risk Assessment</h3>
+        <div className="bg-white rounded-lg p-5">
+          <h3 className="font-bold text-lg mb-3 text-gray-900">Live Shark Risk Assessment</h3>
           <p className="text-sm text-gray-700 mb-3 leading-relaxed">
             {risk.guidance}
           </p>
@@ -67,7 +67,7 @@ export default function SimpleRiskGauge({ risk }: SimpleRiskGaugeProps) {
                 Bull Sharks dominate Sydney attacks (86% occur in harbours/estuaries).
               </p>
               <p className="text-xs text-red-900 font-semibold">
-                🏊 For lowest risk: Swim at patrolled open ocean beaches (Bondi, Coogee, Maroubra) 
+                Based on current conditions: Swim at patrolled open ocean beaches (Bondi, Coogee, Maroubra) 
                 rather than Sydney Harbour or river mouths.
               </p>
             </div>
@@ -95,7 +95,7 @@ export default function SimpleRiskGauge({ risk }: SimpleRiskGaugeProps) {
       </div>
 
       <div className="mt-2 text-xs md:text-sm text-gray-500 font-medium">
-        🔄 Real-time data • Updated: {new Date(risk.timestamp).toLocaleString('en-GB')}
+        Updated: {new Date(risk.timestamp).toLocaleString('en-GB')}
       </div>
     </div>
   );
