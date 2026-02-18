@@ -23,7 +23,7 @@ export default function SpeciesRiskBreakdown({ speciesRisks, primaryThreat, regi
   };
 
   const getRiskLabel = (score: number): string => {
-    if (score >= 80) return 'CATASTROPHIC';
+    if (score >= 80) return 'EXTREME';
     if (score >= 60) return 'SEVERE';
     if (score >= 40) return 'HIGH';
     if (score >= 20) return 'MODERATE';
@@ -53,7 +53,7 @@ export default function SpeciesRiskBreakdown({ speciesRisks, primaryThreat, regi
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-      <h3 className="text-xl font-bold text-gray-900 mb-4">🦈 Live Species Risk Analysis</h3>
+      <h3 className="text-xl font-bold text-gray-900 mb-4">🦈 Species Specific Risk Model with Live Data</h3>
 
       {/* Primary Threat */}
       <div className={`border-2 rounded-lg p-4 mb-4 ${getScoreColor(primary.score)}`}>

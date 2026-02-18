@@ -91,7 +91,7 @@ export default function CircleRiskMap({ zoneRisks, regionConfig }: CircleRiskMap
             ${zone.properties.name}
           </h3>
           <div style="background: ${color}; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 600; text-align: center; margin-bottom: 10px;">
-            ${risk.level.toUpperCase()} RISK
+            ${risk.level.toUpperCase()}
           </div>
           <div style="font-size: 13px; color: #475569; line-height: 1.6;">
             <strong>Risk Score:</strong> ${risk.score}/100<br/>

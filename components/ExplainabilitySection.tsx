@@ -56,66 +56,8 @@ export default function ExplainabilitySection({ regionContent }: ExplainabilityS
             {sourcesData.methodology.overview}
           </p>
 
-          {/* Species-Specific Models */}
-          <div>
-            <h4 className="font-semibold text-xl mb-4">Species-Specific Risk Models:</h4>
-            <p className="text-sm text-gray-600 mb-4">
-              Each shark species is scored independently with its own environmental triggers and weights.
-            </p>
-
-            <div className="space-y-6">
-              {sourcesData.methodology.speciesModels?.map((model: any, idx: number) => (
-                <div key={idx} className="border-2 border-gray-300 rounded-lg p-5 bg-white shadow-sm">
-                  {/* Species Header */}
-                  <div className="mb-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-2xl">🦈</span>
-                      <h5 className="font-bold text-lg">{model.species}</h5>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-2">
-                      <strong>Habitat:</strong> {model.habitat}
-                    </p>
-                    {(() => {
-                      const speciesKey = model.species.includes('Bull') ? 'bull-shark' : 
-                                       model.species.includes('White') ? 'white-shark' :
-                                       model.species.includes('Tiger') ? 'tiger-shark' : 'bronze-whaler';
-                      const relevance = regionContent.speciesRelevance[speciesKey] || model.sydneyRelevance;
-                      return (
-                        <p className={`text-sm font-semibold ${
-                          relevance.includes('PRIMARY') || relevance.includes('VERY COMMON') ? 'text-red-700' :
-                          relevance.includes('RARE') || relevance.includes('VERY RARE') ? 'text-gray-600' :
-                          relevance.includes('COMMON') ? 'text-orange-600' : 'text-gray-700'
-                        }`}>
-                          {regionContent.displayName}: {relevance}
-                        </p>
-                      );
-                    })()}
-                  </div>
-
-                  {/* Risk Factors */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {Object.entries(model.riskFactors).map(([key, factor]: [string, any]) => (
-                      <div key={key} className="bg-gray-50 rounded p-3 text-sm">
-                        <div className="flex justify-between items-start mb-1">
-                          <span className="font-semibold capitalize">{key}:</span>
-                          <span className="text-blue-600 font-bold text-xs">
-                            {factor.weight || factor.bonus || factor.penalty}
-                          </span>
-                        </div>
-                        <div className="text-xs text-gray-600 mb-1">
-                          <strong>Threshold:</strong> {factor.threshold || factor.condition}
-                        </div>
-                        <p className="text-xs text-gray-700">{factor.rationale}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Overall Scoring */}
-          <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-5 mt-6">
+          <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-5">
             <h4 className="font-semibold text-lg mb-3">Overall Risk Calculation</h4>
             <p className="text-sm text-gray-700 mb-4">{sourcesData.methodology.overallScoring}</p>
             

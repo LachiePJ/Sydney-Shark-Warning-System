@@ -10,9 +10,9 @@ interface SimpleRiskGaugeProps {
 
 export default function SimpleRiskGauge({ risk, regionContent }: SimpleRiskGaugeProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-6 md:py-8 px-2 md:px-4 max-w-2xl mx-auto">
+    <div className="py-6 md:py-8 px-2 md:px-4 max-w-6xl mx-auto">
       {/* Simple gauge indicator */}
-      <div className="relative w-full mb-4 md:mb-6">
+      <div className="relative w-full mb-4 md:mb-6 max-w-2xl mx-auto">
         {/* Colored bar segments */}
         <div className="flex h-12 md:h-16 rounded-full overflow-hidden shadow-lg">
           <div className="flex-1 bg-emerald-500" title="LOW RISK"></div>
@@ -32,24 +32,25 @@ export default function SimpleRiskGauge({ risk, regionContent }: SimpleRiskGauge
         </div>
       </div>
 
-      {/* Current level display */}
-      <div 
-        className="w-full px-4 py-5 md:px-12 md:py-8 rounded-xl text-center shadow-xl"
-        style={{ backgroundColor: risk.color }}
-      >
-        <div className="text-white">
-          <div className="text-2xl sm:text-3xl md:text-5xl font-bold mb-2 md:mb-3 break-words">
-            {risk.level.toUpperCase()}
-          </div>
-          <div className="text-base sm:text-lg md:text-2xl opacity-90">
-            Risk Score: {risk.score}/100
+      {/* Desktop: Two-column layout, Mobile: Stacked */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        {/* Left: Current level display */}
+        <div 
+          className="w-full px-4 py-5 md:px-12 md:py-8 rounded-xl text-center shadow-xl"
+          style={{ backgroundColor: risk.color }}
+        >
+          <div className="text-white">
+            <div className="text-2xl sm:text-3xl md:text-5xl font-bold mb-2 md:mb-3 break-words">
+              {risk.level.toUpperCase()}
+            </div>
+            <div className="text-base sm:text-lg md:text-2xl opacity-90">
+              Risk Score: {risk.score}/100
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Overall Risk Explanation */}
-      <div className="mt-6 w-full max-w-xl">
-        <div className="bg-white rounded-lg p-5">
+        {/* Right: Risk explanation and details */}
+        <div className="bg-white rounded-lg p-5 shadow-sm">
           <h3 className="font-bold text-lg mb-3 text-gray-900">Live Shark Risk Assessment</h3>
           <p className="text-sm text-gray-700 mb-3 leading-relaxed">
             {risk.guidance}
@@ -61,7 +62,7 @@ export default function SimpleRiskGauge({ risk, regionContent }: SimpleRiskGauge
             </p>
           )}
 
-          {/* Safety Advice Based on Risk Level */}
+          {/* Where to Swim Box - Moved here */}
           {risk.score >= 40 && risk.primaryThreat && (
             <div className="mt-3 p-3 bg-red-50 border-l-4 border-red-600 rounded">
               <p className="font-semibold text-red-900 text-sm mb-2">⚠️ {risk.primaryThreat} Activity Elevated</p>
@@ -91,17 +92,20 @@ export default function SimpleRiskGauge({ risk, regionContent }: SimpleRiskGauge
         </div>
       </div>
 
-      <div className="flex items-center justify-center gap-3 text-xs md:text-sm mt-4">
-        <span className={`inline-block w-3 h-3 rounded-full ${
-          risk.confidence === 'high' ? 'bg-green-500' :
-          risk.confidence === 'medium' ? 'bg-yellow-500' :
-          'bg-red-500'
-        }`}></span>
-        <span className="text-gray-600">Data Confidence: <strong>{risk.confidence}</strong></span>
-      </div>
+      {/* Confidence and timestamp below */}
+      <div className="flex flex-col items-center mt-6 gap-2">
+        <div className="flex items-center justify-center gap-3 text-xs md:text-sm">
+          <span className={`inline-block w-3 h-3 rounded-full ${
+            risk.confidence === 'high' ? 'bg-green-500' :
+            risk.confidence === 'medium' ? 'bg-yellow-500' :
+            'bg-red-500'
+          }`}></span>
+          <span className="text-gray-600">Data Confidence: <strong>{risk.confidence}</strong></span>
+        </div>
 
-      <div className="mt-2 text-xs md:text-sm text-gray-500 font-medium">
-        Updated: {new Date(risk.timestamp).toLocaleString('en-GB')}
+        <div className="text-xs md:text-sm text-gray-500 font-medium">
+          Updated: {new Date(risk.timestamp).toLocaleString('en-GB')}
+        </div>
       </div>
     </div>
   );
