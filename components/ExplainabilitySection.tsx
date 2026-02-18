@@ -61,7 +61,7 @@ export default function ExplainabilitySection({ regionContent, risk }: Explainab
 
           {/* Species-Specific Models with Live Data */}
           <div>
-            <h4 className="font-semibold text-xl mb-4">Species-Specific Risk Models:</h4>
+            <h4 className="font-semibold text-xl mb-4">Species-Specific Risk Models with Live Data</h4>
             <p className="text-sm text-gray-600 mb-4">
               Each shark species is scored independently with its own environmental triggers and weights. Fields marked as <span className="font-semibold text-red-700">Met</span> show current conditions that increase risk.
             </p>
@@ -115,8 +115,19 @@ export default function ExplainabilitySection({ regionContent, risk }: Explainab
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {Object.entries(model.riskFactors).map(([key, factor]: [string, any]) => {
                         // Check if this factor is currently met
+                        // Map risk factor keys to trigger keywords
+                        const triggerKeywords: Record<string, string[]> = {
+                          'waterTemp': ['temperature', 'temp'],
+                          'rainfall': ['rainfall', 'rain'],
+                          'swell': ['swell', 'wave'],
+                          'season': ['season', 'summer', 'active season'],
+                          'turbidity': ['turbidity', 'water quality', 'murky'],
+                          'locationType': ['harbour', 'bay', 'beach', 'estuary']
+                        };
+                        
+                        const keywords = triggerKeywords[key] || [key];
                         const isMetNow = liveSpeciesRisk?.activeTriggers?.some((trigger: string) => 
-                          trigger.toLowerCase().includes(key.toLowerCase())
+                          keywords.some(keyword => trigger.toLowerCase().includes(keyword.toLowerCase()))
                         );
                         
                         return (

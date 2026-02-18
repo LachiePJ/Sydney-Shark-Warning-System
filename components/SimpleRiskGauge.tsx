@@ -10,9 +10,9 @@ interface SimpleRiskGaugeProps {
 
 export default function SimpleRiskGauge({ risk, regionContent }: SimpleRiskGaugeProps) {
   return (
-    <div className="py-6 md:py-8 px-2 md:px-4 max-w-6xl mx-auto">
+    <div className="flex flex-col items-center justify-center py-6 md:py-8 px-2 md:px-4 max-w-2xl mx-auto">
       {/* Simple gauge indicator */}
-      <div className="relative w-full mb-4 md:mb-6 max-w-2xl mx-auto">
+      <div className="relative w-full mb-4 md:mb-6">
         {/* Colored bar segments */}
         <div className="flex h-12 md:h-16 rounded-full overflow-hidden shadow-lg">
           <div className="flex-1 bg-emerald-500" title="LOW RISK"></div>
@@ -32,25 +32,24 @@ export default function SimpleRiskGauge({ risk, regionContent }: SimpleRiskGauge
         </div>
       </div>
 
-      {/* Desktop: Two-column layout, Mobile: Stacked */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-        {/* Left: Current level display */}
-        <div 
-          className="w-full px-4 py-5 md:px-12 md:py-8 rounded-xl text-center shadow-xl"
-          style={{ backgroundColor: risk.color }}
-        >
-          <div className="text-white">
-            <div className="text-2xl sm:text-3xl md:text-5xl font-bold mb-2 md:mb-3 break-words">
-              {risk.level.toUpperCase()}
-            </div>
-            <div className="text-base sm:text-lg md:text-2xl opacity-90">
-              Risk Score: {risk.score}/100
-            </div>
+      {/* Current level display */}
+      <div 
+        className="w-full px-4 py-5 md:px-12 md:py-8 rounded-xl text-center shadow-xl"
+        style={{ backgroundColor: risk.color }}
+      >
+        <div className="text-white">
+          <div className="text-2xl sm:text-3xl md:text-5xl font-bold mb-2 md:mb-3 break-words">
+            {risk.level.toUpperCase()}
+          </div>
+          <div className="text-base sm:text-lg md:text-2xl opacity-90">
+            Risk Score: {risk.score}/100
           </div>
         </div>
+      </div>
 
-        {/* Right: Risk explanation and details */}
-        <div className="bg-white rounded-lg p-5 shadow-sm">
+      {/* Overall Risk Explanation */}
+      <div className="mt-6 w-full max-w-xl">
+        <div className="bg-white rounded-lg p-5">
           <h3 className="font-bold text-lg mb-3 text-gray-900">Live Shark Risk Assessment</h3>
           <p className="text-sm text-gray-700 mb-3 leading-relaxed">
             {risk.guidance}
@@ -62,7 +61,7 @@ export default function SimpleRiskGauge({ risk, regionContent }: SimpleRiskGauge
             </p>
           )}
 
-          {/* Where to Swim Box - Always visible */}
+          {/* Where to Swim Box - Always visible with full detail list */}
           <div className={`mt-3 p-3 border-l-4 rounded ${
             risk.score >= 60 ? 'bg-red-50 border-red-600' : 
             risk.score >= 40 ? 'bg-orange-50 border-orange-600' : 
@@ -73,9 +72,7 @@ export default function SimpleRiskGauge({ risk, regionContent }: SimpleRiskGauge
               risk.score >= 40 ? 'text-orange-900' : 
               'text-blue-900'
             }`}>
-              {risk.score >= 60 ? '⚠️ Where to Swim for Lowest Risk' : 
-               risk.score >= 40 ? '⚠️ Swimming Recommendations' : 
-               '✓ Where to Swim'}
+              ⚠️ Where to Swim for Lowest Risk
             </p>
             {risk.score >= 40 && risk.primaryThreat && regionContent.dominantSpeciesStats && (
               <p className={`text-xs mb-2 ${
@@ -84,20 +81,19 @@ export default function SimpleRiskGauge({ risk, regionContent }: SimpleRiskGauge
                 {regionContent.dominantSpecies}s: {regionContent.dominantSpeciesStats}
               </p>
             )}
-            <p className={`text-xs font-semibold ${
+            
+            {/* Detailed safety list */}
+            <ul className={`text-xs space-y-1 ${
               risk.score >= 60 ? 'text-red-900' : 
               risk.score >= 40 ? 'text-orange-900' : 
               'text-blue-900'
             }`}>
-              {regionContent.safestSwimmingAdvice}
-            </p>
-            {risk.score >= 40 && (
-              <p className={`text-xs mt-2 ${
-                risk.score >= 60 ? 'text-red-900' : 'text-orange-900'
-              }`}>
-                {regionContent.highRiskAdvice}
-              </p>
-            )}
+              <li>✓ <strong>Based on current conditions, lowest risk:</strong> {regionContent.safeBeaches.join(', ')}</li>
+              <li>⚠️ <strong>Higher risk right now:</strong> {regionContent.dangerousLocations.join(', ')} - especially after rainfall</li>
+              <li>✓ Always swim between the flags at patrolled beaches</li>
+              <li>✓ Avoid swimming at dawn, dusk, or after heavy rainfall (&gt;30mm)</li>
+              <li>✓ Never swim alone, especially in harbours or murky water</li>
+            </ul>
           </div>
         </div>
       </div>

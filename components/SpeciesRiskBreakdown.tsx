@@ -53,7 +53,7 @@ export default function SpeciesRiskBreakdown({ speciesRisks, primaryThreat, regi
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-      <h3 className="text-xl font-bold text-gray-900 mb-4">🦈 Species Specific Risk Model with Live Data</h3>
+      <h3 className="text-xl font-bold text-gray-900 mb-4">🦈 Species Specific Risk Model</h3>
 
       {/* Primary Threat */}
       <div className={`border-2 rounded-lg p-4 mb-4 ${getScoreColor(primary.score)}`}>
@@ -148,18 +148,6 @@ export default function SpeciesRiskBreakdown({ speciesRisks, primaryThreat, regi
         <p className="text-xs font-semibold">
           In {regionContent.displayName}: {regionContent.dominantSpecies}s are the primary threat. {regionContent.dominantSpeciesStats || ''}
         </p>
-      </div>
-      
-      {/* Safety Advice */}
-      <div className="mt-3 p-4 bg-green-50 border-2 border-green-300 rounded">
-        <p className="font-semibold text-green-900 mb-2">Swimming Safety for {regionContent.displayName}</p>
-        <ul className="text-xs text-green-900 space-y-1">
-          <li>✓ <strong>Based on current conditions, lowest risk:</strong> {regionContent.safeBeaches.join(', ')}</li>
-          <li>⚠️ <strong>Higher risk right now:</strong> {regionContent.dangerousLocations.join(', ')} - especially after rainfall</li>
-          <li>✓ Always swim between the flags at patrolled beaches</li>
-          <li>✓ Avoid swimming at dawn, dusk, or after heavy rainfall (&gt;30mm)</li>
-          <li>✓ Never swim alone, especially in harbours or murky water</li>
-        </ul>
       </div>
     </div>
   );
