@@ -71,6 +71,13 @@ export default function ExplainabilitySection({ regionContent, risk }: Explainab
                 // Get live species risk data if available
                 const liveSpeciesRisk = risk?.bySpecies?.find(s => s.species === model.species);
                 
+                // Debug: Log what we're working with
+                if (liveSpeciesRisk && idx === 0) {
+                  console.log('Species:', liveSpeciesRisk.species);
+                  console.log('Active Triggers:', liveSpeciesRisk.activeTriggers);
+                  console.log('Risk Factors:', Object.keys(model.riskFactors));
+                }
+                
                 return (
                   <div key={idx} className="border-2 border-gray-300 rounded-lg p-5 bg-white shadow-sm">
                     {/* Species Header */}
@@ -107,6 +114,18 @@ export default function ExplainabilitySection({ regionContent, risk }: Explainab
                           }`}>
                             {liveSpeciesRisk.score}/100
                           </span>
+                          {liveSpeciesRisk.activeTriggers.length > 0 && (
+                            <div className="mt-2 p-2 bg-yellow-50 border border-yellow-300 rounded">
+                              <div className="text-xs font-semibold text-yellow-900 mb-1">
+                                ⚡ Currently Active Conditions:
+                              </div>
+                              <div className="text-xs text-yellow-800 space-y-0.5">
+                                {liveSpeciesRisk.activeTriggers.map((trigger: string, i: number) => (
+                                  <div key={i}>• {trigger}</div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -114,21 +133,29 @@ export default function ExplainabilitySection({ regionContent, risk }: Explainab
                     {/* Risk Factors with Live Met Status */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {Object.entries(model.riskFactors).map(([key, factor]: [string, any]) => {
-                        // Check if this factor is currently met
-                        // Map risk factor keys to trigger keywords
-                        const triggerKeywords: Record<string, string[]> = {
-                          'waterTemp': ['temperature', 'temp'],
-                          'rainfall': ['rainfall', 'rain'],
-                          'swell': ['swell', 'wave'],
-                          'season': ['season', 'summer', 'active season'],
-                          'turbidity': ['turbidity', 'water quality', 'murky'],
-                          'locationType': ['harbour', 'bay', 'beach', 'estuary']
-                        };
-                        
-                        const keywords = triggerKeywords[key] || [key];
-                        const isMetNow = liveSpeciesRisk?.activeTriggers?.some((trigger: string) => 
-                          keywords.some(keyword => trigger.toLowerCase().includes(keyword.toLowerCase()))
-                        );
+                        // Check if this factor is currently met by matching against activeTriggers
+                        // activeTriggers format: "Bull Shark Active Temperature: 21.5", "Rainfall (Bull Shark Attractant): 45.2"
+                        const isMetNow = (() => {
+                          if (!liveSpeciesRisk?.activeTriggers || liveSpeciesRisk.activeTriggers.length === 0) {
+                            return false;
+                          }
+                          
+                          // Map the risk factor key to what appears in condition names
+                          const matchPatterns: Record<string, RegExp[]> = {
+                            'waterTemp': [/temperature/i, /temp/i],
+                            'rainfall': [/rainfall/i, /rain/i],
+                            'swell': [/swell/i, /wave/i],
+                            'season': [/season/i, /summer/i],
+                            'turbidity': [/turbidity/i, /water quality/i, /murky/i, /hunting condition/i],
+                            'locationType': [/harbour/i, /bay/i, /beach/i, /estuary/i, /habitat/i]
+                          };
+                          
+                          const patterns = matchPatterns[key] || [new RegExp(key, 'i')];
+                          
+                          return liveSpeciesRisk.activeTriggers.some((trigger: string) => 
+                            patterns.some(pattern => pattern.test(trigger))
+                          );
+                        })();
                         
                         return (
                           <div key={key} className={`rounded p-3 text-sm border-2 ${
