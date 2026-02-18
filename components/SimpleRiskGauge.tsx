@@ -62,33 +62,43 @@ export default function SimpleRiskGauge({ risk, regionContent }: SimpleRiskGauge
             </p>
           )}
 
-          {/* Where to Swim Box - Moved here */}
-          {risk.score >= 40 && risk.primaryThreat && (
-            <div className="mt-3 p-3 bg-red-50 border-l-4 border-red-600 rounded">
-              <p className="font-semibold text-red-900 text-sm mb-2">⚠️ {risk.primaryThreat} Activity Elevated</p>
-              {regionContent.dominantSpeciesStats && (
-                <p className="text-xs text-red-800 mb-2">
-                  {regionContent.dominantSpecies}s: {regionContent.dominantSpeciesStats}
-                </p>
-              )}
-              <p className="text-xs text-red-900 font-semibold">
-                Based on current conditions: {regionContent.safestSwimmingAdvice}
+          {/* Where to Swim Box - Always visible */}
+          <div className={`mt-3 p-3 border-l-4 rounded ${
+            risk.score >= 60 ? 'bg-red-50 border-red-600' : 
+            risk.score >= 40 ? 'bg-orange-50 border-orange-600' : 
+            'bg-blue-50 border-blue-600'
+          }`}>
+            <p className={`font-semibold text-sm mb-2 ${
+              risk.score >= 60 ? 'text-red-900' : 
+              risk.score >= 40 ? 'text-orange-900' : 
+              'text-blue-900'
+            }`}>
+              {risk.score >= 60 ? '⚠️ Where to Swim for Lowest Risk' : 
+               risk.score >= 40 ? '⚠️ Swimming Recommendations' : 
+               '✓ Where to Swim'}
+            </p>
+            {risk.score >= 40 && risk.primaryThreat && regionContent.dominantSpeciesStats && (
+              <p className={`text-xs mb-2 ${
+                risk.score >= 60 ? 'text-red-800' : 'text-orange-800'
+              }`}>
+                {regionContent.dominantSpecies}s: {regionContent.dominantSpeciesStats}
               </p>
-              <p className="text-xs text-red-900 mt-2">
+            )}
+            <p className={`text-xs font-semibold ${
+              risk.score >= 60 ? 'text-red-900' : 
+              risk.score >= 40 ? 'text-orange-900' : 
+              'text-blue-900'
+            }`}>
+              {regionContent.safestSwimmingAdvice}
+            </p>
+            {risk.score >= 40 && (
+              <p className={`text-xs mt-2 ${
+                risk.score >= 60 ? 'text-red-900' : 'text-orange-900'
+              }`}>
                 {regionContent.highRiskAdvice}
               </p>
-            </div>
-          )}
-
-          {risk.score < 30 && (
-            <div className="mt-3 p-3 bg-green-50 border-l-4 border-green-600 rounded">
-              <p className="font-semibold text-green-900 text-sm mb-1">✓ Low Overall Shark Risk</p>
-              <p className="text-xs text-green-800">
-                Current conditions show low shark activity across all species. Always swim at patrolled 
-                beaches between the flags.
-              </p>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 

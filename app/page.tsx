@@ -103,11 +103,8 @@ export default async function Home({ searchParams }: HomeProps) {
           />
         )}
 
-        {/* Risk Factors Detail */}
-        <RiskFactorsDetail risk={overallRisk} />
-
         {/* Explainability */}
-        <ExplainabilitySection regionContent={regionContent} />
+        <ExplainabilitySection regionContent={regionContent} risk={overallRisk} />
 
         {/* Disclaimer - Moved to bottom */}
         <Disclaimer />

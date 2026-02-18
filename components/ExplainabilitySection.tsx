@@ -4,11 +4,14 @@ import { useState } from 'react';
 import sourcesData from '@/data/sources.json';
 import { RegionContent } from '@/config/region-content';
 
+import { RiskResult } from '@/lib/types';
+
 interface ExplainabilitySectionProps {
   regionContent: RegionContent;
+  risk?: RiskResult;
 }
 
-export default function ExplainabilitySection({ regionContent }: ExplainabilitySectionProps) {
+export default function ExplainabilitySection({ regionContent, risk }: ExplainabilitySectionProps) {
   const [activeTab, setActiveTab] = useState<'how' | 'research' | 'data'>('how');
 
   return (
@@ -55,6 +58,97 @@ export default function ExplainabilitySection({ regionContent }: ExplainabilityS
           <p className="text-gray-700 mb-4">
             {sourcesData.methodology.overview}
           </p>
+
+          {/* Species-Specific Models with Live Data */}
+          <div>
+            <h4 className="font-semibold text-xl mb-4">Species-Specific Risk Models:</h4>
+            <p className="text-sm text-gray-600 mb-4">
+              Each shark species is scored independently with its own environmental triggers and weights. Fields marked as <span className="font-semibold text-red-700">Met</span> show current conditions that increase risk.
+            </p>
+
+            <div className="space-y-6">
+              {sourcesData.methodology.speciesModels?.map((model: any, idx: number) => {
+                // Get live species risk data if available
+                const liveSpeciesRisk = risk?.bySpecies?.find(s => s.species === model.species);
+                
+                return (
+                  <div key={idx} className="border-2 border-gray-300 rounded-lg p-5 bg-white shadow-sm">
+                    {/* Species Header */}
+                    <div className="mb-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-2xl">🦈</span>
+                        <h5 className="font-bold text-lg">{model.species}</h5>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2">
+                        <strong>Habitat:</strong> {model.habitat}
+                      </p>
+                      {(() => {
+                        const speciesKey = model.species.includes('Bull') ? 'bull-shark' : 
+                                         model.species.includes('White') ? 'white-shark' :
+                                         model.species.includes('Tiger') ? 'tiger-shark' : 'bronze-whaler';
+                        const relevance = regionContent.speciesRelevance[speciesKey] || model.sydneyRelevance;
+                        return (
+                          <p className={`text-sm font-semibold ${
+                            relevance.includes('PRIMARY') || relevance.includes('VERY COMMON') ? 'text-red-700' :
+                            relevance.includes('RARE') || relevance.includes('VERY RARE') ? 'text-gray-600' :
+                            relevance.includes('COMMON') ? 'text-orange-600' : 'text-gray-700'
+                          }`}>
+                            {regionContent.displayName}: {relevance}
+                          </p>
+                        );
+                      })()}
+                      {liveSpeciesRisk && (
+                        <div className="mt-2">
+                          <span className="text-sm font-semibold">Current Risk Score: </span>
+                          <span className={`text-sm font-bold ${
+                            liveSpeciesRisk.score >= 60 ? 'text-red-700' :
+                            liveSpeciesRisk.score >= 40 ? 'text-orange-600' :
+                            liveSpeciesRisk.score >= 20 ? 'text-yellow-600' : 'text-green-600'
+                          }`}>
+                            {liveSpeciesRisk.score}/100
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Risk Factors with Live Met Status */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {Object.entries(model.riskFactors).map(([key, factor]: [string, any]) => {
+                        // Check if this factor is currently met
+                        const isMetNow = liveSpeciesRisk?.activeTriggers?.some((trigger: string) => 
+                          trigger.toLowerCase().includes(key.toLowerCase())
+                        );
+                        
+                        return (
+                          <div key={key} className={`rounded p-3 text-sm border-2 ${
+                            isMetNow ? 'bg-red-50 border-red-400' : 'bg-gray-50 border-gray-200'
+                          }`}>
+                            <div className="flex justify-between items-start mb-1">
+                              <div className="flex-1">
+                                <span className="font-semibold capitalize">{key}:</span>
+                                {isMetNow && (
+                                  <span className="ml-2 text-xs font-bold text-red-700 bg-red-100 px-2 py-0.5 rounded">
+                                    Met
+                                  </span>
+                                )}
+                              </div>
+                              <span className="text-blue-600 font-bold text-xs">
+                                {factor.weight || factor.bonus || factor.penalty}
+                              </span>
+                            </div>
+                            <div className="text-xs text-gray-600 mb-1">
+                              <strong>Threshold:</strong> {factor.threshold || factor.condition}
+                            </div>
+                            <p className="text-xs text-gray-700">{factor.rationale}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
 
           {/* Overall Scoring */}
           <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-5">
