@@ -13,6 +13,17 @@ interface ExplainabilitySectionProps {
 
 export default function ExplainabilitySection({ regionContent, risk }: ExplainabilitySectionProps) {
   const [activeTab, setActiveTab] = useState<'how' | 'research' | 'data'>('how');
+  
+  // Debug: Check what risk data we have - log on mount
+  if (typeof window !== 'undefined') {
+    console.log('ExplainabilitySection - risk data:', {
+      hasRisk: !!risk,
+      hasBySpecies: !!risk?.bySpecies,
+      bySpeciesLength: risk?.bySpecies?.length,
+      bySpeciesData: risk?.bySpecies,
+      firstSpecies: risk?.bySpecies?.[0]
+    });
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-xl p-8 mb-8 border border-gray-200">
