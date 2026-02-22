@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import sourcesData from '@/data/sources.json';
 import { RegionContent } from '@/config/region-content';
 
@@ -14,16 +14,15 @@ interface ExplainabilitySectionProps {
 export default function ExplainabilitySection({ regionContent, risk }: ExplainabilitySectionProps) {
   const [activeTab, setActiveTab] = useState<'how' | 'research' | 'data'>('how');
   
-  // Debug: Check what risk data we have - log on mount
-  if (typeof window !== 'undefined') {
-    console.log('ExplainabilitySection - risk data:', {
-      hasRisk: !!risk,
-      hasBySpecies: !!risk?.bySpecies,
-      bySpeciesLength: risk?.bySpecies?.length,
-      bySpeciesData: risk?.bySpecies,
-      firstSpecies: risk?.bySpecies?.[0]
-    });
-  }
+  // Debug: Check what risk data we have on client mount
+  useEffect(() => {
+    console.log('=== CLIENT-SIDE ExplainabilitySection Debug ===');
+    console.log('Has risk prop:', !!risk);
+    console.log('Has bySpecies:', !!risk?.bySpecies);
+    console.log('bySpecies length:', risk?.bySpecies?.length);
+    console.log('Full bySpecies data:', JSON.stringify(risk?.bySpecies, null, 2));
+    console.log('Primary threat:', risk?.primaryThreat);
+  }, [risk]);
 
   return (
     <div className="bg-white rounded-lg shadow-xl p-8 mb-8 border border-gray-200">
@@ -70,6 +69,25 @@ export default function ExplainabilitySection({ regionContent, risk }: Explainab
             {sourcesData.methodology.overview}
           </p>
 
+          {/* DEBUG: Show if risk data is available */}
+          {!risk?.bySpecies && (
+            <div className="bg-yellow-100 border-2 border-yellow-500 rounded-lg p-4 mb-4">
+              <p className="font-bold text-yellow-900">⚠️ DEBUG: No live species data available</p>
+              <p className="text-sm text-yellow-800">
+                The system is showing static models only. Live data integration is not working.
+              </p>
+            </div>
+          )}
+          
+          {risk?.bySpecies && (
+            <div className="bg-green-100 border-2 border-green-500 rounded-lg p-4 mb-4">
+              <p className="font-bold text-green-900">✓ DEBUG: Live species data is available</p>
+              <p className="text-sm text-green-800">
+                Found {risk.bySpecies.length} species with live risk scores.
+              </p>
+            </div>
+          )}
+
           {/* Species-Specific Models with Live Data */}
           <div>
             <h4 className="font-semibold text-xl mb-4">Species-Specific Risk Models with Live Data</h4>
@@ -82,12 +100,15 @@ export default function ExplainabilitySection({ regionContent, risk }: Explainab
                 // Get live species risk data if available
                 const liveSpeciesRisk = risk?.bySpecies?.find(s => s.species === model.species);
                 
-                // Debug: Log what we're working with
-                if (liveSpeciesRisk && idx === 0) {
-                  console.log('Species:', liveSpeciesRisk.species);
-                  console.log('Active Triggers:', liveSpeciesRisk.activeTriggers);
-                  console.log('Risk Factors:', Object.keys(model.riskFactors));
+                // Debug: Log matching details for EVERY species
+                console.log(`\n=== Species Model ${idx}: ${model.species} ===`);
+                console.log('Has liveSpeciesRisk:', !!liveSpeciesRisk);
+                if (liveSpeciesRisk) {
+                  console.log('  Score:', liveSpeciesRisk.score);
+                  console.log('  Active Triggers:', liveSpeciesRisk.activeTriggers);
+                  console.log('  Number of triggers:', liveSpeciesRisk.activeTriggers.length);
                 }
+                console.log('Model risk factor keys:', Object.keys(model.riskFactors));
                 
                 return (
                   <div key={idx} className="border-2 border-gray-300 rounded-lg p-5 bg-white shadow-sm">
@@ -148,6 +169,7 @@ export default function ExplainabilitySection({ regionContent, risk }: Explainab
                         // activeTriggers format: "Bull Shark Active Temperature: 21.5", "Rainfall (Bull Shark Attractant): 45.2"
                         const isMetNow = (() => {
                           if (!liveSpeciesRisk?.activeTriggers || liveSpeciesRisk.activeTriggers.length === 0) {
+                            console.log(`  [${key}] No activeTriggers`);
                             return false;
                           }
                           
@@ -156,16 +178,21 @@ export default function ExplainabilitySection({ regionContent, risk }: Explainab
                             'waterTemp': [/temperature/i, /temp/i],
                             'rainfall': [/rainfall/i, /rain/i],
                             'swell': [/swell/i, /wave/i],
-                            'season': [/season/i, /summer/i],
+                            'season': [/season/i, /summer/i, /active season/i],
                             'turbidity': [/turbidity/i, /water quality/i, /murky/i, /hunting condition/i],
-                            'locationType': [/harbour/i, /bay/i, /beach/i, /estuary/i, /habitat/i]
+                            'locationType': [/harbour/i, /bay/i, /beach/i, /estuary/i, /habitat/i],
+                            'temperature': [/temperature/i, /temp/i],  // Explicit mapping
+                            'location': [/harbour/i, /bay/i, /beach/i, /estuary/i, /habitat/i, /location/i]
                           };
                           
                           const patterns = matchPatterns[key] || [new RegExp(key, 'i')];
-                          
-                          return liveSpeciesRisk.activeTriggers.some((trigger: string) => 
+                          const matches = liveSpeciesRisk.activeTriggers.some((trigger: string) => 
                             patterns.some(pattern => pattern.test(trigger))
                           );
+                          
+                          console.log(`  [${key}] Testing against:`, liveSpeciesRisk.activeTriggers, '→', matches);
+                          
+                          return matches;
                         })();
                         
                         return (
