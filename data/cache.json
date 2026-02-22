@@ -1,47 +1,47 @@
 {
   "beaches": {
     "manly": {
-      "temperature": 22.7,
-      "waveHeight": 0.98,
-      "rainfall48h": 4.2,
-      "timestamp": "2026-02-18T23:00:30.748Z"
+      "temperature": 23,
+      "waveHeight": 0.86,
+      "rainfall48h": 14.5,
+      "timestamp": "2026-02-22T20:46:51.812Z"
     },
     "bondi": {
-      "temperature": 22,
-      "waveHeight": 1.14,
-      "rainfall48h": 4.2,
-      "timestamp": "2026-02-18T23:00:30.748Z"
+      "temperature": 22.6,
+      "waveHeight": 0.94,
+      "rainfall48h": 14.5,
+      "timestamp": "2026-02-22T20:46:51.812Z"
     },
     "coogee": {
-      "temperature": 22,
-      "waveHeight": 1.36,
-      "rainfall48h": 4.2,
-      "timestamp": "2026-02-18T23:00:30.748Z"
+      "temperature": 22.6,
+      "waveHeight": 1.04,
+      "rainfall48h": 14.5,
+      "timestamp": "2026-02-22T20:46:51.812Z"
     },
     "maroubra": {
-      "temperature": 22,
-      "waveHeight": 1.36,
-      "rainfall48h": 4.2,
-      "timestamp": "2026-02-18T23:00:30.748Z"
+      "temperature": 22.6,
+      "waveHeight": 1.04,
+      "rainfall48h": 14.5,
+      "timestamp": "2026-02-22T20:46:51.812Z"
     },
     "cronulla": {
-      "temperature": 21.9,
-      "waveHeight": 1.64,
-      "rainfall48h": 4.2,
-      "timestamp": "2026-02-18T23:00:30.748Z"
+      "temperature": 22.6,
+      "waveHeight": 1.18,
+      "rainfall48h": 14.5,
+      "timestamp": "2026-02-22T20:46:51.812Z"
     },
     "palmBeach": {
       "temperature": 23,
-      "waveHeight": 1,
-      "rainfall48h": 4.2,
-      "timestamp": "2026-02-18T23:00:30.748Z"
+      "waveHeight": 0.96,
+      "rainfall48h": 14.5,
+      "timestamp": "2026-02-22T20:46:51.812Z"
     },
     "sydneyHarbour": {
-      "temperature": 22,
-      "waveHeight": 1.14,
-      "rainfall48h": 4.2,
-      "timestamp": "2026-02-18T23:00:30.748Z"
+      "temperature": 22.6,
+      "waveHeight": 0.94,
+      "rainfall48h": 14.5,
+      "timestamp": "2026-02-22T20:46:51.812Z"
     }
   },
-  "lastFetch": "2026-02-18T23:00:30.748Z"
+  "lastFetch": "2026-02-22T20:46:51.812Z"
 }

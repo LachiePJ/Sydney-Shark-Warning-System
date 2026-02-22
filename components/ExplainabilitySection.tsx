@@ -98,7 +98,11 @@ export default function ExplainabilitySection({ regionContent, risk }: Explainab
             <div className="space-y-6">
               {sourcesData.methodology.speciesModels?.map((model: any, idx: number) => {
                 // Get live species risk data if available
-                const liveSpeciesRisk = risk?.bySpecies?.find(s => s.species === model.species);
+                // Note: model.species includes scientific name like "Bull Shark (Carcharhinus leucas)"
+                // but bySpecies uses short name like "Bull Shark", so we need to match the first part
+                const liveSpeciesRisk = risk?.bySpecies?.find(s => 
+                  model.species.startsWith(s.species) || s.species.startsWith(model.species.split('(')[0].trim())
+                );
                 
                 // Debug: Log matching details for EVERY species
                 console.log(`\n=== Species Model ${idx}: ${model.species} ===`);
@@ -174,18 +178,29 @@ export default function ExplainabilitySection({ regionContent, risk }: Explainab
                           }
                           
                           // Map the risk factor key to what appears in condition names
+                          // Actual condition names from engines:
+                          // - "Bull Shark Active Temperature: 21.5"
+                          // - "Rainfall (Bull Shark Attractant): 45.2"
+                          // - "Swell Height in Risk Range: 0.9"
+                          // - "Active Season: Yes"
+                          // - "High Turbidity (Bull Shark Hunting Conditions): clear"
                           const matchPatterns: Record<string, RegExp[]> = {
-                            'waterTemp': [/temperature/i, /temp/i],
-                            'rainfall': [/rainfall/i, /rain/i],
-                            'swell': [/swell/i, /wave/i],
-                            'season': [/season/i, /summer/i, /active season/i],
-                            'turbidity': [/turbidity/i, /water quality/i, /murky/i, /hunting condition/i],
-                            'locationType': [/harbour/i, /bay/i, /beach/i, /estuary/i, /habitat/i],
-                            'temperature': [/temperature/i, /temp/i],  // Explicit mapping
-                            'location': [/harbour/i, /bay/i, /beach/i, /estuary/i, /habitat/i, /location/i]
+                            'temperature': [/temperature/i],
+                            'rainfall': [/rainfall/i],
+                            'swell': [/swell/i],
+                            'season': [/active season/i, /season/i],
+                            'turbidity': [/turbidity/i],
+                            'location': [] // No matching trigger - this is a static config field
                           };
                           
                           const patterns = matchPatterns[key] || [new RegExp(key, 'i')];
+                          
+                          // If no patterns defined (like for 'location'), can't match
+                          if (patterns.length === 0) {
+                            console.log(`  [${key}] No patterns defined - skipping`);
+                            return false;
+                          }
+                          
                           const matches = liveSpeciesRisk.activeTriggers.some((trigger: string) => 
                             patterns.some(pattern => pattern.test(trigger))
                           );
