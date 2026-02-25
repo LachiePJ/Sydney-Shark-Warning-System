@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import sourcesData from '@/data/sources.json';
 import { RegionContent } from '@/config/region-content';
 
@@ -14,24 +14,15 @@ interface ExplainabilitySectionProps {
 export default function ExplainabilitySection({ regionContent, risk }: ExplainabilitySectionProps) {
   const [activeTab, setActiveTab] = useState<'how' | 'research' | 'data'>('how');
   
-  // Debug: Check what risk data we have on client mount
-  useEffect(() => {
-    console.log('=== CLIENT-SIDE ExplainabilitySection Debug ===');
-    console.log('Has risk prop:', !!risk);
-    console.log('Has bySpecies:', !!risk?.bySpecies);
-    console.log('bySpecies length:', risk?.bySpecies?.length);
-    console.log('Full bySpecies data:', JSON.stringify(risk?.bySpecies, null, 2));
-    console.log('Primary threat:', risk?.primaryThreat);
-  }, [risk]);
 
   return (
-    <div className="bg-white rounded-lg shadow-xl p-8 mb-8 border border-gray-200">
-      <h2 className="text-3xl font-bold mb-6 text-slate-900">How This Works</h2>
+    <div className="bg-white rounded-lg shadow-xl p-4 md:p-8 mb-6 md:mb-8 border border-gray-200">
+      <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-slate-900">How This Works</h2>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 mb-6">
+      <div className="flex border-b border-gray-200 mb-4 md:mb-6 overflow-x-auto">
         <button
-          className={`px-6 py-3 font-semibold transition-colors ${
+          className={`px-3 md:px-6 py-2 md:py-3 text-sm md:text-base font-semibold transition-colors whitespace-nowrap ${
             activeTab === 'how'
               ? 'border-b-2 border-blue-600 text-blue-600'
               : 'text-gray-500 hover:text-gray-700'
@@ -41,24 +32,24 @@ export default function ExplainabilitySection({ regionContent, risk }: Explainab
           How It Works
         </button>
         <button
-          className={`px-6 py-3 font-semibold transition-colors ${
+          className={`px-3 md:px-6 py-2 md:py-3 text-sm md:text-base font-semibold transition-colors whitespace-nowrap ${
             activeTab === 'research'
               ? 'border-b-2 border-blue-600 text-blue-600'
               : 'text-gray-500 hover:text-gray-700'
           }`}
           onClick={() => setActiveTab('research')}
         >
-          Research & Sources
+          Research
         </button>
         <button
-          className={`px-6 py-3 font-semibold transition-colors ${
+          className={`px-3 md:px-6 py-2 md:py-3 text-sm md:text-base font-semibold transition-colors whitespace-nowrap ${
             activeTab === 'data'
               ? 'border-b-2 border-blue-600 text-blue-600'
               : 'text-gray-500 hover:text-gray-700'
           }`}
           onClick={() => setActiveTab('data')}
         >
-          Data Provenance
+          Data Sources
         </button>
       </div>
 
@@ -68,25 +59,6 @@ export default function ExplainabilitySection({ regionContent, risk }: Explainab
           <p className="text-gray-700 mb-4">
             {sourcesData.methodology.overview}
           </p>
-
-          {/* DEBUG: Show if risk data is available */}
-          {!risk?.bySpecies && (
-            <div className="bg-yellow-100 border-2 border-yellow-500 rounded-lg p-4 mb-4">
-              <p className="font-bold text-yellow-900">⚠️ DEBUG: No live species data available</p>
-              <p className="text-sm text-yellow-800">
-                The system is showing static models only. Live data integration is not working.
-              </p>
-            </div>
-          )}
-          
-          {risk?.bySpecies && (
-            <div className="bg-green-100 border-2 border-green-500 rounded-lg p-4 mb-4">
-              <p className="font-bold text-green-900">✓ DEBUG: Live species data is available</p>
-              <p className="text-sm text-green-800">
-                Found {risk.bySpecies.length} species with live risk scores.
-              </p>
-            </div>
-          )}
 
           {/* Species-Specific Models with Live Data */}
           <div>
@@ -104,15 +76,6 @@ export default function ExplainabilitySection({ regionContent, risk }: Explainab
                   model.species.startsWith(s.species) || s.species.startsWith(model.species.split('(')[0].trim())
                 );
                 
-                // Debug: Log matching details for EVERY species
-                console.log(`\n=== Species Model ${idx}: ${model.species} ===`);
-                console.log('Has liveSpeciesRisk:', !!liveSpeciesRisk);
-                if (liveSpeciesRisk) {
-                  console.log('  Score:', liveSpeciesRisk.score);
-                  console.log('  Active Triggers:', liveSpeciesRisk.activeTriggers);
-                  console.log('  Number of triggers:', liveSpeciesRisk.activeTriggers.length);
-                }
-                console.log('Model risk factor keys:', Object.keys(model.riskFactors));
                 
                 return (
                   <div key={idx} className="border-2 border-gray-300 rounded-lg p-5 bg-white shadow-sm">
@@ -173,41 +136,28 @@ export default function ExplainabilitySection({ regionContent, risk }: Explainab
                         // activeTriggers format: "Bull Shark Active Temperature: 21.5", "Rainfall (Bull Shark Attractant): 45.2"
                         const isMetNow = (() => {
                           if (!liveSpeciesRisk?.activeTriggers || liveSpeciesRisk.activeTriggers.length === 0) {
-                            console.log(`  [${key}] No activeTriggers`);
                             return false;
                           }
                           
                           // Map the risk factor key to what appears in condition names
-                          // Actual condition names from engines:
-                          // - "Bull Shark Active Temperature: 21.5"
-                          // - "Rainfall (Bull Shark Attractant): 45.2"
-                          // - "Swell Height in Risk Range: 0.9"
-                          // - "Active Season: Yes"
-                          // - "High Turbidity (Bull Shark Hunting Conditions): clear"
                           const matchPatterns: Record<string, RegExp[]> = {
                             'temperature': [/temperature/i],
                             'rainfall': [/rainfall/i],
                             'swell': [/swell/i],
                             'season': [/active season/i, /season/i],
                             'turbidity': [/turbidity/i],
-                            'location': [] // No matching trigger - this is a static config field
+                            'location': []
                           };
                           
                           const patterns = matchPatterns[key] || [new RegExp(key, 'i')];
                           
-                          // If no patterns defined (like for 'location'), can't match
                           if (patterns.length === 0) {
-                            console.log(`  [${key}] No patterns defined - skipping`);
                             return false;
                           }
                           
-                          const matches = liveSpeciesRisk.activeTriggers.some((trigger: string) => 
+                          return liveSpeciesRisk.activeTriggers.some((trigger: string) => 
                             patterns.some(pattern => pattern.test(trigger))
                           );
-                          
-                          console.log(`  [${key}] Testing against:`, liveSpeciesRisk.activeTriggers, '→', matches);
-                          
-                          return matches;
                         })();
                         
                         return (

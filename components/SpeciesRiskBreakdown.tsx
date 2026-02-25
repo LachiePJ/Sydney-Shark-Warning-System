@@ -52,18 +52,18 @@ export default function SpeciesRiskBreakdown({ speciesRisks, primaryThreat, regi
   const others = speciesRisks.filter(s => s.species !== primaryThreat);
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-      <h3 className="text-xl font-bold text-gray-900 mb-4">🦈 Species Specific Risk Model</h3>
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
+      <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3 md:mb-4">🦈 Species Specific Risk Model</h3>
 
       {/* Primary Threat */}
-      <div className={`border-2 rounded-lg p-4 mb-4 ${getScoreColor(primary.score)}`}>
+      <div className={`border-2 rounded-lg p-3 md:p-4 mb-3 md:mb-4 ${getScoreColor(primary.score)}`}>
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-2xl">🦈</span>
+              <span className="text-xl md:text-2xl">🦈</span>
               <div>
-                <h4 className="text-lg font-bold">Primary Threat: {primary.species}</h4>
-                <p className="text-sm italic">{primary.scientificName}</p>
+                <h4 className="text-base md:text-lg font-bold">Primary: {primary.species}</h4>
+                <p className="text-xs md:text-sm italic hidden md:block">{primary.scientificName}</p>
               </div>
             </div>
             
@@ -78,11 +78,11 @@ export default function SpeciesRiskBreakdown({ speciesRisks, primaryThreat, regi
 
             {primary.activeTriggers.length > 0 && (
               <div>
-                <p className="text-sm font-semibold mb-1">Active Environmental Triggers:</p>
-                <ul className="text-sm space-y-1">
+                <p className="text-xs md:text-sm font-semibold mb-1">Active Triggers:</p>
+                <ul className="text-xs md:text-sm space-y-0.5 md:space-y-1">
                   {primary.activeTriggers.map((trigger, idx) => (
                     <li key={idx} className="flex items-start">
-                      <span className="mr-2">⚠️</span>
+                      <span className="mr-1 md:mr-2">⚠️</span>
                       <span>{trigger}</span>
                     </li>
                   ))}
@@ -91,9 +91,9 @@ export default function SpeciesRiskBreakdown({ speciesRisks, primaryThreat, regi
             )}
           </div>
 
-          <div className="text-right ml-4">
-            <div className="text-3xl font-bold">{primary.score}</div>
-            <div className="text-sm font-semibold">{getRiskLabel(primary.score)}</div>
+          <div className="text-right ml-2 md:ml-4">
+            <div className="text-2xl md:text-3xl font-bold">{primary.score}</div>
+            <div className="text-xs md:text-sm font-semibold">{getRiskLabel(primary.score)}</div>
           </div>
         </div>
       </div>
@@ -101,15 +101,15 @@ export default function SpeciesRiskBreakdown({ speciesRisks, primaryThreat, regi
       {/* Other Species */}
       {others.length > 0 && (
         <div>
-          <h5 className="text-sm font-semibold text-gray-700 mb-2">Other Species Present:</h5>
+          <h5 className="text-xs md:text-sm font-semibold text-gray-700 mb-2">Other Species:</h5>
           <div className="space-y-2">
             {others.map((species) => (
-              <div key={species.species} className={`border rounded p-3 ${getScoreColor(species.score)}`}>
+              <div key={species.species} className={`border rounded p-2 md:p-3 ${getScoreColor(species.score)}`}>
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-semibold">{species.species}</span>
-                      <span className="text-xs italic text-gray-600">{species.scientificName}</span>
+                      <span className="font-semibold text-sm md:text-base">{species.species}</span>
+                      <span className="text-xs italic text-gray-600 hidden md:inline">{species.scientificName}</span>
                     </div>
                     
                     <div className="flex gap-2">
@@ -128,8 +128,8 @@ export default function SpeciesRiskBreakdown({ speciesRisks, primaryThreat, regi
                     )}
                   </div>
 
-                  <div className="text-right ml-4">
-                    <div className="text-xl font-bold">{species.score}</div>
+                  <div className="text-right ml-2 md:ml-4">
+                    <div className="text-xl md:text-2xl font-bold">{species.score}</div>
                     <div className="text-xs">{getRiskLabel(species.score)}</div>
                   </div>
                 </div>
@@ -139,14 +139,11 @@ export default function SpeciesRiskBreakdown({ speciesRisks, primaryThreat, regi
         </div>
       )}
 
-      {/* Info Note */}
-      <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm text-blue-900">
-        <p className="font-semibold mb-1">📊 Understanding Species Risk</p>
-        <p className="text-xs mb-2">
-          Each species is scored independently based on current environmental conditions, then weighted by likelihood at this location and historical incident data.
-        </p>
-        <p className="text-xs font-semibold">
-          In {regionContent.displayName}: {regionContent.dominantSpecies}s are the primary threat. {regionContent.dominantSpeciesStats || ''}
+      {/* Info Note - Simplified */}
+      <div className="mt-3 p-2 md:p-3 bg-blue-50 border border-blue-200 rounded text-xs md:text-sm text-blue-900">
+        <p className="font-semibold mb-1">📊 {regionContent.displayName}</p>
+        <p className="text-xs">
+          {regionContent.dominantSpecies}s are the primary threat. {regionContent.dominantSpeciesStats || ''}
         </p>
       </div>
     </div>

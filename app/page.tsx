@@ -59,18 +59,9 @@ export default async function Home({ searchParams }: HomeProps) {
   // Calculate risks
   const zoneRisks = await dataService.calculateAllZoneRisks();
   
-  // Get overall risk (highest zone risk) - should include bySpecies from multi-species calculator
+  // Get overall risk (highest zone risk)
   const overallRisk = zoneRisks.reduce((highest, current) => {
     return current.score > highest.score ? current : highest;
-  });
-  
-  // Debug logging
-  console.log('Page.tsx - Overall Risk:', {
-    score: overallRisk.score,
-    level: overallRisk.level,
-    hasBySpecies: !!overallRisk.bySpecies,
-    bySpeciesCount: overallRisk.bySpecies?.length,
-    primaryThreat: overallRisk.primaryThreat
   });
 
   return (
