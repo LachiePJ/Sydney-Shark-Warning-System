@@ -9,9 +9,16 @@ import { Region } from '@/config/regions';
 interface CircleRiskMapProps {
   zoneRisks: ZoneRiskResult[];
   regionConfig: Region;
+  selectedZoneId?: string;
+  onZoneSelect?: (zoneId: string) => void;
 }
 
-export default function CircleRiskMap({ zoneRisks, regionConfig }: CircleRiskMapProps) {
+export default function CircleRiskMap({
+  zoneRisks,
+  regionConfig,
+  selectedZoneId,
+  onZoneSelect,
+}: CircleRiskMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -70,6 +77,7 @@ export default function CircleRiskMap({ zoneRisks, regionConfig }: CircleRiskMap
 
       const color = getColor(risk.level);
       const center = getPolygonCenter(zone.geometry.coordinates);
+      const isSelected = selectedZoneId === zone.properties.id;
       
       // Determine radius based on location type
       const radius = zone.properties.locationType === 'harbour' ? 800 : 1500;
@@ -78,10 +86,10 @@ export default function CircleRiskMap({ zoneRisks, regionConfig }: CircleRiskMap
       const circle = L.circle(center, {
         radius: radius,
         fillColor: color,
-        fillOpacity: 0.3,
+        fillOpacity: isSelected ? 0.52 : 0.3,
         color: color,
-        weight: 2,
-        opacity: 0.7,
+        weight: isSelected ? 4 : 2,
+        opacity: isSelected ? 1 : 0.7,
       }).addTo(map);
 
       // Create popup content
@@ -103,6 +111,9 @@ export default function CircleRiskMap({ zoneRisks, regionConfig }: CircleRiskMap
       `;
 
       circle.bindPopup(popupContent);
+      circle.on('click', () => {
+        onZoneSelect?.(zone.properties.id);
+      });
 
       // Add hover effect
       circle.on('mouseover', function(this: L.Circle) {
@@ -129,7 +140,7 @@ export default function CircleRiskMap({ zoneRisks, regionConfig }: CircleRiskMap
         mapInstanceRef.current = null;
       }
     };
-  }, [mounted, zoneRisks]);
+  }, [mounted, zoneRisks, regionConfig, onZoneSelect, selectedZoneId]);
 
   if (!mounted) {
     return (

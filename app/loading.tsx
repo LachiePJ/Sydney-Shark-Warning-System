@@ -1,10 +1,10 @@
 export default function Loading() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50">
       <div className="text-center">
-        <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mb-4"></div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Loading Sydney Shark Warning System</h2>
-        <p className="text-gray-600">Fetching environmental data from Bureau of Meteorology...</p>
+        <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-b-2 border-slate-700 border-t-2"></div>
+        <h2 className="mb-2 text-xl font-semibold text-slate-900">Updating coastal risk signals</h2>
+        <p className="text-sm text-slate-600">Retrieving live environmental data and refreshing location risk scores.</p>
       </div>
     </div>
   );
