@@ -1,47 +1,47 @@
 {
   "beaches": {
     "manly": {
-      "temperature": 23,
-      "waveHeight": 0.86,
-      "rainfall48h": 14.5,
-      "timestamp": "2026-02-22T20:46:51.812Z"
+      "temperature": 23.5,
+      "waveHeight": 0.8,
+      "rainfall48h": 3.8,
+      "timestamp": "2026-04-28T06:47:30.599Z"
     },
     "bondi": {
-      "temperature": 22.6,
-      "waveHeight": 0.94,
-      "rainfall48h": 14.5,
-      "timestamp": "2026-02-22T20:46:51.812Z"
+      "temperature": 23.1,
+      "waveHeight": 0.84,
+      "rainfall48h": 3.8,
+      "timestamp": "2026-04-28T06:47:30.599Z"
     },
     "coogee": {
-      "temperature": 22.6,
-      "waveHeight": 1.04,
-      "rainfall48h": 14.5,
-      "timestamp": "2026-02-22T20:46:51.812Z"
+      "temperature": 23.1,
+      "waveHeight": 0.92,
+      "rainfall48h": 3.8,
+      "timestamp": "2026-04-28T06:47:30.599Z"
     },
     "maroubra": {
-      "temperature": 22.6,
-      "waveHeight": 1.04,
-      "rainfall48h": 14.5,
-      "timestamp": "2026-02-22T20:46:51.812Z"
+      "temperature": 23.1,
+      "waveHeight": 0.92,
+      "rainfall48h": 3.8,
+      "timestamp": "2026-04-28T06:47:30.599Z"
     },
     "cronulla": {
-      "temperature": 22.6,
-      "waveHeight": 1.18,
-      "rainfall48h": 14.5,
-      "timestamp": "2026-02-22T20:46:51.812Z"
+      "temperature": 23,
+      "waveHeight": 0.98,
+      "rainfall48h": 3.8,
+      "timestamp": "2026-04-28T06:47:30.599Z"
     },
     "palmBeach": {
-      "temperature": 23,
-      "waveHeight": 0.96,
-      "rainfall48h": 14.5,
-      "timestamp": "2026-02-22T20:46:51.812Z"
+      "temperature": 23.6,
+      "waveHeight": 0.9,
+      "rainfall48h": 3.8,
+      "timestamp": "2026-04-28T06:47:30.599Z"
     },
     "sydneyHarbour": {
-      "temperature": 22.6,
-      "waveHeight": 0.94,
-      "rainfall48h": 14.5,
-      "timestamp": "2026-02-22T20:46:51.812Z"
+      "temperature": 23.1,
+      "waveHeight": 0.84,
+      "rainfall48h": 3.8,
+      "timestamp": "2026-04-28T06:47:30.599Z"
     }
   },
-  "lastFetch": "2026-02-22T20:46:51.812Z"
+  "lastFetch": "2026-04-28T06:47:30.600Z"
 }

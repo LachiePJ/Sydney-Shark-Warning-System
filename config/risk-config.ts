@@ -51,37 +51,30 @@ export const RISK_LEVELS: RiskLevelConfig[] = [
   {
     level: 'Low Risk',
     minScore: 0,
-    maxScore: 20,
+    maxScore: 30,
     color: '#10b981',  // Bright Green
     guidance: 'Conditions are favourable. Normal swimming precautions apply.',
   },
   {
     level: 'Moderate Risk',
-    minScore: 21,
-    maxScore: 40,
+    minScore: 31,
+    maxScore: 60,
     color: '#fbbf24',  // Bright Yellow
     guidance: 'Swim with caution. Avoid murky water and dawn/dusk periods.',
   },
   {
     level: 'High Risk',
-    minScore: 41,
-    maxScore: 60,
+    minScore: 61,
+    maxScore: 80,
     color: '#f59e0b',  // Amber/Orange
     guidance: 'Elevated risk. Stay in patrolled areas and avoid murky conditions.',
   },
   {
     level: 'Severe Risk',
-    minScore: 61,
-    maxScore: 80,
-    color: '#dc2626',  // Bright Red
-    guidance: 'Serious risk. Swimming not recommended. Stay out of the water if possible.',
-  },
-  {
-    level: 'Extreme Risk',
     minScore: 81,
     maxScore: 100,
-    color: '#7f1d1d',  // Dark Red/Maroon
-    guidance: 'DO NOT SWIM. Perfect storm conditions - multiple shark attacks possible.',
+    color: '#dc2626',  // Bright Red
+    guidance: 'DO NOT SWIM. Highly unfavourable conditions.',
   },
 ];
 
