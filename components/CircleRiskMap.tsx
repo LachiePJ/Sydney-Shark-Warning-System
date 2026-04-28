@@ -71,12 +71,14 @@ export default function CircleRiskMap({
     };
 
     // Add markers for each zone
+    const zoneBounds: [number, number][] = [];
     regionConfig.zones.features.forEach(zone => {
       const risk = zoneRisks.find(r => r.zoneId === zone.properties.id);
       if (!risk) return;
 
       const color = getColor(risk.level);
       const center = getPolygonCenter(zone.geometry.coordinates);
+      zoneBounds.push(center);
       const isSelected = selectedZoneId === zone.properties.id;
       
       // Determine radius based on location type
@@ -133,6 +135,14 @@ export default function CircleRiskMap({
       });
     });
 
+    // Fit map to active zones to reduce empty map space
+    if (zoneBounds.length > 0) {
+      map.fitBounds(zoneBounds, {
+        padding: [24, 24],
+        maxZoom: regionConfig.zoom + 1,
+      });
+    }
+
     // Cleanup
     return () => {
       if (mapInstanceRef.current) {
@@ -144,7 +154,7 @@ export default function CircleRiskMap({
 
   if (!mounted) {
     return (
-      <div className="w-full h-[600px] bg-gray-100 rounded-lg flex items-center justify-center">
+      <div className="w-full h-[480px] bg-gray-100 rounded-lg flex items-center justify-center">
         <div className="text-gray-500">Loading map...</div>
       </div>
     );
@@ -153,7 +163,7 @@ export default function CircleRiskMap({
   return (
     <div 
       ref={mapRef} 
-      className="w-full h-[600px] rounded-lg shadow-lg border-2 border-gray-200"
+      className="w-full h-[480px] rounded-lg border border-gray-200"
       style={{ zIndex: 1 }}
     />
   );

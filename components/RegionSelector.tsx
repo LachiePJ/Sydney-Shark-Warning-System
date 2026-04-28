@@ -6,9 +6,10 @@ import { Region, getRegionsList } from '@/config/regions';
 interface RegionSelectorProps {
   currentRegion: string;
   onRegionChange: (regionId: string) => void;
+  theme?: 'dark' | 'light';
 }
 
-export default function RegionSelector({ currentRegion, onRegionChange }: RegionSelectorProps) {
+export default function RegionSelector({ currentRegion, onRegionChange, theme = 'dark' }: RegionSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const regions = getRegionsList();
   
@@ -26,22 +27,28 @@ export default function RegionSelector({ currentRegion, onRegionChange }: Region
     setIsOpen(false);
     onRegionChange(regionId);
   };
+  
+  const isLight = theme === 'light';
 
   return (
     <div className="relative z-50 w-full md:w-auto">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full md:w-auto flex items-center justify-between md:justify-start gap-1.5 px-3 py-1.5 md:py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-md hover:bg-white/20 transition-all font-medium text-xs md:text-sm text-white"
+        className={`w-full md:w-auto flex items-center justify-between md:justify-start gap-1.5 px-3 py-1.5 md:py-2 rounded-md transition-all font-medium text-xs md:text-sm ${
+          isLight
+            ? 'bg-white border border-slate-300 text-slate-800 hover:bg-slate-50'
+            : 'bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20'
+        }`}
       >
         <div className="flex items-center gap-1.5">
-          <svg className="w-3.5 h-3.5 md:w-4 md:h-4 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className={`w-3.5 h-3.5 md:w-4 md:h-4 ${isLight ? 'text-slate-600' : 'text-white opacity-80'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
           <span className="font-medium">{selectedRegion?.name}</span>
         </div>
         <svg 
-          className={`w-3 h-3 md:w-3.5 md:h-3.5 text-white opacity-80 transition-transform ${isOpen ? 'rotate-180' : ''}`} 
+          className={`w-3 h-3 md:w-3.5 md:h-3.5 transition-transform ${isOpen ? 'rotate-180' : ''} ${isLight ? 'text-slate-600' : 'text-white opacity-80'}`} 
           fill="none" 
           stroke="currentColor" 
           viewBox="0 0 24 24"

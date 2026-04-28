@@ -5,7 +5,7 @@ import Link from 'next/link';
 import CircleRiskMap from '@/components/CircleRiskMap';
 import RegionSelector from '@/components/RegionSelector';
 import NodeStrategyBranding from '@/components/NodeStrategyBranding';
-import { HeaderNodeLogo } from '@/components/HeaderIcons';
+import { BrandingNodeLogo, HeaderSharkIcon } from '@/components/HeaderIcons';
 import { Region } from '@/config/regions';
 import { ZoneRiskResult } from '@/lib/types';
 
@@ -91,9 +91,12 @@ export default function SimpleRiskExperience({
     <div className="min-h-screen bg-[#f7f9fc]">
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5">
-          <div>
-            <p className="text-lg font-semibold text-slate-900">Live Shark Risk</p>
-            <p className="text-xs uppercase tracking-wide text-slate-500">{regionName}</p>
+          <div className="flex items-center gap-2">
+            <HeaderSharkIcon theme="light" />
+            <div>
+              <p className="text-lg font-semibold text-slate-900">Live Shark Risk</p>
+              <p className="text-xs uppercase tracking-wide text-slate-500">Real-time waterways risk assessment</p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <div className="hidden items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 md:flex">
@@ -102,7 +105,11 @@ export default function SimpleRiskExperience({
               <span className="text-xs text-slate-500">Updated {updatedAt.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' })}</span>
             </div>
             <span className="hidden text-xs font-medium uppercase tracking-wide text-slate-500 md:inline">Location</span>
-            <RegionSelector currentRegion={regionId} onRegionChange={(id) => (window.location.href = `/?region=${id}`)} />
+            <RegionSelector
+              currentRegion={regionId}
+              onRegionChange={(id) => (window.location.href = `/?region=${id}`)}
+              theme="light"
+            />
             <Link className="hidden text-sm text-slate-600 hover:text-slate-900 md:inline" href="/how-it-works">
               Method
             </Link>
@@ -113,7 +120,7 @@ export default function SimpleRiskExperience({
               className="hidden rounded-md border border-slate-200 bg-white px-2 py-1 hover:bg-slate-50 md:block"
               aria-label="Node Strategy"
             >
-              <HeaderNodeLogo />
+              <BrandingNodeLogo />
             </a>
           </div>
         </div>
@@ -123,8 +130,8 @@ export default function SimpleRiskExperience({
         <section className="grid gap-4 lg:grid-cols-[1.3fr_0.7fr]">
           <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
             <div className="mb-2 px-2">
-              <p className="text-sm font-medium text-slate-900">Map</p>
-              <p className="text-xs text-slate-500">Click a beach or waterway to view local risk details.</p>
+              <p className="text-sm font-medium text-slate-900">Risk By Location</p>
+              <p className="text-xs text-slate-500">Click on a specific location to view local risk details.</p>
             </div>
             <CircleRiskMap
               zoneRisks={zoneRisks}
@@ -140,8 +147,8 @@ export default function SimpleRiskExperience({
               <h1 className="mt-1 text-xl font-semibold text-slate-900">{regionName} risk snapshot</h1>
               <p className="mt-1 text-sm text-slate-600">{overviewCopy}</p>
               <p className="mt-2 text-sm text-slate-700">
-                Regional risk is <span className="font-semibold">{riskTone(overallRisk.score).label}</span>. Most aligned species:
-                <span className="font-semibold"> {primarySpecies?.species || 'Primary species'}.</span>
+                Overall risk is <span className="font-semibold">{riskTone(overallRisk.score).label}</span>. Most high risk species:
+                <span className="font-semibold"> {primarySpecies?.species || 'Bull Shark'}.</span>
               </p>
               <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
                 <div className="flex items-center justify-between">
@@ -156,6 +163,10 @@ export default function SimpleRiskExperience({
                   {scoreBarSegments.map((s) => (
                     <div key={s.label} className="h-2 flex-1" style={{ backgroundColor: s.color, opacity: 0.45 }} />
                   ))}
+                </div>
+                <div className="relative mt-1 h-4">
+                  <div className="absolute top-0 h-4 w-0.5 bg-slate-800" style={{ left: `${overallRisk.score}%` }} />
+                  <div className="absolute top-0 h-2 w-2 -translate-x-1/2 rounded-full bg-slate-800" style={{ left: `${overallRisk.score}%` }} />
                 </div>
               </div>
               {selected && (
@@ -275,8 +286,8 @@ export default function SimpleRiskExperience({
                   </div>
                   <p className="mt-1 text-xs text-slate-500">
                     {s.species.toLowerCase().includes('bull')
-                      ? 'Most aligned with current harbour and estuary conditions.'
-                      : 'Lower alignment with current conditions.'}
+                      ? 'Most active in current harbour and estuary conditions.'
+                      : 'Lower activity likelihood in current conditions.'}
                   </p>
                 </li>
               ))}

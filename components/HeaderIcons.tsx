@@ -5,11 +5,12 @@ import SharkIcon from './SharkIcon';
 import NodeLogo from './NodeLogo';
 import Image from 'next/image';
 
-export function HeaderSharkIcon() {
+export function HeaderSharkIcon({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
   const [imageError, setImageError] = useState(false);
+  const isLight = theme === 'light';
 
   if (imageError) {
-    return <SharkIcon className="w-16 h-16 text-white flex-shrink-0" />;
+    return <SharkIcon className={`w-16 h-16 flex-shrink-0 ${isLight ? 'text-slate-900' : 'text-white'}`} />;
   }
 
   return (
@@ -18,7 +19,7 @@ export function HeaderSharkIcon() {
       alt="Shark"
       width={64}
       height={64}
-      className="flex-shrink-0 brightness-0 invert"
+      className={`flex-shrink-0 ${isLight ? '' : 'brightness-0 invert'}`}
       onError={() => setImageError(true)}
       unoptimized
     />
