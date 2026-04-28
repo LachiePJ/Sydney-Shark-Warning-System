@@ -89,17 +89,17 @@ export default function SimpleRiskExperience({
 
   return (
     <div className="min-h-screen bg-[#f7f9fc]">
-      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5">
-          <div className="flex items-center gap-2">
+      <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-5 px-4 py-3.5">
+          <div className="flex items-center gap-3">
             <HeaderSharkIcon theme="light" />
             <div>
-              <p className="text-lg font-semibold text-slate-900">Live Shark Risk</p>
-              <p className="text-xs uppercase tracking-wide text-slate-500">Real-time waterways risk assessment</p>
+              <p className="text-xl font-semibold tracking-tight text-slate-900">Live Shark Risk</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-slate-500">Real-time waterways risk assessment</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="hidden items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 md:flex">
+          <div className="flex items-center gap-3">
+            <div className="hidden items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3.5 py-2 md:flex">
               <span className={`h-2 w-2 rounded-full ${dataStatus === 'live' ? 'bg-emerald-500' : dataStatus === 'delayed' ? 'bg-amber-500' : 'bg-orange-500'} ${dataStatus === 'live' ? 'animate-pulse' : ''}`}></span>
               <span className="text-xs font-medium text-slate-700">{statusLabel}</span>
               <span className="text-xs text-slate-500">Updated {updatedAt.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' })}</span>
@@ -117,7 +117,7 @@ export default function SimpleRiskExperience({
               href="https://www.nodestrategy.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden rounded-md border border-slate-200 bg-white px-2 py-1 hover:bg-slate-50 md:block"
+              className="hidden px-1 py-1 hover:opacity-80 md:block"
               aria-label="Node Strategy"
             >
               <BrandingNodeLogo />
@@ -127,7 +127,7 @@ export default function SimpleRiskExperience({
       </header>
 
       <main className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4">
-        <section className="grid gap-4 lg:grid-cols-[1.3fr_0.7fr]">
+        <section className="grid items-stretch gap-4 lg:grid-cols-[1.3fr_0.7fr]">
           <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
             <div className="mb-2 px-2">
               <p className="text-sm font-medium text-slate-900">Risk By Location</p>
@@ -141,8 +141,7 @@ export default function SimpleRiskExperience({
             />
           </div>
 
-          <div className="space-y-3">
-            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <p className="text-xs uppercase tracking-wide text-slate-500">Overall assessment</p>
               <h1 className="mt-1 text-xl font-semibold text-slate-900">{regionName} risk snapshot</h1>
               <p className="mt-1 text-sm text-slate-600">{overviewCopy}</p>
@@ -159,14 +158,17 @@ export default function SimpleRiskExperience({
                   <span className="text-3xl font-semibold tabular-nums text-slate-900">{overallRisk.score}</span>
                   <span className="pb-1 text-sm text-slate-500">/100</span>
                 </div>
-                <div className="mt-2 flex overflow-hidden rounded-md border border-slate-200">
+                <div className="relative mt-2 h-3 overflow-hidden rounded-full border border-slate-200">
                   {scoreBarSegments.map((s) => (
-                    <div key={s.label} className="h-2 flex-1" style={{ backgroundColor: s.color, opacity: 0.45 }} />
+                    <div key={s.label} className="h-3 flex-1" style={{ backgroundColor: s.color, opacity: 0.48 }} />
                   ))}
+                  <div className="absolute inset-y-0 w-0.5 -translate-x-1/2 bg-slate-900" style={{ left: `${overallRisk.score}%` }} />
+                  <div className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-slate-900 shadow" style={{ left: `${overallRisk.score}%` }} />
                 </div>
-                <div className="relative mt-1 h-4">
-                  <div className="absolute top-0 h-4 w-0.5 bg-slate-800" style={{ left: `${overallRisk.score}%` }} />
-                  <div className="absolute top-0 h-2 w-2 -translate-x-1/2 rounded-full bg-slate-800" style={{ left: `${overallRisk.score}%` }} />
+                <div className="mt-1 grid grid-cols-4 text-[11px] text-slate-500">
+                  {scoreBarSegments.map((s) => (
+                    <span key={s.label}>{s.label}</span>
+                  ))}
                 </div>
               </div>
               {selected && (
@@ -178,51 +180,52 @@ export default function SimpleRiskExperience({
                   <p className="mt-1 text-xs text-blue-800">{selected.guidance}</p>
                 </div>
               )}
-            </div>
+          </div>
+        </section>
 
-            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-sm font-semibold text-slate-900">Lower Risk</p>
-              <ul className="mt-2 space-y-2 text-sm text-slate-700">
-                {safest.map((z) => (
-                  <li key={z.zoneId} className="rounded-md border border-slate-100 p-2">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-slate-800">{z.zoneName}</span>
-                      <span className="tabular-nums text-slate-600">{z.score}/100</span>
-                    </div>
-                    <div className="mt-1 flex items-center gap-2 text-xs text-slate-500">
-                      <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700">{riskTone(z.score).label}</span>
-                      <span>{getLocationType(z.zoneId)}</span>
-                      <span>· {listReason(z.zoneId)}</span>
-                    </div>
-                    <div className="mt-2 h-1.5 rounded bg-slate-100">
-                      <div className="h-full rounded" style={{ width: `${z.score}%`, backgroundColor: riskTone(z.score).color }} />
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <section className="grid gap-4 lg:grid-cols-2">
+          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <p className="text-sm font-semibold text-slate-900">Lower Risk</p>
+            <ul className="mt-2 space-y-2 text-sm text-slate-700">
+              {safest.map((z) => (
+                <li key={z.zoneId} className="rounded-md border border-slate-100 p-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-slate-800">{z.zoneName}</span>
+                    <span className="tabular-nums text-slate-600">{z.score}/100</span>
+                  </div>
+                  <div className="mt-1 flex items-center gap-2 text-xs text-slate-500">
+                    <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700">{riskTone(z.score).label}</span>
+                    <span>{getLocationType(z.zoneId)}</span>
+                    <span>· {listReason(z.zoneId)}</span>
+                  </div>
+                  <div className="mt-2 h-1.5 rounded bg-slate-100">
+                    <div className="h-full rounded" style={{ width: `${z.score}%`, backgroundColor: riskTone(z.score).color }} />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-sm font-semibold text-slate-900">Higher Risk</p>
-              <ul className="mt-2 space-y-2 text-sm text-slate-700">
-                {highest.map((z) => (
-                  <li key={z.zoneId} className="rounded-md border border-slate-100 p-2">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-slate-800">{z.zoneName}</span>
-                      <span className="tabular-nums text-slate-600">{z.score}/100</span>
-                    </div>
-                    <div className="mt-1 flex items-center gap-2 text-xs text-slate-500">
-                      <span className="rounded-full bg-amber-50 px-2 py-0.5 text-amber-700">{riskTone(z.score).label}</span>
-                      <span>{getLocationType(z.zoneId)}</span>
-                      <span>· {listReason(z.zoneId)}</span>
-                    </div>
-                    <div className="mt-2 h-1.5 rounded bg-slate-100">
-                      <div className="h-full rounded" style={{ width: `${z.score}%`, backgroundColor: riskTone(z.score).color }} />
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <p className="text-sm font-semibold text-slate-900">Higher Risk</p>
+            <ul className="mt-2 space-y-2 text-sm text-slate-700">
+              {highest.map((z) => (
+                <li key={z.zoneId} className="rounded-md border border-slate-100 p-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-slate-800">{z.zoneName}</span>
+                    <span className="tabular-nums text-slate-600">{z.score}/100</span>
+                  </div>
+                  <div className="mt-1 flex items-center gap-2 text-xs text-slate-500">
+                    <span className="rounded-full bg-amber-50 px-2 py-0.5 text-amber-700">{riskTone(z.score).label}</span>
+                    <span>{getLocationType(z.zoneId)}</span>
+                    <span>· {listReason(z.zoneId)}</span>
+                  </div>
+                  <div className="mt-2 h-1.5 rounded bg-slate-100">
+                    <div className="h-full rounded" style={{ width: `${z.score}%`, backgroundColor: riskTone(z.score).color }} />
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 

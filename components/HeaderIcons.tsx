@@ -6,24 +6,10 @@ import NodeLogo from './NodeLogo';
 import Image from 'next/image';
 
 export function HeaderSharkIcon({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
-  const [imageError, setImageError] = useState(false);
   const isLight = theme === 'light';
 
-  if (imageError) {
-    return <SharkIcon className={`w-16 h-16 flex-shrink-0 ${isLight ? 'text-slate-900' : 'text-white'}`} />;
-  }
-
-  return (
-    <Image
-      src="/shark-icon.png"
-      alt="Shark"
-      width={64}
-      height={64}
-      className={`flex-shrink-0 ${isLight ? '' : 'brightness-0 invert'}`}
-      onError={() => setImageError(true)}
-      unoptimized
-    />
-  );
+  // Use the SVG icon directly so header branding always renders, even when image assets are missing.
+  return <SharkIcon className={`h-11 w-11 flex-shrink-0 ${isLight ? 'text-slate-900' : 'text-white'}`} />;
 }
 
 export function HeaderNodeLogo() {
