@@ -1,310 +1,264 @@
 import Link from 'next/link';
-import { getRegion } from '@/config/regions';
+import sources from '@/data/sources.json';
+import { riskApp } from '@/lib/risk-app-ui';
+import { HeaderSharkIcon } from '@/components/HeaderIcons';
 
-export default function HowItWorks() {
+const methodology = sources.methodology as {
+  overview: string;
+  speciesModels: Array<{
+    species: string;
+    habitat: string;
+    sydneyRelevance: string;
+    riskFactors: Record<string, { weight?: string; threshold?: string; rationale?: string; bonus?: string; penalty?: string; condition?: string }>;
+  }>;
+  overallScoring: string;
+  locationGuidance: string;
+};
+
+export default function HowItWorksPage() {
+  const papers = sources.researchPapers.slice(0, 6);
+  const provenance = sources.dataProvenance;
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <svg className="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-              </svg>
-              <div>
-                <h1 className="text-xl md:text-2xl font-bold text-gray-900">Live Shark Risk</h1>
-                <p className="text-xs text-gray-500 hidden sm:block">Environmental risk assessment</p>
-              </div>
-            </Link>
-            <Link 
-              href="/"
-              className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
-            >
-              ← Back to Risk Map
-            </Link>
-          </div>
+    <div className={riskApp.pageBg}>
+      <header className={riskApp.header}>
+        <div className={riskApp.headerInner}>
+          <Link href="/" className="flex min-w-0 items-center gap-3 hover:opacity-90">
+            <HeaderSharkIcon theme="light" />
+            <div className="min-w-0">
+              <p className={riskApp.brandTitle}>Live Shark Risk</p>
+              <p className={riskApp.brandKicker}>Methodology</p>
+            </div>
+          </Link>
+          <Link href="/" className={`shrink-0 ${riskApp.navLink}`}>
+            ← Risk map
+          </Link>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8 md:p-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            How It Works
-          </h1>
-          <p className="text-lg text-gray-700 mb-10">
-            Understanding the Live Shark Risk assessment model
+      <main className={riskApp.mainArticle}>
+        <div>
+          <p className={riskApp.sectionKicker}>How this works</p>
+          <h1 className={`mt-1 ${riskApp.pageHeadline}`}>Methodology</h1>
+          <p className={`mt-2 max-w-2xl ${riskApp.body}`}>{methodology.overview}</p>
+        </div>
+
+        <section className={`${riskApp.card} ${riskApp.cardPad}`}>
+          <p className={riskApp.sectionKicker}>What you are looking at</p>
+          <h2 className={`mt-1 ${riskApp.sectionTitleMd}`}>Environmental risk, not detection</h2>
+          <p className={`mt-2 ${riskApp.body}`}>
+            The score shows how closely <strong className="text-slate-800">current weather and ocean conditions</strong> match patterns
+            linked to shark activity in research. It does <strong className="text-slate-800">not</strong> mean a shark is present, and it is
+            not a replacement for lifeguards, signage, or official warnings.
           </p>
+        </section>
 
-          {/* Section 1: How Risk is Calculated */}
-          <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-              <span className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-bold">1</span>
-              How Risk is Calculated
-            </h2>
-            <div className="ml-13 space-y-4 text-gray-700 leading-relaxed">
-              <p>
-                Live Shark Risk uses a three-step process to estimate environmental conditions that may favour shark activity:
-              </p>
-              <ol className="space-y-3 ml-5 list-decimal">
-                <li>
-                  <strong>Current environmental conditions are collected</strong> from the Bureau of Meteorology, marine APIs, and beach monitoring systems.
-                </li>
-                <li>
-                  <strong>Conditions are matched to species-specific behavioural indicators</strong> based on peer-reviewed research into shark behaviour, habitat preferences, and environmental triggers.
-                </li>
-                <li>
-                  <strong>Location-level risk is scored</strong> using environmental factors, species likelihood, and habitat characteristics. Each location receives a score from 0-100.
-                </li>
-              </ol>
-            </div>
-          </section>
+        <section className={`${riskApp.card} ${riskApp.cardPad}`}>
+          <p className={riskApp.sectionKicker}>Flow</p>
+          <h2 className={`mt-1 ${riskApp.sectionTitleMd}`}>From live data to a location score</h2>
+          <ol className="mt-4 space-y-4">
+            {[
+              'Observations are pulled from trusted feeds (for example BoM for rain and sea temperature).',
+              'Each reading is turned into environmental “signals” (active or not) using fixed thresholds from the model.',
+              'Each shark species has its own signal weights; species scores are combined for the region.',
+              'Each beach or waterway is scored using that mix plus its habitat type (open beach vs harbour vs estuary).',
+            ].map((text, i) => (
+              <li key={i} className="flex gap-3">
+                <span className={riskApp.stepBadge}>{i + 1}</span>
+                <p className={`pt-1 ${riskApp.body}`}>{text}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
 
-          {/* Section 2: What the Score Means */}
-          <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-              <span className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-bold">2</span>
-              What the Score Means
-            </h2>
-            <div className="ml-13 space-y-4 text-gray-700 leading-relaxed">
-              <p>
-                <strong className="text-gray-900">The score represents how favourable current environmental conditions are for shark activity, not whether sharks are present.</strong>
-              </p>
-              <div className="grid sm:grid-cols-2 gap-3 mt-4">
-                <div className="p-4 rounded-lg border-2 border-green-200 bg-green-50">
-                  <div className="font-bold text-green-900 mb-1">Low (0-30)</div>
-                  <div className="text-sm text-green-800">Conditions are less favourable for shark activity</div>
-                </div>
-                <div className="p-4 rounded-lg border-2 border-yellow-200 bg-yellow-50">
-                  <div className="font-bold text-yellow-900 mb-1">Moderate (31-60)</div>
-                  <div className="text-sm text-yellow-800">Some environmental factors are met</div>
-                </div>
-                <div className="p-4 rounded-lg border-2 border-orange-200 bg-orange-50">
-                  <div className="font-bold text-orange-900 mb-1">High (61-80)</div>
-                  <div className="text-sm text-orange-800">Multiple favourable conditions present</div>
-                </div>
-                <div className="p-4 rounded-lg border-2 border-red-200 bg-red-50">
-                  <div className="font-bold text-red-900 mb-1">Severe (81-100)</div>
-                  <div className="text-sm text-red-800">Highly favourable conditions (rare)</div>
-                </div>
-              </div>
-              <p className="mt-4">
-                A higher score means current conditions more closely match those historically associated with increased shark activity. It does not predict shark presence or attacks.
-              </p>
-            </div>
-          </section>
-
-          {/* Section 3: Why Location Matters */}
-          <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-              <span className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-bold">3</span>
-              Why Location Matters
-            </h2>
-            <div className="ml-13 space-y-4 text-gray-700 leading-relaxed">
-              <p>
-                Different location types present different risk profiles based on habitat characteristics and species behaviour:
-              </p>
-              <ul className="space-y-3 ml-5">
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">•</span>
-                  <div>
-                    <strong className="text-gray-900">Open-ocean beaches:</strong> Generally lower risk, higher visibility, more wave action. White Sharks and Bronze Whalers may be present during certain seasons.
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">•</span>
-                  <div>
-                    <strong className="text-gray-900">Harbours and enclosed bays:</strong> Variable conditions, reduced water circulation. Bull Sharks may enter these areas, especially after rainfall.
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">•</span>
-                  <div>
-                    <strong className="text-gray-900">Estuaries and river mouths:</strong> Brackish water environments. Bull Sharks are adapted to these conditions and risk increases significantly after heavy rainfall (&gt;50mm).
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">•</span>
-                  <div>
-                    <strong className="text-gray-900">Murky or turbid water:</strong> Reduced visibility after heavy rain. Increases risk across all location types as sharks rely on other senses and may mistake swimmers for prey.
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </section>
-
-          {/* Section 4: How Regions Differ */}
-          <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-              <span className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-bold">4</span>
-              How Regions Differ
-            </h2>
-            <div className="ml-13 space-y-4 text-gray-700 leading-relaxed">
-              <p>
-                Each region has unique characteristics that influence shark risk assessment:
-              </p>
-              <ul className="space-y-3 ml-5">
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">•</span>
-                  <div>
-                    <strong className="text-gray-900">Species profiles:</strong> Different shark species are present in different regions based on water temperature, prey availability, and habitat.
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">•</span>
-                  <div>
-                    <strong className="text-gray-900">Environmental triggers:</strong> Species respond differently to temperature, rainfall, and turbidity based on local conditions.
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">•</span>
-                  <div>
-                    <strong className="text-gray-900">Seasonal patterns:</strong> Migration, breeding, and feeding patterns vary by region and season.
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">•</span>
-                  <div>
-                    <strong className="text-gray-900">Location types:</strong> Different regions have different mixes of beaches, harbours, estuaries, and river systems.
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </section>
-
-          {/* Section 5: Data Sources */}
-          <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-              <span className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-bold">5</span>
-              Data Sources
-            </h2>
-            <div className="ml-13 space-y-4 text-gray-700 leading-relaxed">
-              <p>Live Shark Risk integrates data from multiple trusted sources:</p>
-              <ul className="space-y-3 ml-5">
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">•</span>
-                  <div>
-                    <strong className="text-gray-900">Bureau of Meteorology (BOM):</strong> Real-time water temperature, rainfall, weather conditions
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">•</span>
-                  <div>
-                    <strong className="text-gray-900">Marine APIs:</strong> Tide, swell, water quality data
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">•</span>
-                  <div>
-                    <strong className="text-gray-900">Beach and location data:</strong> Geographic information, location types, patrol status
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">•</span>
-                  <div>
-                    <strong className="text-gray-900">Peer-reviewed research:</strong> Published studies on shark behaviour, environmental preferences, and attack patterns
-                  </div>
-                </li>
-              </ul>
-              <p className="text-sm mt-4">
-                All environmental data is refreshed every 30 minutes. Risk calculations update automatically when new data is available.
-              </p>
-            </div>
-          </section>
-
-          {/* Section 6: Limitations */}
-          <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-              <span className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-bold">6</span>
-              Limitations
-            </h2>
-            <div className="ml-13 space-y-4 text-gray-700 leading-relaxed">
-              <div className="p-5 bg-yellow-50 border-2 border-yellow-300 rounded-lg">
-                <p className="font-bold text-yellow-900 mb-2">
-                  This tool is not a shark detection system.
+        <section className={`${riskApp.card} ${riskApp.cardPad}`}>
+          <p className={riskApp.sectionKicker}>Reading the score</p>
+          <h2 className={`mt-1 ${riskApp.sectionTitleMd}`}>Score bands (0–100)</h2>
+          <p className={`mt-2 ${riskApp.body}`}>
+            A higher number means more environmental factors are in play at once for species that use this coastline—not a forecast of an
+            incident.
+          </p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {[
+              { range: '0–30', label: 'Low', desc: 'Fewer factors match typical high-activity conditions.', border: 'border-emerald-200/90', bg: 'bg-emerald-50/60' },
+              { range: '31–60', label: 'Moderate', desc: 'Several factors are in a range seen more often in elevated activity.', border: 'border-amber-200/90', bg: 'bg-amber-50/60' },
+              { range: '61–80', label: 'High', desc: 'Multiple strong signals overlap.', border: 'border-orange-200/90', bg: 'bg-orange-50/60' },
+              { range: '81–100', label: 'Severe', desc: 'Rare combination of very strong environmental drivers.', border: 'border-red-200/90', bg: 'bg-red-50/60' },
+            ].map((b) => (
+              <div key={b.range} className={`rounded-lg border p-3 ${b.border} ${b.bg}`}>
+                <p className={`text-sm font-semibold text-slate-900`}>
+                  {b.label} <span className="font-normal text-slate-600">({b.range})</span>
                 </p>
-                <p className="text-yellow-900">
-                  It estimates environmental conditions that may increase relative risk. It does not:
-                </p>
-                <ul className="mt-3 space-y-2 ml-5 list-disc text-yellow-900">
-                  <li>Predict shark presence or absence</li>
-                  <li>Guarantee safety or warn of imminent danger</li>
-                  <li>Replace official beach safety warnings or lifeguard advice</li>
-                  <li>Track individual sharks or detect sharks in real-time</li>
-                </ul>
+                <p className={`mt-1 ${riskApp.bodySm}`}>{b.desc}</p>
               </div>
-              <p>
-                Environmental risk assessment is <strong>one factor</strong> in water safety decisions. Always follow official beach safety guidance, lifeguard instructions, and local warnings.
-              </p>
-            </div>
-          </section>
+            ))}
+          </div>
+        </section>
 
-          {/* Section 7: Official Safety Guidance */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-              <span className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-bold">7</span>
-              Official Safety Guidance
-            </h2>
-            <div className="ml-13 space-y-4 text-gray-700 leading-relaxed">
-              <p className="font-semibold text-gray-900">Always follow these water safety principles:</p>
-              <ul className="space-y-2 ml-5 list-disc">
-                <li>Swim at patrolled beaches between the flags</li>
-                <li>Follow all lifeguard instructions and warnings</li>
-                <li>Obey beach closures and signage</li>
-                <li>Never swim alone, especially in harbours or murky water</li>
-                <li>Avoid swimming at dawn, dusk, or after heavy rainfall</li>
-                <li>Stay close to shore and avoid deep channels</li>
-              </ul>
-              <div className="mt-6 p-5 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-sm text-blue-900">
-                  For official beach safety information and current warnings, visit{' '}
-                  <a 
-                    href="https://beachsafe.org.au" 
-                    target="_blank" 
+        <section className={`${riskApp.card} ${riskApp.cardPad}`}>
+          <p className={riskApp.sectionKicker}>Places</p>
+          <h2 className={`mt-1 ${riskApp.sectionTitleMd}`}>Why the map matters</h2>
+          <p className={`mt-2 ${riskApp.body}`}>
+            Harbours, rivers after rain, and enclosed bays behave differently from open, patrolled surf beaches. The model adds or removes risk
+            by place type so the same rainfall or temperature does not mean the same thing everywhere.
+          </p>
+          <p className={`mt-3 ${riskApp.bodySm}`}>{methodology.locationGuidance}</p>
+        </section>
+
+        <section className={`${riskApp.card} ${riskApp.cardPad}`}>
+          <p className={riskApp.sectionKicker}>Evidence</p>
+          <h2 className={`mt-1 ${riskApp.sectionTitleMd}`}>Research behind the model</h2>
+          <p className={`mt-2 ${riskApp.body}`}>
+            Thresholds and weights are grounded in published work on species distribution, movement, and environmental drivers—not guesswork.
+            Below are the main sources and what we take from each for this tool.
+          </p>
+          <ul className="mt-5 space-y-4">
+            {papers.map((paper) => (
+              <li key={paper.id} className={`${riskApp.inset} ${riskApp.insetPad}`}>
+                <p className={`text-sm font-semibold text-slate-900`}>{paper.title}</p>
+                <p className={`mt-1 ${riskApp.bodySm}`}>
+                  {paper.authors.join(', ')} ({paper.year}). <em className="not-italic text-slate-600">{paper.journal}</em>. DOI:{' '}
+                  <a
+                    href={paper.url}
+                    target="_blank"
                     rel="noopener noreferrer"
-                    className="underline font-semibold hover:text-blue-700"
+                    className="font-medium text-slate-700 underline decoration-slate-300 underline-offset-2 hover:text-slate-900"
                   >
-                    BeachSafe.org.au
+                    {paper.doi}
                   </a>
                 </p>
-              </div>
-            </div>
-          </section>
+                <ul className="mt-3 list-disc space-y-1.5 pl-4 text-sm text-slate-600">
+                  {paper.keyFindings.slice(0, 3).map((finding, idx) => (
+                    <li key={idx}>{finding}</li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </section>
 
-          {/* Back to Map CTA */}
-          <div className="mt-12 pt-8 border-t border-gray-200 text-center">
-            <Link 
-              href="/"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-              </svg>
-              View Current Risk Map
-            </Link>
+        <section className={`${riskApp.card} ${riskApp.cardPad}`}>
+          <p className={riskApp.sectionKicker}>Species models</p>
+          <h2 className={`mt-1 ${riskApp.sectionTitleMd}`}>How each species is scored</h2>
+          <p className={`mt-2 ${riskApp.body}`}>{methodology.overallScoring}</p>
+          <div className="mt-5 space-y-4">
+            {methodology.speciesModels.map((sp) => (
+              <div key={sp.species} className={`${riskApp.inset} ${riskApp.insetPad}`}>
+                <p className="text-sm font-semibold text-slate-900">{sp.species}</p>
+                <p className={`mt-1 ${riskApp.bodySm}`}>{sp.habitat}</p>
+                <p className={`mt-2 ${riskApp.body}`}>{sp.sydneyRelevance}</p>
+                <dl className="mt-3 grid gap-2 text-xs text-slate-600 sm:grid-cols-2">
+                  {Object.entries(sp.riskFactors).map(([key, val]) => (
+                    <div key={key} className="rounded border border-slate-100 bg-white/80 p-2">
+                      <dt className="font-semibold capitalize text-slate-800">{key}</dt>
+                      <dd className="mt-0.5">
+                        {[val.weight, val.threshold, val.bonus, val.penalty, val.condition].filter(Boolean).join(' · ')}
+                        {val.rationale ? ` — ${val.rationale}` : ''}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            ))}
           </div>
+        </section>
+
+        <section className={`${riskApp.card} ${riskApp.cardPad}`}>
+          <p className={riskApp.sectionKicker}>Live inputs</p>
+          <h2 className={`mt-1 ${riskApp.sectionTitleMd}`}>Operational data sources</h2>
+          <p className={`mt-2 ${riskApp.body}`}>
+            These are the feeds that power the environmental layer. When a feed is late or missing, the UI shows it and the model may treat
+            that signal cautiously.
+          </p>
+          <ul className="mt-4 space-y-3">
+            {provenance.map((row) => (
+              <li key={row.metric} className={riskApp.listItem}>
+                <p className="text-sm font-semibold text-slate-900">{row.metric}</p>
+                <p className={`mt-1 ${riskApp.bodySm}`}>{row.description}</p>
+                <p className={`mt-1 ${riskApp.bodySm}`}>
+                  Source:{' '}
+                  {row.url ? (
+                    <a
+                      href={row.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-slate-700 underline decoration-slate-300 underline-offset-2 hover:text-slate-900"
+                    >
+                      {row.source}
+                    </a>
+                  ) : (
+                    <span className="font-medium text-slate-700">{row.source}</span>
+                  )}
+                  {' · '}
+                  Updates: {row.updateFrequency}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className={`${riskApp.card} ${riskApp.cardPad}`}>
+          <p className={riskApp.sectionKicker}>Limits</p>
+          <h2 className={`mt-1 ${riskApp.sectionTitleMd}`}>What this cannot do</h2>
+          <div className={`mt-3 ${riskApp.disclaimer}`}>
+            <p className="font-semibold">This is not a shark detection system.</p>
+            <ul className="mt-2 list-disc space-y-1 pl-4 text-sm">
+              <li>It does not predict presence or absence of sharks.</li>
+              <li>It does not replace lifeguard advice, beach closures, or official warnings.</li>
+              <li>It does not track individual animals.</li>
+            </ul>
+          </div>
+          <p className={`mt-4 ${riskApp.body}`}>{sources.disclaimer}</p>
+        </section>
+
+        <section className={`${riskApp.card} ${riskApp.cardPad}`}>
+          <p className={riskApp.sectionKicker}>Safety</p>
+          <h2 className={`mt-1 ${riskApp.sectionTitleMd}`}>Official guidance</h2>
+          <ul className={`mt-3 list-disc space-y-1.5 pl-4 ${riskApp.body}`}>
+            <li>Swim between the flags on patrolled beaches.</li>
+            <li>Follow lifeguards and all signage.</li>
+            <li>Avoid murky water and river mouths after heavy rain.</li>
+            <li>Do not swim alone in harbours or enclosed waterways.</li>
+          </ul>
+          <p className={`mt-4 ${riskApp.bodySm}`}>
+            Beach conditions and warnings:{' '}
+            <a
+              href="https://beachsafe.org.au"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-slate-800 underline decoration-slate-300 underline-offset-2 hover:text-slate-950"
+            >
+              BeachSafe.org.au
+            </a>
+          </p>
+        </section>
+
+        <div className="flex justify-center border-t border-slate-200 pt-8">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-800"
+          >
+            View risk map
+          </Link>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-6 mt-12">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
-            <p>
-              &copy; 2026 Live Shark Risk. Data from{' '}
-              <a href="http://www.bom.gov.au/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300">
-                Bureau of Meteorology
-              </a>
-            </p>
-            <div className="flex gap-4">
-              <a href="https://beachsafe.org.au" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300">
-                BeachSafe
-              </a>
-              <a href="https://nodestrategy.com" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300">
-                Built by Node Strategy
-              </a>
-            </div>
+      <footer className="border-t border-slate-200 bg-white py-6">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
+          <p>
+            Data from{' '}
+            <a href="http://www.bom.gov.au/" target="_blank" rel="noopener noreferrer" className="font-medium text-slate-700 hover:text-slate-900">
+              Bureau of Meteorology
+            </a>
+            . Research citations on this page match the sources catalogue in the repository.
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <a href="https://beachsafe.org.au" target="_blank" rel="noopener noreferrer" className="font-medium text-slate-700 hover:text-slate-900">
+              BeachSafe
+            </a>
+            <a href="https://nodestrategy.com" target="_blank" rel="noopener noreferrer" className="font-medium text-slate-700 hover:text-slate-900">
+              Node Strategy
+            </a>
           </div>
         </div>
       </footer>
