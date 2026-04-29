@@ -93,7 +93,7 @@ export default function SimpleRiskExperience({
   return (
     <div className={riskApp.pageBg}>
       <header className={riskApp.header}>
-        <div className={riskApp.headerInner}>
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3.5 md:flex-row md:items-center md:justify-between">
           <div className="flex min-w-0 items-center gap-3">
             <HeaderSharkIcon theme="light" />
             <div className="min-w-0">
@@ -101,23 +101,14 @@ export default function SimpleRiskExperience({
               <p className={riskApp.brandKicker}>Real-time waterways risk assessment</p>
             </div>
           </div>
-          <div className="flex shrink-0 flex-wrap items-center justify-end gap-3">
-            <div className="hidden items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3.5 py-2 md:flex">
-              <span
-                className={`h-2 w-2 rounded-full ${dataStatus === 'live' ? 'bg-emerald-500' : dataStatus === 'delayed' ? 'bg-amber-500' : 'bg-orange-500'} ${dataStatus === 'live' ? 'animate-pulse' : ''}`}
-              />
-              <span className="text-xs font-medium text-slate-700">{statusLabel}</span>
-              <span className="text-xs text-slate-500">
-                Updated {updatedAt.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' })}
-              </span>
-            </div>
-            <span className="hidden text-[11px] font-semibold uppercase tracking-wide text-slate-500 md:inline">Location</span>
+          <div className="flex flex-wrap items-center gap-3 md:justify-end">
+            <span className="hidden text-[11px] font-semibold uppercase tracking-wide text-slate-500 sm:inline">Location</span>
             <RegionSelector
               currentRegion={regionId}
               onRegionChange={(id) => (window.location.href = `/?region=${id}`)}
               theme="light"
             />
-            <Link className={riskApp.navLinkDesktop} href="/how-it-works">
+            <Link className={riskApp.navLink} href="/how-it-works">
               Methodology
             </Link>
             <a
@@ -149,7 +140,20 @@ export default function SimpleRiskExperience({
           </div>
 
           <div className={`${riskApp.card} ${riskApp.cardPad} flex flex-col`}>
-            <p className={riskApp.sectionKicker}>Overall assessment</p>
+            <div className="flex items-start justify-between gap-2">
+              <p className={riskApp.sectionKicker}>Overall assessment</p>
+              <div className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5">
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`h-2 w-2 rounded-full ${dataStatus === 'live' ? 'bg-emerald-500' : dataStatus === 'delayed' ? 'bg-amber-500' : 'bg-orange-500'} ${dataStatus === 'live' ? 'animate-pulse' : ''}`}
+                  />
+                  <span className="text-xs font-medium text-slate-700">{statusLabel}</span>
+                  <span className="text-xs text-slate-500">
+                    {updatedAt.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+              </div>
+            </div>
             <h1 className={`mt-1 ${riskApp.pageHeadline}`}>{regionName} risk snapshot</h1>
             <p className={`mt-2 ${riskApp.body}`}>{overviewCopy}</p>
             <p className={`mt-2 ${riskApp.body}`}>
@@ -191,40 +195,41 @@ export default function SimpleRiskExperience({
 
             <div className={`mt-4 grid flex-1 gap-3 md:grid-cols-2 ${riskApp.inset} ${riskApp.insetPad}`}>
               <div>
-                <p className={`${riskApp.sectionKicker} mb-1.5`}>Right now</p>
+                <p className={`${riskApp.sectionKicker} mb-1.5`}>How This Works</p>
                 <p className={riskApp.body}>
-                  <span className="font-semibold text-slate-900">{activeSignals.length}</span> of{' '}
-                  <span className="font-semibold text-slate-900">{signalRows.length}</span> environmental signals are active for this
-                  view{selected ? ` (${selected.zoneName})` : ''}.
+                  This score combines live weather and ocean data with species behavior research, then adjusts for local environment type.
                 </p>
-                {activeSignals.length > 0 ? (
-                  <ul className="mt-2 space-y-1.5 border-t border-slate-200/70 pt-2">
-                    {activeSignals.slice(0, 4).map((c) => (
-                      <li key={c.name} className="flex justify-between gap-2 text-xs text-slate-600">
-                        <span className="font-medium text-slate-800">{c.name}</span>
-                        <span className="shrink-0 tabular-nums text-slate-500">{String(c.value)}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className={`mt-2 ${riskApp.bodySm}`}>No signals are active under current thresholds.</p>
-                )}
+                <ul className="mt-2 list-disc space-y-1.5 pl-4 text-xs text-slate-600">
+                  <li>Live conditions are converted into model signals.</li>
+                  <li>Signals are weighted per species and location type.</li>
+                  <li>Final score is a risk context indicator, not detection.</li>
+                </ul>
+                <Link href="/how-it-works" className="mt-3 inline-flex text-xs font-semibold text-slate-800 underline underline-offset-2 hover:text-slate-950">
+                  View detailed methodology
+                </Link>
               </div>
               <div>
-                <p className={`${riskApp.sectionKicker} mb-1.5`}>Data</p>
+                <p className={`${riskApp.sectionKicker} mb-1.5`}>Signals snapshot</p>
                 <p className={riskApp.body}>
-                  Model confidence is <span className="font-semibold capitalize text-slate-900">{overallRisk.confidence}</span>. Regional
-                  snapshot last refreshed at{' '}
-                  <span className="font-semibold text-slate-900">
-                    {updatedAt.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' })}
-                  </span>{' '}
-                  ({statusLabel.toLowerCase()}).
+                  <span className="font-semibold text-slate-900">{activeSignals.length}</span> of{' '}
+                  <span className="font-semibold text-slate-900">{signalRows.length}</span> signals are active
+                  {selected ? ` for ${selected.zoneName}` : ' for this region'}.
                 </p>
                 <p className={`mt-2 ${riskApp.bodySm}`}>
                   {missingSignals > 0
                     ? `${missingSignals} signal${missingSignals === 1 ? '' : 's'} still awaiting a value from source feeds.`
                     : 'All listed signals have a value for this run.'}
                 </p>
+                {activeSignals.length > 0 && (
+                  <ul className="mt-2 space-y-1.5 border-t border-slate-200/70 pt-2">
+                    {activeSignals.slice(0, 3).map((c) => (
+                      <li key={c.name} className="flex justify-between gap-2 text-xs text-slate-600">
+                        <span className="font-medium text-slate-800">{c.name}</span>
+                        <span className="shrink-0 tabular-nums text-slate-500">{String(c.value)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
 
